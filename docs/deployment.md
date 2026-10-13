@@ -17,9 +17,50 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
 * Nothing identifying is in the repository. Host, bucket, e-mail and ids are GitHub **secrets**,
   which are masked in the (public) Actions logs.
 
+## How the pieces connect
+
+```
+   GitHub (code)                       AWS (data)                          Databricks (compute)
+ ┌──────────────┐  CD pushes code   ┌──────────────────────────┐        ┌─────────────────────────────┐
+ │ this repo    │──────────────────────────────────────────────────────►│ job + wheel (Python package)│
+ │              │  CD deploys       │ Lambda downloads registers│        │ runs on serverless compute  │
+ │              │──────────────────►│   ▼                       │        │   │ reads/writes through     │
+ └──────────────┘                   │ S3 bucket                 │◄───────┼───┘ UC volumes             │
+                                    │  .../lakehouse/landing    │  IAM role (storage credential)       │
+                                    │  .../lakehouse/managed    │        └─────────────────────────────┘
+                                    │ website bucket .../data   │◄─── publish task writes site JSON
+                                    └──────────────────────────┘
+```
+
+**How the code reaches Databricks.** Databricks never pulls from GitHub. The CD workflow pushes:
+`databricks bundle deploy` builds the Python package in `src/` into a wheel, uploads it with the job
+definition to the workspace (`/Workspace/Users/<service principal>/.bundle/...`), and creates or
+updates the job through the Jobs API. When the schedule fires, serverless compute starts, installs
+the wheel, and calls `registry-lakehouse bronze --country FR ...` for each task.
+
+**How Databricks finds the bucket.** The bucket name is never in the code or the repo. It lives only
+in Unity Catalog, set up once with `infra/databricks/setup.sql`:
+
+1. an **IAM role** in your AWS account allows reading and writing the bucket,
+2. a **storage credential** in Databricks holds that role's ARN,
+3. an **external location** says "Databricks may use this credential for `s3://<bucket>/<prefix>`",
+4. a **volume** (`registry.files.landing`) gives that S3 prefix a Databricks path:
+   `/Volumes/registry/files/landing`,
+5. the job receives `--landing-root /Volumes/registry/files/landing` (bundle default), and the code
+   reads files there as if they were local.
+
+**Which bucket?** Keep the existing raw-data bucket that already holds `company_records/lakehouse/landing/`.
+One bucket per purpose (raw data, website, query results) is the usual standard. Separate buckets
+per environment (dev/prod) are common in companies, but not needed for a one-person project.
+Publish the website data into the bucket that already serves your website, under the project page's
+prefix, so the page and its data share one origin (no CORS setup). Put the Databricks workspace in
+the **same AWS region** as the buckets, to avoid cross-region transfer costs.
+
 ## One-time setup
 
 ### 1. AWS: let GitHub deploy the ingestion stack
+
+No new bucket is needed (see above). This creates only the IAM role GitHub Actions uses.
 
 ```bash
 aws cloudformation deploy --template-file infra/aws/github-deploy-role.yaml \

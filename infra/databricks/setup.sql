@@ -7,6 +7,8 @@
 --   bucket/prefix that serves the website data.
 
 -- 1. Where the raw files and the website data live
+--    <landing-bucket>: the existing raw-data bucket. <site-bucket>/<site-data-prefix>: the bucket that serves
+--    the website, e.g. prefix en/projects/eu-company-registry/data, next to the project page.
 CREATE EXTERNAL LOCATION IF NOT EXISTS registry_landing
   URL 's3://<landing-bucket>/company_records/lakehouse'
   WITH (STORAGE CREDENTIAL `registry_s3`)
