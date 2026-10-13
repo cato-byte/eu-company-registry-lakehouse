@@ -1,0 +1,161 @@
+# Source data contracts.
+#
+# One entry per national register. The bronze loader validates every landing file against
+# its contract *before* reading it (schema drift detection), and every column is landed
+# as STRING: parsing happens in silver, where failures become data-quality findings
+# instead of job crashes.
+#
+#   drift_policy:
+#     strict  -> any added/removed/renamed column fails the run
+#     additive -> new columns are allowed (kept in _rescued_data), removed/renamed fail
+#   grain: LEGAL_ENTITY or ESTABLISHMENT (France and Navarra publish establishments)
+#   pii_columns: dropped at bronze (data minimisation), never reach the lakehouse.
+
+sources:
+  FR:
+    country: FRANCE
+    register: INSEE SIRENE (StockEtablissement)
+    id_column: siret
+    format: csv
+    delimiter: ","
+    encoding: UTF-8
+    grain: ESTABLISHMENT
+    cadence: monthly
+    drift_policy: additive
+    pii_columns: []
+    columns: [siren, nic, siret, statutDiffusionEtablissement, dateCreationEtablissement,
+      trancheEffectifsEtablissement, anneeEffectifsEtablissement,
+      activitePrincipaleRegistreMetiersEtablissement, dateDernierTraitementEtablissement,
+      etablissementSiege, nombrePeriodesEtablissement, complementAdresseEtablissement,
+      numeroVoieEtablissement, indiceRepetitionEtablissement, dernierNumeroVoieEtablissement,
+      indiceRepetitionDernierNumeroVoieEtablissement, typeVoieEtablissement,
+      libelleVoieEtablissement, codePostalEtablissement, libelleCommuneEtablissement,
+      libelleCommuneEtrangerEtablissement, distributionSpecialeEtablissement,
+      codeCommuneEtablissement, codeCedexEtablissement, libelleCedexEtablissement,
+      codePaysEtrangerEtablissement, libellePaysEtrangerEtablissement,
+      identifiantAdresseEtablissement, coordonneeLambertAbscisseEtablissement,
+      coordonneeLambertOrdonneeEtablissement, complementAdresse2Etablissement,
+      numeroVoie2Etablissement, indiceRepetition2Etablissement, typeVoie2Etablissement,
+      libelleVoie2Etablissement, codePostal2Etablissement, libelleCommune2Etablissement,
+      libelleCommuneEtranger2Etablissement, distributionSpeciale2Etablissement,
+      codeCommune2Etablissement, codeCedex2Etablissement, libelleCedex2Etablissement,
+      codePaysEtranger2Etablissement, libellePaysEtranger2Etablissement, dateDebut,
+      etatAdministratifEtablissement, enseigne1Etablissement, enseigne2Etablissement,
+      enseigne3Etablissement, denominationUsuelleEtablissement, activitePrincipaleEtablissement,
+      nomenclatureActivitePrincipaleEtablissement, caractereEmployeurEtablissement,
+      activitePrincipaleNAF25Etablissement]
+
+  GB:
+    country: UNITED_KINGDOM
+    register: Companies House Basic Company Data
+    id_column: CompanyNumber
+    format: csv
+    delimiter: ","
+    encoding: UTF-8
+    grain: LEGAL_ENTITY
+    cadence: monthly
+    drift_policy: additive
+    pii_columns: []
+    columns: [CompanyName, CompanyNumber, RegAddress.CareOf, RegAddress.POBox,
+      RegAddress.AddressLine1, RegAddress.AddressLine2, RegAddress.PostTown, RegAddress.County,
+      RegAddress.Country, RegAddress.PostCode, CompanyCategory, CompanyStatus, CountryOfOrigin,
+      DissolutionDate, IncorporationDate, Accounts.AccountRefDay, Accounts.AccountRefMonth,
+      Accounts.NextDueDate, Accounts.LastMadeUpDate, Accounts.AccountCategory,
+      Returns.NextDueDate, Returns.LastMadeUpDate, Mortgages.NumMortCharges,
+      Mortgages.NumMortOutstanding, Mortgages.NumMortPartSatisfied, Mortgages.NumMortSatisfied,
+      SICCode.SicText_1, SICCode.SicText_2, SICCode.SicText_3, SICCode.SicText_4,
+      LimitedPartnerships.NumGenPartners, LimitedPartnerships.NumLimPartners, URI,
+      PreviousName_1.CONDATE, PreviousName_1.CompanyName, PreviousName_2.CONDATE,
+      PreviousName_2.CompanyName, PreviousName_3.CONDATE, PreviousName_3.CompanyName,
+      PreviousName_4.CONDATE, PreviousName_4.CompanyName, PreviousName_5.CONDATE,
+      PreviousName_5.CompanyName, PreviousName_6.CONDATE, PreviousName_6.CompanyName,
+      PreviousName_7.CONDATE, PreviousName_7.CompanyName, PreviousName_8.CONDATE,
+      PreviousName_8.CompanyName, PreviousName_9.CONDATE, PreviousName_9.CompanyName,
+      PreviousName_10.CONDATE, PreviousName_10.CompanyName, ConfStmtNextDueDate,
+      ConfStmtLastMadeUpDate]
+
+  IE:
+    country: IRELAND
+    register: Companies Registration Office
+    id_column: company_num
+    format: csv
+    delimiter: ","
+    encoding: UTF-8
+    grain: LEGAL_ENTITY
+    cadence: monthly
+    drift_policy: strict
+    pii_columns: []
+    columns: [company_num, company_name, company_status_code, company_status, company_type_code,
+      company_type, company_reg_date, last_ar_date, company_address_1, company_address_2,
+      company_address_3, company_address_4, comp_dissolved_date, nard, last_accounts_date,
+      company_status_date, nace_v2_code, eircode, company_name_eff_date, company_type_eff_date,
+      princ_object_code]
+
+  EE:
+    country: ESTONIA
+    register: RIK e-Business Register (basic data)
+    id_column: ariregistri_kood
+    format: csv
+    delimiter: ";"
+    encoding: UTF-8
+    grain: LEGAL_ENTITY
+    cadence: daily
+    drift_policy: strict
+    pii_columns: []
+    columns: [nimi, ariregistri_kood, ettevotja_oiguslik_vorm, ettevotja_oigusliku_vormi_alaliik,
+      kmkr_nr, ettevotja_staatus, ettevotja_staatus_tekstina, ettevotja_esmakande_kpv,
+      ettevotja_aadress, asukoht_ettevotja_aadressis, asukoha_ehak_kood, asukoha_ehak_tekstina,
+      indeks_ettevotja_aadressis, ads_adr_id, ads_ads_oid, ads_normaliseeritud_taisaadress,
+      teabesysteemi_link]
+
+  ES:
+    country: SPAIN
+    register: Navarra establishments (regional open data, yearly panel)
+    id_column: dnici
+    format: csv
+    delimiter: ","
+    encoding: UTF-8
+    grain: ESTABLISHMENT
+    cadence: yearly
+    drift_policy: strict
+    pii_columns: []
+    columns: [_id, anio, dnici, nombre, msiglat, callet, portalt, restot, codpost, cod_cmun,
+      nombre_cmun, codigo_entidad, denominacion_entidad, tramo_asal, cnae09_ppal,
+      cnae09_descrip_ppal, cnae09_local, cnae09_descrip_local]
+
+  "NO":  # quoted: bare NO is a YAML boolean
+    country: NORWAY
+    register: Bronnoysund Enhetsregisteret
+    # The register publishes one 2.8 GB pretty-printed JSON array. The ingestion Lambda
+    # rewrites it as newline-delimited JSON parts so Spark can split the work.
+    id_column: organisasjonsnummer
+    format: ndjson
+    encoding: UTF-8
+    grain: LEGAL_ENTITY
+    cadence: daily
+    drift_policy: additive
+    # Contact details are not needed for a location/industry map: never stored.
+    pii_columns: [epostadresse, telefon, mobil, hjemmeside]
+    # JSON keys are optional per record, so drift is checked on the union of keys seen.
+    required_columns: [organisasjonsnummer, navn, organisasjonsform]
+    columns: [organisasjonsnummer, navn, organisasjonsform, historiskeNavn, postadresse,
+      registreringsdatoEnhetsregisteret, registrertIMvaregisteret, naeringskode1, naeringskode2,
+      naeringskode3, hjelpeenhetskode, antallAnsatte, harRegistrertAntallAnsatte,
+      registreringsdatoAntallAnsatteEnhetsregisteret, registreringsdatoAntallAnsatteNAVAaregisteret,
+      registreringsdatoMerverdiavgiftsregisteret,
+      registreringsdatoMerverdiavgiftsregisteretEnhetsregisteret,
+      registreringsdatoFrivilligMerverdiavgiftsregisteret, forretningsadresse, stiftelsesdato,
+      institusjonellSektorkode, registrertIForetaksregisteret, registreringsdatoForetaksregisteret,
+      registrertIStiftelsesregisteret, registrertIFrivillighetsregisteret,
+      registreringsdatoFrivillighetsregisteret, registrertIPartiregisteret,
+      registreringsdatoPartiregisteret, sisteInnsendteAarsregnskap, konkurs, konkursdato,
+      underAvvikling, underAvviklingDato, underTvangsavviklingEllerTvangsopplosning,
+      underRekonstruksjonsforhandlingDato, tvangsavvikletPgaManglendeSlettingDato,
+      tvangsopplostPgaManglendeDagligLederDato, tvangsopplostPgaManglendeRevisorDato,
+      tvangsopplostPgaManglendeRegnskapDato, tvangsopplostPgaMangelfulltStyreDato,
+      fravalgRevisjonDato, fravalgRevisjonBeslutningsDato, maalform, vedtektsdato,
+      vedtektsfestetFormaal, aktivitet, overordnetEnhet, slettedato, erIKonsern, kapital,
+      paategninger, frivilligMvaRegistrertBeskrivelser, foretaksformIHjemlandet,
+      underlagtLovgivningLand, underlagtLovgivningLandKode, registreringsnummerIHjemlandet,
+      utenlandskRegisterNavn, utenlandskRegisterAdresse, links, respons_klasse,
+      epostadresse, telefon, mobil, hjemmeside]

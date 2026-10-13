@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Ingestion side of the EU company registry lakehouse: a scheduled downloader per register and
+  the gradual (free-provider) geocoding worker. The bucket name is a deploy-time parameter:
+    sam build -t infra/template.yaml && sam deploy --guided --parameter-overrides BucketName=<bucket>
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Existing S3 bucket that holds the lakehouse landing zone
+  LandingPrefix:
+    Type: String
+    Default: company_records/lakehouse/landing
+  AlertEmail:
+    Type: String
+    Description: Receives Lambda error alarms
+
+Globals:
+  Function:
+    Runtime: python3.12
+    CodeUri: ../src
+    Architectures: [arm64]
+    Environment:
+      Variables:
+        TARGET_S3_BUCKET: !Ref BucketName
+        LANDING_PREFIX: !Ref LandingPrefix
+
+Resources:
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref AlertEmail
+
+  DownloaderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: registry_lakehouse.ingestion.downloader.lambda_handler
+      Description: Downloads one register export into the date-partitioned landing zone
+      Timeout: 900
+      MemorySize: 3008
+      EphemeralStorage:
+        Size: 10240  # the zipped French file is ~2.5 GB
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref BucketName
+      Events:
+        France:          # INSEE publishes on the 1st of each month
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 6 2 * ? *)
+            Input: '{"country":"FRANCE","target_filename":"StockEtablissement_utf8.csv","resolver":"datagouv","dataset":"base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret","resource_title_contains":"Fichier StockEtablissement - ","resource_format":"zip"}'
+        UnitedKingdom:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 6 3 * ? *)
+            Input: '{"country":"UNITED_KINGDOM","target_filename":"BasicCompanyDataAsOneFile.csv","resolver":"template","url_template":"https://download.companieshouse.gov.uk/BasicCompanyDataAsOneFile-{first_of_month}.zip"}'
+        Ireland:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 6 3 * ? *)
+            Input: '{"country":"IRELAND","target_filename":"companies.csv","resolver":"ckan","api_base":"https://opendata.cro.ie","dataset":"companies","resource_format":"CSV"}'
+        Estonia:         # published daily; weekly is enough for a map
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 5 ? * SUN *)
+            Input: '{"country":"ESTONIA","target_filename":"ettevotja_rekvisiidid__lihtandmed.csv","resolver":"static","url":"https://avaandmed.ariregister.rik.ee/sites/default/files/avaandmed/ettevotja_rekvisiidid__lihtandmed.csv.zip"}'
+        Norway:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 5 ? * SUN *)
+            Input: '{"country":"NORWAY","target_filename":"enheter.json.gz","resolver":"static","url":"https://data.brreg.no/enhetsregisteret/api/enheter/lastned/json","transform":"json_array_to_ndjson"}'
+        Spain:           # yearly panel; unchanged files are skipped by checksum
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 6 5 * ? *)
+            Input: '{"country":"SPAIN","target_filename":"navarra_establecimientos.csv","resolver":"static","url":"https://datosabiertos.navarra.es/datastore/dump/0c4b4747-026f-479a-9966-6568a88957f5"}'
+
+  GeocodeWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: registry_lakehouse.ingestion.geocode_worker.lambda_handler
+      Description: Geocodes one exported batch with free government geocoders / Nominatim
+      Timeout: 900
+      MemorySize: 256
+      ReservedConcurrentExecutions: 1  # one worker at a time: respects provider rate limits
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref BucketName
+  # The request files are written by the Databricks job. Configure the bucket notification
+  # (prefix <LandingPrefix>/_GEOCODE/requests/, suffix .json) to invoke GeocodeWorkerFunction.
+  # It is not declared here because SAM can only attach S3 events to buckets it creates.
+
+  DownloaderErrors:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: A register download failed
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions: [ { Name: FunctionName, Value: !Ref DownloaderFunction } ]
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [ !Ref AlertTopic ]
+
+Outputs:
+  DownloaderFunctionArn:
+    Value: !GetAtt DownloaderFunction.Arn
+  GeocodeWorkerFunctionArn:
+    Value: !GetAtt GeocodeWorkerFunction.Arn

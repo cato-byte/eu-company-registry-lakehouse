@@ -1,0 +1,173 @@
+EE	75107	Liiva	Harju maakond	01	Kose vald	0338	Liiva küla	4352	59.1658	25.1592	6
+EE	75304	Järveküla	Harju maakond	01	Rae vald	0653	Järveküla	2353	59.3829	24.8069	6
+EE	75307	Kurna	Harju maakond	01	Rae vald	0653	Kurna küla	3687	59.3422	24.8441	6
+EE	76401	Laagri	Harju maakond	01	Saue vald	0726	Laagri alevik	4014	59.3504	24.6213	6
+EE	10114	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4308	24.7545	6
+EE	10116	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4305	24.7501	6
+EE	10143	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4322	24.7519	6
+EE	10315	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4477	24.6894	6
+EE	10916	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3592	24.6311	6
+EE	11415	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4413	24.8076	6
+EE	11415	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4306	24.8287	6
+EE	12014	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4585	24.874	6
+EE	12918	Mustamäe	Harju maakond	01	Tallinn	0784	Mustamäe linnaosa	0482	59.4107	24.6889	6
+EE	13516	Haabersti	Harju maakond	01	Tallinn	0784	Haabersti linnaosa	0176	59.4381	24.5992	6
+EE	13816	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4434	24.8958	6
+EE	72506	Prandi	Järva maakond	04	Järva vald	0255	Prandi küla	6349	58.8399	25.7056	6
+EE	73403	Kaalepi	Järva maakond	04	Järva vald	0255	Kaalepi küla	2395	59.0892	25.667	6
+EE	72713	Paide	Järva maakond	04	Paide linn	0567	Paide linn	5860	58.8867	25.572	6
+EE	80010	Pärnu	Pärnu maakond	11	Pärnu linn	0624	Pärnu linn	6619	58.388	24.507	6
+EE	79101	Järvakandi	Rapla maakond	13	Kehtna vald	0293	Järvakandi alev	2346	58.7753	24.8127	6
+EE	61313	Rämsi	Tartu maakond	18	Elva vald	0171	Rämsi küla	7208	58.3634	26.3775	6
+EE	61709	Soinaste	Tartu maakond	18	Kambja vald	0283	Soinaste küla	7666	58.3351	26.7048	6
+EE	65002	Tsiistre	Võru maakond	21	Rõuge vald	0698	Tsiistre küla	8360	57.6586	27.1924	6
+EE	75101	Kose	Harju maakond	01	Kose vald	0338	Kose alevik	3460	59.1825	25.1676	6
+EE	11218	Järveküla	Harju maakond	01	Rae vald	0653	Järveküla	2353	59.37	24.7655	6
+EE	75310	Rae	Harju maakond	01	Rae vald	0653	Rae küla	6713	59.3837	24.8614	6
+EE	76405	Saue	Harju maakond	01	Saku vald	0718	Saue küla	2652	59.3043	24.5808	6
+EE	76505	Saue	Harju maakond	01	Saue vald	0726	Saue linn	7453	59.3236	24.5609	6
+EE	76506	Saue	Harju maakond	01	Saue vald	0726	Saue linn	7453	59.3186	24.5482	6
+EE	10001	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.43	24.7945	6
+EE	10111	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4448	24.7498	6
+EE	10111	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4427	24.7557	6
+EE	10112	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4158	24.7955	6
+EE	10112	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4155	24.8128	6
+EE	10113	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4298	24.7675	6
+EE	10115	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4299	24.7725	6
+EE	10115	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4268	24.7811	6
+EE	10117	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4363	24.7605	6
+EE	10118	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4286	24.7503	6
+EE	10119	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4304	24.7428	6
+EE	10120	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4392	24.77	6
+EE	10121	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4314	24.7735	6
+EE	10122	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4274	24.7322	6
+EE	10123	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4383	24.7465	6
+EE	10124	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.436	24.7653	6
+EE	10125	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4362	24.7753	6
+EE	10126	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4354	24.777	6
+EE	10127	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4454	24.803	6
+EE	10128	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4328	24.7718	6
+EE	10129	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4255	24.7351	6
+EE	10130	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4365	24.7406	6
+EE	10131	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4238	24.7391	6
+EE	10132	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4269	24.7656	6
+EE	10133	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.44	24.7461	6
+EE	10133	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4395	24.7361	6
+EE	10134	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4245	24.7483	6
+EE	10135	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4239	24.7499	6
+EE	10136	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.431	24.7282	6
+EE	10137	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4338	24.728	6
+EE	10138	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4244	24.7529	6
+EE	10139	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4226	24.7362	6
+EE	10140	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4363	24.7478	6
+EE	10141	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4312	24.7463	6
+EE	10142	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4309	24.7343	6
+EE	10144	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4281	24.7708	6
+EE	10145	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4323	24.7602	6
+EE	10146	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4361	24.745	6
+EE	10147	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4338	24.7748	6
+EE	10148	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4363	24.7502	6
+EE	10149	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4341	24.7292	6
+EE	10149	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4357	24.7291	6
+EE	10150	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4378	24.7804	6
+EE	10151	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4394	24.7636	6
+EE	10152	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4386	24.7752	6
+EE	10153	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4362	24.7565	6
+EE	10154	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4401	24.7684	6
+EE	10155	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4409	24.7832	6
+EE	10156	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4417	24.7546	6
+EE	10158	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4473	24.7563	6
+EE	10159	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4423	24.7831	6
+EE	10311	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4464	24.6966	6
+EE	10312	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4515	24.6897	6
+EE	10313	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4536	24.6998	6
+EE	10314	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4527	24.6971	6
+EE	10316	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4431	24.6908	6
+EE	10317	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4433	24.7111	6
+EE	10318	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.445	24.705	6
+EE	10319	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4403	24.7172	6
+EE	10320	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4386	24.7132	6
+EE	10321	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4417	24.7025	6
+EE	10323	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4485	24.7017	6
+EE	10411	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4447	24.7289	6
+EE	10412	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4421	24.7487	6
+EE	10412	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4446	24.7267	6
+EE	10413	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4459	24.7313	6
+EE	10414	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4449	24.7389	6
+EE	10415	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4478	24.7394	6
+EE	10416	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4517	24.7139	6
+EE	10611	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4372	24.7209	6
+EE	10612	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4358	24.7217	6
+EE	10614	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4358	24.7077	6
+EE	10617	Haabersti	Harju maakond	01	Tallinn	0784	Haabersti linnaosa	0176	59.4291	24.6917	6
+EE	10617	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4309	24.6929	6
+EE	10618	Haabersti	Harju maakond	01	Tallinn	0784	Haabersti linnaosa	0176	59.4252	24.6748	6
+EE	10621	Mustamäe	Harju maakond	01	Tallinn	0784	Mustamäe linnaosa	0482	59.4151	24.6831	6
+EE	10621	Haabersti	Harju maakond	01	Tallinn	0784	Haabersti linnaosa	0176	59.418	24.6696	6
+EE	10911	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3681	24.6597	6
+EE	10912	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3686	24.6266	6
+EE	10913	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3734	24.6336	6
+EE	10914	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.375	24.6418	6
+EE	10915	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3603	24.6215	6
+EE	10917	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3664	24.6424	6
+EE	10918	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3736	24.6648	6
+EE	10919	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3774	24.6508	6
+EE	10920	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.371	24.6593	6
+EE	10921	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3673	24.6507	6
+EE	10922	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3814	24.638	6
+EE	11101	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4193	24.8035	6
+EE	11211	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3768	24.7059	6
+EE	11212	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3795	24.7105	6
+EE	11213	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3778	24.7164	6
+EE	11214	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3895	24.7241	6
+EE	11215	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3738	24.7159	6
+EE	11216	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3732	24.7209	6
+EE	11217	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3753	24.7427	6
+EE	11218	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3653	24.7613	6
+EE	11312	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4168	24.7396	6
+EE	11313	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4135	24.7433	6
+EE	11314	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4111	24.7391	6
+EE	11316	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3933	24.7107	6
+EE	11316	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4129	24.7356	6
+EE	11317	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4087	24.7351	6
+EE	11318	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4045	24.7327	6
+EE	11411	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4269	24.7948	6
+EE	11412	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4277	24.7886	6
+EE	11413	Kesklinna	Harju maakond	01	Tallinn	0784	Kesklinna linnaosa	0298	59.4371	24.799	6
+EE	11413	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4343	24.7968	6
+EE	11414	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4307	24.8055	6
+EE	11416	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4306	24.7915	6
+EE	11417	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.4337	24.8082	6
+EE	11611	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3875	24.6704	6
+EE	11612	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3847	24.6681	6
+EE	11613	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3728	24.6715	6
+EE	11614	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.389	24.693	6
+EE	11615	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3849	24.6947	6
+EE	11616	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3799	24.6905	6
+EE	11617	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3791	24.688	6
+EE	11618	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3792	24.6843	6
+EE	11619	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3797	24.678	6
+EE	11620	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3783	24.6744	6
+EE	11621	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3836	24.6905	6
+EE	11622	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3868	24.6988	6
+EE	11623	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3875	24.7085	6
+EE	11624	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3909	24.7148	6
+EE	11625	Mustamäe	Harju maakond	01	Tallinn	0784	Mustamäe linnaosa	0482	59.3946	24.6425	6
+EE	11625	Haabersti	Harju maakond	01	Tallinn	0784	Haabersti linnaosa	0176	59.3942	24.6129	6
+EE	11625	Nõmme	Harju maakond	01	Tallinn	0784	Nõmme linnaosa	0524	59.3864	24.6379	6
+EE	11711	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4574	24.6836	6
+EE	11712	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4604	24.6706	6
+EE	11713	Põhja-Tallinna	Harju maakond	01	Tallinn	0784	Põhja-Tallinna linnaosa	0614	59.4539	24.6777	6
+EE	11911	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4697	24.8339	6
+EE	11912	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4848	24.8546	6
+EE	11913	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4815	24.8805	6
+EE	11914	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4834	24.8867	6
+EE	12011	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4558	24.8247	6
+EE	12012	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4559	24.8423	6
+EE	12013	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4563	24.8552	6
+EE	12015	Lasnamäe	Harju maakond	01	Tallinn	0784	Lasnamäe linnaosa	0387	59.454	24.8604	6
+EE	12015	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4603	24.8811	6
+EE	12111	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4949	24.8336	6
+EE	12112	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.491	24.8409	6
+EE	12113	Pirita	Harju maakond	01	Tallinn	0784	Pirita linnaosa	0596	59.4912	24.8521	6
+EE	12611	Mustamäe	Harju maakond	01	Tallinn	0784	Mustamäe linnaosa	0482	59.3972	24.6664	6

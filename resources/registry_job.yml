@@ -1,0 +1,139 @@
+# The pipeline as one Lakeflow (Databricks) job on serverless compute.
+#
+#   bronze (for each country, 3 in parallel) -> silver (for each country) --+
+#   reference (gazetteer) ---------------------------------------------------+-> geo -> gold -> publish
+#                                                                                         \-> cost_report
+#
+# Guard rails:
+#   * timeout_seconds per task and per job: a stuck task is killed, not billed for hours
+#   * health rule + on_duration_warning_threshold_exceeded: alert well before the timeout
+#   * max_concurrent_runs: 1, so a slow run never overlaps the next scheduled one
+#   * performance_target STANDARD: serverless cost-optimised mode (slower start, cheaper)
+#   * retries only where they help (transient I/O), never on data-quality failures
+
+resources:
+  jobs:
+    registry_lakehouse:
+      name: registry-lakehouse-${bundle.target}
+      description: Pan-European company registry lakehouse (six national registers -> map-ready gold tables)
+      tags:
+        project: eu-company-registry-lakehouse
+        layer: batch
+
+      schedule:
+        quartz_cron_expression: "0 0 4 ? * MON"  # weekly, Monday 04:00. Registers publish monthly or daily
+        timezone_id: Europe/Paris
+        pause_status: ${var.pause_status}
+      # Event-driven alternative: run only when the ingestion Lambda lands a new snapshot.
+      # trigger:
+      #   pause_status: ${var.pause_status}
+      #   file_arrival:
+      #     url: ${var.landing_root}/
+
+      max_concurrent_runs: 1
+      timeout_seconds: 10800
+      performance_target: STANDARD
+      health:
+        rules:
+          - metric: RUN_DURATION_SECONDS
+            op: GREATER_THAN
+            value: 5400
+      email_notifications:
+        on_failure: [ "${var.alert_email}" ]
+        on_duration_warning_threshold_exceeded: [ "${var.alert_email}" ]
+      notification_settings:
+        no_alert_for_skipped_runs: true
+        no_alert_for_canceled_runs: false
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "3"
+            dependencies:
+              - ../dist/*.whl
+
+      parameters:
+        - name: snapshot_date
+          default: ""
+
+      tasks:
+        - task_key: bronze
+          for_each_task:
+            inputs: '["FR","GB","IE","EE","ES","NO"]'
+            concurrency: 3
+            task:
+              task_key: bronze_country
+              environment_key: default
+              timeout_seconds: 3600
+              max_retries: 1
+              min_retry_interval_millis: 120000
+              python_wheel_task:
+                package_name: registry_lakehouse
+                entry_point: registry-lakehouse
+                parameters: [ "bronze", "--country", "{{input}}", "--catalog", "${var.catalog}",
+                              "--landing-root", "${var.landing_root}", "--run-id", "{{job.run_id}}",
+                              "--secret-scope", "${var.secret_scope}" ]
+
+        - task_key: silver
+          depends_on: [ { task_key: bronze } ]
+          for_each_task:
+            inputs: '["FR","GB","IE","EE","ES","NO"]'
+            concurrency: 3
+            task:
+              task_key: silver_country
+              environment_key: default
+              timeout_seconds: 3600
+              max_retries: 0  # a data-quality failure must stop the run, not be retried
+              python_wheel_task:
+                package_name: registry_lakehouse
+                entry_point: registry-lakehouse
+                parameters: [ "silver", "--country", "{{input}}", "--catalog", "${var.catalog}",
+                              "--landing-root", "${var.landing_root}", "--run-id", "{{job.run_id}}",
+                              "--secret-scope", "${var.secret_scope}" ]
+
+        - task_key: reference
+          environment_key: default
+          timeout_seconds: 900
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "reference", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}" ]
+
+        - task_key: geo
+          depends_on: [ { task_key: silver }, { task_key: reference } ]
+          environment_key: default
+          timeout_seconds: 1800
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "geo", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}",
+                          "--run-id", "{{job.run_id}}", "--geocode-batch", "700" ]
+
+        - task_key: gold
+          depends_on: [ { task_key: geo } ]
+          environment_key: default
+          timeout_seconds: 1800
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "gold", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}" ]
+
+        - task_key: publish
+          depends_on: [ { task_key: gold } ]
+          environment_key: default
+          timeout_seconds: 600
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "publish", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}",
+                          "--publish-root", "${var.publish_root}", "--run-id", "{{job.run_id}}" ]
+
+        - task_key: cost_report
+          depends_on: [ { task_key: publish } ]
+          run_if: ALL_DONE  # cost is worth recording for failed runs too
+          environment_key: default
+          timeout_seconds: 600
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "cost-report", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}" ]

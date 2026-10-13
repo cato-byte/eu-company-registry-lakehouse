@@ -1,0 +1,45 @@
+_id,anio,dnici,nombre,msiglat,callet,portalt,restot,codpost,cod_cmun,nombre_cmun,codigo_entidad,denominacion_entidad,tramo_asal,cnae09_ppal,cnae09_descrip_ppal,cnae09_local,cnae09_descrip_local
+1,2021,B46279676,SILVERLINE SOLUTIONS,Carretera,SAN JUAN KM 1,0.0,,31410,261,Yesa,,,De 10 a 19,322.0,,322.0,
+2,2021,B58519404,TIDAL SOLUTIONS SL,Carretera,SAN JUAN KM1,0.0,,31410,261,Yesa,,,De 10 a 19,322.0,,322.0,
+3,2021,E14664736,SILVERLINE SEAFOOD,Calle,LAS HERAS,3.0,,31513,032,Arguedas,,,Ninguna,3518.0,,3518.0,
+4,2021,B16546740,EVERGREEN HOLDINGS,Plaza,DEL PUERTO,0.0,,31320,169,Milagro,,,Ninguna,3518.0,,3518.0,
+5,2021,B5622395F,SILVERLINE DESIGN SL,Calle,LAS HERAS,1.0,1º A,31192,023,Aranguren,,,De 100 a 249,8121.0,,8121.0,
+6,2021,B42181002,SILVERLINE TECH,Polígono,DEL RIO,1.0,,31486,086,Valle de Egüés / Eguesibar,,,De 100 a 249,2932.0,,2932.0,
+7,2021,089413300,"EXAMPLE,SAMPLE,ROBIN",Calle,DE LAS HERAS,7.0,-PBJ-,0,903,Berriozar,,,De 1 a 2,5630.0,,5630.0,
+8,2021,B00590771,TIDAL PROPERTIES SL,Calle,SAN JUAN,23.0,,31151,183,Obanos,,,Ninguna,4391.0,,4391.0,
+9,2021,F7064216E,OAKFIELD BUILDERS,Avenida,DE SAN JUAN,18.0,2ºC,0,201,Pamplona / Iruña,,,De 1 a 2,4642.0,,4642.0,
+10,2021,B63236952,TIDAL PROPERTIES,Calle,MAYOR,12.0,2ºC,31007,201,Pamplona / Iruña,,,De 1 a 2,6920.0,,6920.0,
+11,2021,X8999309B,"DUMMY,EXAMPLE,ROBIN",Calle,DEL PUERTO,22.0,,31591,077,Corella,,,Ninguna,4724.0,,4724.0,
+12,2021,E55200646,MERIDIAN BUILDERS,Calle,MAYOR,0.0,BAJO,31193,136,Juslapeña / Txulapain,,,Ninguna,1622.0,,1622.0,
+13,2021,G03180290,ALPINE MARINE,Paseo,DEL PUERTO,1.0,1º A,31240,041,Ayegui / Aiegi,,,De 3 a 5,9499.0,,9499.0,
+14,2021,066190857,"DUMMY,SYNTH,TEO",Calle,DE MAYOR,10.0,1º A,0,201,Pamplona / Iruña,,,De 1 a 2,9602.0,,9602.0,
+15,2021,041841085,"FAUX,SYNTH,SAM",Calle,DEL RIO,6.0,,31420,243,Urroz-Villa,,,De 1 a 2,8690.0,,8690.0,
+16,2021,010588520,"SAMPLE,FAUX,ANDREA",Calle,LAS HERAS,24.0,,31699,098,Esteribar,,,Ninguna,7022.0,,7022.0,
+17,2021,014272321,"EXAMPLE,TESTER,ROBIN",Avenida,LAS HERAS,39.0,BAJO,0,201,Pamplona / Iruña,,,De 1 a 2,6910.0,,6910.0,
+18,2021,094572018,"SYNTH,TESTER,MAR",Parque,DE DEL RIO,21.0,BAJO,31014,201,Pamplona / Iruña,,,Ninguna,7490.0,,7490.0,
+19,2021,040402767,"DUMMY,FAUX,RENE",Calle,MAYOR,2.0,BAJO,31500,232,Tudela,,,Ninguna,4332.0,,4332.0,
+20,2021,019058337,"EXAMPLE,FICTION,ELI",Calle,MAYOR,17.0,-PBJ-,31003,201,Pamplona / Iruña,,,Ninguna,8551.0,,8551.0,
+21,2021,089190458,"FAUX,SYNTH,MAR",Calle,DE MAYOR,5.0,-PBJ-,0,167,Mendigorria,,,Ninguna,9602.0,,9602.0,
+22,2021,038577696,"DEMO,FAUX,KIM",Calle,SAN JUAN,23.0,BJ,31800,010,Altsasu / Alsasua,,,Ninguna,4771.0,,4771.0,
+23,2022,B46279676,SILVERLINE SOLUTIONS,Carretera,SAN JUAN KM,0.0,,31410,261,Yesa,4,Yesa,De 10 a 19,322,Fabricación de instrumentos musicales,322,Fabricación de instrumentos musicales
+24,2022,B58519404,TIDAL SOLUTIONS SL,Carretera,DE SAN JUAN,0.0,,31410,261,Yesa,4,Yesa,De 20 a 49,322,Fabricación de instrumentos musicales,322,Fabricación de instrumentos musicales
+25,2022,E14664736,SILVERLINE SEAFOOD,Calle,LAS HERAS,3.0,,31513,032,Arguedas,1,Arguedas,Ninguna,3518,Producción de energía eléctrica de origen eólico,3518,Producción de energía eléctrica de origen eólico
+26,2022,B16546740,EVERGREEN HOLDINGS,Plaza,DEL PUERTO,0.0,,31320,169,Milagro,3,Milagro,Ninguna,3518,Producción de energía eléctrica de origen eólico,3518,Producción de energía eléctrica de origen eólico
+27,2022,B5622395F,SILVERLINE DESIGN SL,Calle,LAS HERAS,1.0,1Âº A,31192,023,Aranguren,10,Mutilva / Mutiloa,De 100 a 249,8121,Limpieza general de edificios,8121,Limpieza general de edificios
+28,2022,B42181002,SILVERLINE TECH,PolÃ­gono,DEL RIO,1.0,,31486,086,Valle de Egüés / Eguesibar,6,Egüés,De 100 a 249,2932,"Fabricación de otros componentes, piezas y accesorios para vehículos de motor",2932,"Fabricación de otros componentes, piezas y accesorios para vehículos de motor"
+29,2022,089413300,"EXAMPLE,SAMPLE,ROBIN",Calle,DE LAS HERAS,7.0,-PBJ-,0,903,Berriozar,1,Berriozar,De 1 a 2,5630,Establecimientos de bebidas,5630,Establecimientos de bebidas
+30,2022,B00590771,TIDAL PROPERTIES SL,Calle,SAN JUAN,23.0,,31151,183,Obanos,1,Obanos,Ninguna,4391,Construcción de cubiertas,4391,Construcción de cubiertas
+31,2022,F7064216E,OAKFIELD BUILDERS,Avenida,DE SAN JUAN,18.0,2ºC,0,201,Pamplona / Iruña,2,Pamplona / Iruña,Ninguna,4642,Comercio al por mayor de prendas de vestir y calzado,4642,Comercio al por mayor de prendas de vestir y calzado
+32,2022,B63236952,TIDAL PROPERTIES,Calle,MAYOR,12.0,2ºC,31007,201,Pamplona / Iruña,2,Pamplona / Iruña,De 1 a 2,6920,"Actividades de contabilidad, teneduría de libros, auditoría y asesoría fiscal",6920,"Actividades de contabilidad, teneduría de libros, auditoría y asesoría fiscal"
+33,2022,X8999309B,"DUMMY,EXAMPLE,ROBIN",Calle,DEL PUERTO,22.0,,31591,077,Corella,1,Corella,Ninguna,4724,"Comercio al por menor de pan y productos de panadería, confitería y pastelería en establecimientos especializados",4724,"Comercio al por menor de pan y productos de panadería, confitería y pastelería en establecimientos especializados"
+34,2022,E55200646,MERIDIAN BUILDERS,Calle,MAYOR,0.0,BAJO,31193,136,Juslapeña / Txulapain,9,Ollacarizqueta / Ollakarizketa,Ninguna,1622,Fabricación de suelos de madera ensamblados,1622,Fabricación de suelos de madera ensamblados
+35,2022,G03180290,ALPINE MARINE,Paseo,DEL PUERTO,1.0,1Âº A,31240,041,Ayegui / Aiegi,1,Ayegui / Aiegi,De 3 a 5,9499,Otras actividades asociativas n.c.o.p.,9499,Otras actividades asociativas n.c.o.p.
+36,2022,066190857,"DUMMY,SYNTH,TEO",Calle,DE MAYOR,10.0,1º A,0,201,Pamplona / Iruña,2,Pamplona / Iruña,De 1 a 2,9602,Peluquería y otros tratamientos de belleza,9602,Peluquería y otros tratamientos de belleza
+37,2022,041841085,"FAUX,SYNTH,SAM",Calle,DEL RIO,6.0,,31420,243,Urroz-Villa,1,Urroz-Villa,De 1 a 2,8690,Otras actividades sanitarias,8690,Otras actividades sanitarias
+38,2022,010588520,"SAMPLE,FAUX,ANDREA",Calle,LAS HERAS,24.0,,31699,098,Esteribar,18,Olloki,Ninguna,7022,Otras actividades de consultoría de gestión empresarial,7022,Otras actividades de consultoría de gestión empresarial
+39,2022,014272321,"EXAMPLE,TESTER,ROBIN",Avenida,LAS HERAS,39.0,BAJO,0,201,Pamplona / Iruña,2,Pamplona / Iruña,Ninguna,6910,Actividades jurídicas,6910,Actividades jurídicas
+40,2022,094572018,"SYNTH,TESTER,MAR",Parque,DE DEL RIO,21.0,BAJO,31014,201,Pamplona / Iruña,2,Pamplona / Iruña,Ninguna,7490,"Otras actividades profesionales, científicas y técnicas n.c.o.p.",7490,"Otras actividades profesionales, científicas y técnicas n.c.o.p."
+41,2022,040402767,"DUMMY,FAUX,RENE",Calle,MAYOR,2.0,BAJO,31500,232,Tudela,1,Tudela,De 1 a 2,4332,Instalación de carpintería,4332,Instalación de carpintería
+42,2022,076636794,"SYNTH,MOCK,MAR",Avenida,DEL PUERTO,6.0,1º A,0,201,Pamplona / Iruña,2,Pamplona / Iruña,Ninguna,7320,Estudio de mercado y realización de encuestas de opinión pública,7320,Estudio de mercado y realización de encuestas de opinión pública
+43,2022,053355285,"DEMO,MOCK,ILO",,DE DEL RIO,75.0,,28008,079,Desojo,1,Desojo,De 3 a 5,9602,Peluquería y otros tratamientos de belleza,9602,Peluquería y otros tratamientos de belleza
+44,2022,080648564,"TESTER,SAMPLE,ANDREA",,DEL RIO,12.0,,28012,079,Desojo,1,Desojo,De 6 a 9,4773,Comercio al por menor de productos farmacéuticos en establecimientos especializados,4773,Comercio al por menor de productos farmacéuticos en establecimientos especializados

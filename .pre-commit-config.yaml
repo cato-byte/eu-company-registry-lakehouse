@@ -1,0 +1,33 @@
+# pre-commit install   (runs on every commit; CI runs the same hooks)
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks  # secrets: keys, tokens, credentials
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=500]  # real register extracts are MBs, fixtures are KBs
+      - id: check-yaml
+        args: [--unsafe]  # SAM uses custom tags (!Ref)
+      - id: detect-private-key
+
+  - repo: local
+    hooks:
+      - id: spark-lint
+        name: PySpark anti-patterns (serverless)
+        entry: python tools/spark_lint.py
+        language: system
+        files: ^src/.*\.py$
+      - id: no-infrastructure-identifiers
+        name: no bucket names / account ids / real data
+        entry: python tools/check_sensitive.py
+        language: system
+        pass_filenames: true

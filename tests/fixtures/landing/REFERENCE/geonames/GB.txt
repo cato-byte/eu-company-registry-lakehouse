@@ -1,0 +1,178 @@
+GB	B6 7EE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.5107	-1.8767	6
+GB	HU5 2ER	Kingston upon Hull	England	ENG	East Riding of Yorkshire		City of Kingston upon Hull (B)	E06000010	53.7651	-0.3589	6
+GB	LS11 5QR	Leeds	England	ENG	West Yorkshire		Leeds District (B)	E08000035	53.7916	-1.5478	6
+GB	MK44 3QL	Willington	England	ENG	Bedfordshire		Bedford (B)	E06000055	52.1351	-0.3737	6
+GB	NG5 1AP	Nottingham	England	ENG	Nottinghamshire		City of Nottingham (B)	E06000018	52.9706	-1.1558	6
+GB	S75 4JS	Silkstone	England	ENG	South Yorkshire			E08000038	53.5481	-1.5657	6
+GB	TQ5 8LZ	Brixham	England	ENG	Devon		Torbay (B)	E06000027	50.3944	-3.5171	6
+GB	CB4 0FW	Cambridge	England	ENG	Cambridgeshire	E10000003	South Cambridgeshire District	E07000012	52.231	0.1454	6
+GB	GU14 8AG	Farnborough	England	ENG	Hampshire	E10000014	Rushmoor District	E07000092	51.3013	-0.7434	6
+GB	E9 5EB	London	England	ENG	Greater London	GLA	Hackney	E09000012	51.5427	-0.0395	6
+GB	EC2A 3NH	London	England	ENG	Greater London	GLA	Hackney	E09000012	51.5234	-0.0801	6
+GB	HA0 4AF	London	England	ENG	Greater London	GLA	Brent	E09000005	51.5514	-0.2964	6
+GB	IG1 2ZS	London	England	ENG	Greater London	GLA	Redbridge	E09000026	51.5573	0.0673	6
+GB	N20 0RA	London	England	ENG	Greater London	GLA	Barnet	E09000003	51.6269	-0.175	6
+GB	N3 2LJ	London	England	ENG	Greater London	GLA	Barnet	E09000003	51.6008	-0.1941	6
+GB	RM3 0BP	Harold Wood	England	ENG	Greater London	GLA	Havering	E09000016	51.5937	0.2336	6
+GB	SW19 3NW	London	England	ENG	Greater London	GLA	Merton	E09000024	51.4125	-0.2074	6
+GB	WC2B 6AH	London	England	ENG	Greater London	GLA	Camden	E09000007	51.517	-0.1195	6
+GB	WC2H 9JQ	London	England	ENG	Greater London	GLA	Camden	E09000007	51.5149	-0.1236	6
+GB	WC2N 5NT	London	England	ENG	Greater London	GLA	City of Westminster	E09000033	51.5073	-0.1242	6
+GB	DL7 9PG	Swainby with Allerthorpe	England	ENG	North Yorkshire	J7	Hambleton District	E06000065	54.2765	-1.4935	6
+GB	JE4 0WH	Jersey		L93000001		L99999999		L99999999	49.2167	-2.1167	6
+GB	BT3 9DE	Belfast	Northern Ireland	NIR		N99999999		N09000003	54.6024	-5.9078	6
+GB	IV26 2YR	Wester Ross, Strathpeffer and Lochalsh Ward	Scotland	SCT	Ross and Cromarty	S12000017	Highland	S12000017	58.0562	-5.4149	6
+GB	ZE2 9JD	Shetland South Ward	Scotland	SCT	Shetland	S12000027	Shetland Islands	S12000027	59.9125	-1.3274	6
+GB	AB43 7AN	Fraserburgh and District Ward	Scotland	SCT	Aberdeenshire	S12000034	Aberdeenshire	S12000034	57.6513	-2.0507	6
+GB	AB43 9RS	Fraserburgh	Scotland	SCT	Aberdeenshire	S12000034	Aberdeenshire	S12000034	57.6957	-2.0181	6
+GB	PA5 9BS	Elderslie	Scotland	SCT	Renfrewshire	S12000038	Renfrewshire	S12000038	55.8282	-4.4875	6
+GB	B10 0AB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4706	-1.875	6
+GB	B10 0AE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4661	-1.8637	6
+GB	B10 0AF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.469	-1.859	6
+GB	B10 0AL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4697	-1.8682	6
+GB	B10 0AR	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4654	-1.8604	6
+GB	B10 0AU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4657	-1.8614	6
+GB	B10 0AX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4675	-1.8645	6
+GB	B10 0BA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4681	-1.8667	6
+GB	B10 0BB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.469	-1.8689	6
+GB	B10 0BD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.471	-1.8716	6
+GB	B10 0BE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4694	-1.8688	6
+GB	B10 0BG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4731	-1.8706	6
+GB	B10 0BH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4725	-1.8707	6
+GB	B10 0BJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.472	-1.8707	6
+GB	B10 0BL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4726	-1.8689	6
+GB	B10 0BN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4712	-1.8709	6
+GB	B10 0BP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4701	-1.8696	6
+GB	B10 0BS	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4671	-1.8623	6
+GB	B10 0BT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.47	-1.8721	6
+GB	B10 0BU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.466	-1.86	6
+GB	B10 0BW	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.47	-1.8721	6
+GB	B10 0BX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.466	-1.8614	6
+GB	B10 0BY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4663	-1.8609	6
+GB	B10 0BZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4663	-1.8597	6
+GB	B10 0DB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4664	-1.8619	6
+GB	B10 0DE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4684	-1.8664	6
+GB	B10 0DF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4666	-1.8625	6
+GB	B10 0DG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4676	-1.863	6
+GB	B10 0DP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4662	-1.859	6
+GB	B10 0DX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4659	-1.8584	6
+GB	B10 0DY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4685	-1.8652	6
+GB	B10 0DZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4688	-1.866	6
+GB	B10 0EA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4724	-1.8704	6
+GB	B10 0EB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4716	-1.8701	6
+GB	B10 0ED	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4672	-1.8566	6
+GB	B10 0EE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.467	-1.8562	6
+GB	B10 0EF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4677	-1.8544	6
+GB	B10 0EG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4653	-1.8576	6
+GB	B10 0EH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.463	-1.8549	6
+GB	B10 0EN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4633	-1.856	6
+GB	B10 0EP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4619	-1.8528	6
+GB	B10 0EQ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4642	-1.8563	6
+GB	B10 0ER	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4613	-1.852	6
+GB	B10 0EU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.461	-1.8499	6
+GB	B10 0EW	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4642	-1.8571	6
+GB	B10 0EX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4631	-1.8527	6
+GB	B10 0HA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4644	-1.8512	6
+GB	B10 0HB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4657	-1.8499	6
+GB	B10 0HH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4638	-1.8424	6
+GB	B10 0HJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4628	-1.8453	6
+GB	B10 0HR	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4611	-1.8482	6
+GB	B10 0HT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4655	-1.8462	6
+GB	B10 0HU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4649	-1.8468	6
+GB	B10 0HX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4631	-1.8488	6
+GB	B10 0HY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4617	-1.8503	6
+GB	B10 0HZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4618	-1.8507	6
+GB	B10 0JA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4631	-1.8493	6
+GB	B10 0JB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4647	-1.8476	6
+GB	B10 0JD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.466	-1.847	6
+GB	B10 0JE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.465	-1.8485	6
+GB	B10 0JF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4635	-1.8501	6
+GB	B10 0JG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4623	-1.8514	6
+GB	B10 0JH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4637	-1.8504	6
+GB	B10 0JJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4651	-1.849	6
+GB	B10 0JL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4663	-1.8484	6
+GB	B10 0JQ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4625	-1.8517	6
+GB	B10 0JS	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4693	-1.8581	6
+GB	B10 0JT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4685	-1.8581	6
+GB	B10 0JU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4674	-1.8585	6
+GB	B10 0JX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4673	-1.8593	6
+GB	B10 0JY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4671	-1.8595	6
+GB	B10 0JZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4674	-1.8598	6
+GB	B10 0LA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4677	-1.8611	6
+GB	B10 0LB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4681	-1.8624	6
+GB	B10 0LD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4669	-1.861	6
+GB	B10 0LE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.467	-1.8601	6
+GB	B10 0LF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4676	-1.8626	6
+GB	B10 0LG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4674	-1.858	6
+GB	B10 0LH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4676	-1.8569	6
+GB	B10 0LJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4685	-1.8572	6
+GB	B10 0LL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4684	-1.8556	6
+GB	B10 0LP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4679	-1.854	6
+GB	B10 0ND	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4688	-1.8633	6
+GB	B10 0NJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4722	-1.8698	6
+GB	B10 0NL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4699	-1.8674	6
+GB	B10 0NN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.469	-1.866	6
+GB	B10 0NP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4692	-1.8625	6
+GB	B10 0NR	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4705	-1.8629	6
+GB	B10 0NY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.472	-1.869	6
+GB	B10 0NZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.472	-1.869	6
+GB	B10 0PB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4715	-1.8655	6
+GB	B10 0PD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.472	-1.8727	6
+GB	B10 0PG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4708	-1.8658	6
+GB	B10 0PJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4722	-1.8682	6
+GB	B10 0PL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4735	-1.8691	6
+GB	B10 0PP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4699	-1.865	6
+GB	B10 0PQ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4697	-1.8666	6
+GB	B10 0PR	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4702	-1.866	6
+GB	B10 0QA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4688	-1.8674	6
+GB	B10 0QH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4711	-1.8637	6
+GB	B10 0QJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4699	-1.864	6
+GB	B10 0QP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4718	-1.8661	6
+GB	B10 0QQ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4693	-1.8653	6
+GB	B10 0QS	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4721	-1.8669	6
+GB	B10 0QT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4735	-1.8684	6
+GB	B10 0RA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4726	-1.8669	6
+GB	B10 0RH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4736	-1.8714	6
+GB	B10 0RJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.473	-1.8729	6
+GB	B10 0RL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4727	-1.8719	6
+GB	B10 0RU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4725	-1.8766	6
+GB	B10 0RX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4728	-1.8767	6
+GB	B10 0SA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4735	-1.8771	6
+GB	B10 0SE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4737	-1.8728	6
+GB	B10 0SH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4717	-1.8644	6
+GB	B10 0SN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4719	-1.8652	6
+GB	B10 0SP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4709	-1.862	6
+GB	B10 0SS	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4697	-1.8617	6
+GB	B10 0ST	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4689	-1.862	6
+GB	B10 0SU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4684	-1.8621	6
+GB	B10 0SW	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4716	-1.8637	6
+GB	B10 0SX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4681	-1.8617	6
+GB	B10 0TA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4684	-1.8608	6
+GB	B10 0TB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4693	-1.8603	6
+GB	B10 0TD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4693	-1.8609	6
+GB	B10 0TG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4694	-1.8614	6
+GB	B10 0TH	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4702	-1.8604	6
+GB	B10 0TJ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4697	-1.8593	6
+GB	B10 0TL	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4684	-1.8602	6
+GB	B10 0TN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4682	-1.8598	6
+GB	B10 0TP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4679	-1.8595	6
+GB	B10 0TT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4667	-1.8485	6
+GB	B10 0TU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4663	-1.8464	6
+GB	B10 0TX	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.466	-1.8452	6
+GB	B10 0TY	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4656	-1.8437	6
+GB	B10 0TZ	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4652	-1.8416	6
+GB	B10 0UA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4647	-1.8396	6
+GB	B10 0UF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4713	-1.862	6
+GB	B10 0UG	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4701	-1.8591	6
+GB	B10 0UN	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4689	-1.856	6
+GB	B10 0UP	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4691	-1.8562	6
+GB	B10 0US	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4682	-1.8534	6
+GB	B10 0UT	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4676	-1.8516	6
+GB	B10 0UU	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4671	-1.8497	6
+GB	B10 0XA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4743	-1.8666	6
+GB	B10 0XE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4722	-1.8642	6
+GB	B10 9AA	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4733	-1.8507	6
+GB	B10 9AB	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4722	-1.8506	6
+GB	B10 9AD	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4713	-1.8512	6
+GB	B10 9AE	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.471	-1.8497	6
+GB	B10 9AF	Birmingham	England	ENG	West Midlands		Birmingham District (B)	E08000025	52.4713	-1.847	6

@@ -1,0 +1,89 @@
+division,section,section_label,division_label
+01,A,"Agriculture, forestry and fishing","Crop and animal production, hunting"
+02,A,"Agriculture, forestry and fishing",Forestry and logging
+03,A,"Agriculture, forestry and fishing",Fishing and aquaculture
+05,B,Mining and quarrying,Mining of coal and lignite
+06,B,Mining and quarrying,Extraction of crude petroleum and natural gas
+07,B,Mining and quarrying,Mining of metal ores
+08,B,Mining and quarrying,Other mining and quarrying
+09,B,Mining and quarrying,Mining support service activities
+10,C,Manufacturing,Manufacture of food products
+11,C,Manufacturing,Manufacture of beverages
+12,C,Manufacturing,Manufacture of tobacco products
+13,C,Manufacturing,Manufacture of textiles
+14,C,Manufacturing,Manufacture of wearing apparel
+15,C,Manufacturing,Manufacture of leather and related products
+16,C,Manufacturing,Manufacture of wood and cork products
+17,C,Manufacturing,Manufacture of paper and paper products
+18,C,Manufacturing,Printing and reproduction of recorded media
+19,C,Manufacturing,Manufacture of coke and refined petroleum products
+20,C,Manufacturing,Manufacture of chemicals and chemical products
+21,C,Manufacturing,Manufacture of pharmaceutical products
+22,C,Manufacturing,Manufacture of rubber and plastic products
+23,C,Manufacturing,Manufacture of other non-metallic mineral products
+24,C,Manufacturing,Manufacture of basic metals
+25,C,Manufacturing,Manufacture of fabricated metal products
+26,C,Manufacturing,"Manufacture of computer, electronic and optical products"
+27,C,Manufacturing,Manufacture of electrical equipment
+28,C,Manufacturing,Manufacture of machinery and equipment n.e.c.
+29,C,Manufacturing,"Manufacture of motor vehicles, trailers and semi-trailers"
+30,C,Manufacturing,Manufacture of other transport equipment
+31,C,Manufacturing,Manufacture of furniture
+32,C,Manufacturing,Other manufacturing
+33,C,Manufacturing,Repair and installation of machinery and equipment
+35,D,"Electricity, gas, steam and air conditioning supply","Electricity, gas, steam and air conditioning supply"
+36,E,Water supply; sewerage and waste management,"Water collection, treatment and supply"
+37,E,Water supply; sewerage and waste management,Sewerage
+38,E,Water supply; sewerage and waste management,"Waste collection, treatment and disposal; materials recovery"
+39,E,Water supply; sewerage and waste management,Remediation and other waste management services
+41,F,Construction,Construction of buildings
+42,F,Construction,Civil engineering
+43,F,Construction,Specialised construction activities
+45,G,Wholesale and retail trade,Wholesale and retail trade and repair of motor vehicles
+46,G,Wholesale and retail trade,Wholesale trade (except motor vehicles)
+47,G,Wholesale and retail trade,Retail trade (except motor vehicles)
+49,H,Transportation and storage,Land transport and transport via pipelines
+50,H,Transportation and storage,Water transport
+51,H,Transportation and storage,Air transport
+52,H,Transportation and storage,Warehousing and support activities for transportation
+53,H,Transportation and storage,Postal and courier activities
+55,I,Accommodation and food services,Accommodation
+56,I,Accommodation and food services,Food and beverage service activities
+58,J,Information and communication,Publishing activities
+59,J,Information and communication,"Motion picture, video, TV, sound recording and music publishing"
+60,J,Information and communication,Programming and broadcasting activities
+61,J,Information and communication,Telecommunications
+62,J,Information and communication,"Computer programming, consultancy and related activities"
+63,J,Information and communication,Information service activities
+64,K,Financial and insurance activities,Financial service activities (except insurance and pension funding)
+65,K,Financial and insurance activities,"Insurance, reinsurance and pension funding"
+66,K,Financial and insurance activities,Activities auxiliary to financial services and insurance
+68,L,Real estate activities,Real estate activities
+69,M,"Professional, scientific and technical activities",Legal and accounting activities
+70,M,"Professional, scientific and technical activities",Activities of head offices; management consultancy
+71,M,"Professional, scientific and technical activities",Architectural and engineering activities; technical testing
+72,M,"Professional, scientific and technical activities",Scientific research and development
+73,M,"Professional, scientific and technical activities",Advertising and market research
+74,M,"Professional, scientific and technical activities","Other professional, scientific and technical activities"
+75,M,"Professional, scientific and technical activities",Veterinary activities
+77,N,Administrative and support services,Rental and leasing activities
+78,N,Administrative and support services,Employment activities
+79,N,Administrative and support services,Travel agency and tour operator activities
+80,N,Administrative and support services,Security and investigation activities
+81,N,Administrative and support services,Services to buildings and landscape activities
+82,N,Administrative and support services,Office administrative and business support activities
+84,O,Public administration and defence,Public administration and defence; compulsory social security
+85,P,Education,Education
+86,Q,Human health and social work,Human health activities
+87,Q,Human health and social work,Residential care activities
+88,Q,Human health and social work,Social work activities without accommodation
+90,R,"Arts, entertainment and recreation","Creative, arts and entertainment activities"
+91,R,"Arts, entertainment and recreation","Libraries, archives, museums and other cultural activities"
+92,R,"Arts, entertainment and recreation",Gambling and betting activities
+93,R,"Arts, entertainment and recreation","Sports activities and amusement and recreation activities"
+94,S,Other service activities,Activities of membership organisations
+95,S,Other service activities,Repair of computers and personal and household goods
+96,S,Other service activities,Other personal service activities
+97,T,Activities of households as employers,Activities of households as employers of domestic personnel
+98,T,Activities of households as employers,Undifferentiated goods- and services-producing activities of private households
+99,U,Extraterritorial organisations,Activities of extraterritorial organisations and bodies

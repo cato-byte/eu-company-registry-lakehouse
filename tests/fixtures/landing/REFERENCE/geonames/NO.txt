@@ -1,0 +1,179 @@
+NO	3540	Nesbyen	Buskerud	04	Nesbyen	3322			60.5565	10.0877	1
+NO	9692	Måsøy	Finnmark	05	Måsøy	5618			70.835	24.7851	
+NO	9700	Lakselv	Finnmark	05	Porsanger Porsángu Porsanki	5622			70.0477	24.997	
+NO	6456	Skåla	Møre og Romsdal	08	Molde	1506			62.7766	7.5345	1
+NO	6475	Midsund	Møre og Romsdal	08	Molde	1506			62.6739	6.6741	4
+NO	6098	Nerlandsøy	Møre og Romsdal	08	Herøy (Møre Og Romsdal)	1515			62.3543	5.6318	1
+NO	6674	Kvisvik	Møre og Romsdal	08	Tingvoll	1560			63.0665	7.9883	4
+NO	8618	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8340	Stamsund	Nordland	09	Vestvågøy	1860			68.1301	13.8493	4
+NO	8430	Myre	Nordland	09	Øksnes	1868			68.914	15.0784	4
+NO	0476	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0680	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0984	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	1777	Halden	Østfold	13	Halden	3101			59.1308	11.3925	
+NO	1684	Vesterøy	Østfold	13	Hvaler	3110			59.088	10.9109	
+NO	4313	Sandnes	Rogaland	14	Sandnes	1108			58.8524	5.7352	4
+NO	4353	Klepp Stasjon	Rogaland	14	Klepp	1120			58.7728	5.6773	4
+NO	4054	Tjelta	Rogaland	14	Sola	1124			58.8415	5.5977	4
+NO	3719	Skien	Telemark	17	Skien	4003			59.2115	9.6627	
+NO	3770	Kragerø	Telemark	17	Kragerø	4014			58.8713	9.4066	
+NO	3261	Larvik	Vestfold	20	Larvik	3909			59.042	10.0895	
+NO	7770	Flatanger	Trøndelag	21	Flatanger	5049			64.0531	11.3017	1
+NO	7242	Knarrlagsund	Trøndelag	21	Hitra	5056			63.6643	9.0803	4
+NO	4956	Risør	Agder	42	Risør	4201			58.7206	9.2342	4
+NO	4817	His	Agder	42	Arendal	4203			58.4314	8.7434	4
+NO	4638	Kristiansand S	Agder	42	Kristiansand	4204			58.1467	7.9956	4
+NO	5116	Ulset	Vestland	46	Bergen	4601			60.4757	5.3172	4
+NO	6700	Måløy	Vestland	46	Kinn	4602			61.9353	5.1136	4
+NO	5915	Hjelmås	Vestland	46	Alver	4631			60.5931	5.3641	4
+NO	3541	Nesbyen	Buskerud	04	Nesbyen	3322			60.5565	10.0877	1
+NO	9711	Lakselv	Finnmark	05	Porsanger Porsángu Porsanki	5622			70.0477	24.997	
+NO	9712	Lakselv	Finnmark	05	Porsanger Porsángu Porsanki	5622			70.0477	24.997	
+NO	6458	Skåla	Møre og Romsdal	08	Molde	1506			62.7766	7.5345	1
+NO	6476	Midsund	Møre og Romsdal	08	Molde	1506			62.6739	6.6741	4
+NO	6675	Kvisvik	Møre og Romsdal	08	Tingvoll	1560			63.0665	7.9883	4
+NO	8601	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8602	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8603	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8604	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8607	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8609	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8610	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8611	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8613	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8614	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8616	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8619	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8622	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8624	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8626	Mo I Rana	Nordland	09	Rana	1833			66.3128	14.1428	4
+NO	8378	Stamsund	Nordland	09	Vestvågøy	1860			68.1301	13.8493	4
+NO	8439	Myre	Nordland	09	Øksnes	1868			68.914	15.0784	4
+NO	0001	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0010	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0015	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0018	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0021	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0024	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0026	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0028	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0030	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0031	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0032	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0033	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0034	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0037	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0045	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0048	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0050	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0055	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0101	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0102	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0103	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0104	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0105	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0106	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0107	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0109	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0110	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0111	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0112	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0113	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0114	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0115	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0116	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0117	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0118	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0119	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0120	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0121	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0122	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0123	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0124	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0125	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0128	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0129	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0130	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0131	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0132	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0133	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0134	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0135	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0136	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0138	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0139	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0140	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0150	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0151	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0152	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0153	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0154	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0155	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0157	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0158	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0159	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0160	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0161	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0162	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0164	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0165	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0166	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0167	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0168	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0169	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0170	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0171	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0172	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0173	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0174	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0175	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0176	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0177	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0178	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0179	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0180	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0181	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0182	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0183	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0184	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0185	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0186	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0187	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0188	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0190	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0191	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0192	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0193	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0194	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0195	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0196	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0198	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0201	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0202	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0203	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0204	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0207	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0208	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0211	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0212	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0213	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0214	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0215	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0216	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0217	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0218	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0230	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0240	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0244	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0247	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0250	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0251	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0252	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0253	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0254	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0255	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0256	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0257	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0258	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4
+NO	0259	Oslo	Oslo County	12	Oslo	0301			59.9127	10.7461	4

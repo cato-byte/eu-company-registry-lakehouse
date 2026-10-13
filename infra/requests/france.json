@@ -1,0 +1,8 @@
+{
+  "country": "FRANCE",
+  "target_filename": "StockEtablissement_utf8.csv",
+  "resolver": "datagouv",
+  "dataset": "base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret",
+  "resource_title_contains": "Fichier StockEtablissement - ",
+  "resource_format": "zip"
+}

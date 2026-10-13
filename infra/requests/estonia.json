@@ -1,0 +1,6 @@
+{
+  "country": "ESTONIA",
+  "target_filename": "ettevotja_rekvisiidid__lihtandmed.csv",
+  "resolver": "static",
+  "url": "https://avaandmed.ariregister.rik.ee/sites/default/files/avaandmed/ettevotja_rekvisiidid__lihtandmed.csv.zip"
+}

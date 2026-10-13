@@ -1,0 +1,7 @@
+{
+  "country": "NORWAY",
+  "target_filename": "enheter.json.gz",
+  "resolver": "static",
+  "url": "https://data.brreg.no/enhetsregisteret/api/enheter/lastned/json",
+  "transform": "json_array_to_ndjson"
+}

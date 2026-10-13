@@ -1,0 +1,41 @@
+# ---- Private data: NEVER commit -------------------------------------------------
+# Real register samples and downloaded reference dumps stay on the developer's machine.
+data/
+*.part
+# Environment-specific configuration and secrets
+.env
+.env.*
+!.env.example
+.databrickscfg
+*.pem
+*.key
+samconfig.toml
+
+# ---- Local runs -------------------------------------------------------------------
+.local/
+spark-warehouse/
+metastore_db/
+derby.log
+tests/fixtures/landing/_GEOCODE/
+site/data/*.json
+site/data/*.geojson
+!site/data/demo/
+
+# ---- Build / tooling ----------------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.databricks/
+.aws-sam/
+.DS_Store
+.vscode/
+.idea/
+.sensitive-patterns

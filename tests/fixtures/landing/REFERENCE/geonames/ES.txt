@@ -1,0 +1,91 @@
+ES	28008	Madrid	Madrid	MD	Madrid	M	Madrid	28079	40.4277	-3.7239	4
+ES	28012	Madrid	Madrid	MD	Madrid	M	Madrid	28079	40.4106	-3.7017	4
+ES	31003	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8111	-1.641	4
+ES	31007	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8066	-1.6515	4
+ES	31014	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8264	-1.6496	4
+ES	31151	Obanos	Navarra	NC	Navarra	NA	Obanos	31183	42.6802	-1.7858	4
+ES	31192	Ardanaz De Egues	Navarra	NC	Navarra	NA	Aranguren	31023	42.7709	-1.5735	3
+ES	31192	Ilundain	Navarra	NC	Navarra	NA	Aranguren	31023	42.7709	-1.5735	3
+ES	31192	Laquidain/Lakidain	Navarra	NC	Navarra	NA	Aranguren	31023	42.7709	-1.5735	3
+ES	31192	Aranguren	Navarra	NC	Navarra	NA	Aranguren	31023	42.7884	-1.5365	3
+ES	31192	Gongora	Navarra	NC	Navarra	NA	Aranguren	31023	42.7616	-1.5305	4
+ES	31192	Badostain	Navarra	NC	Navarra	NA	Aranguren	31023	42.799	-1.5956	4
+ES	31192	Zolina	Navarra	NC	Navarra	NA	Aranguren	31023	42.7678	-1.5843	4
+ES	31192	Mutilva/Mutiloa	Navarra	NC	Navarra	NA	Aranguren	31023	42.7919	-1.6206	3
+ES	31192	Tajonar/Taxoare	Navarra	NC	Navarra	NA	Aranguren	31023	42.7766	-1.6346	4
+ES	31192	Labiano	Navarra	NC	Navarra	NA	Aranguren	31023	42.7572	-1.5484	4
+ES	31193	Nuin	Navarra	NC	Navarra	NA	Atez	31040	42.9151	-1.7182	4
+ES	31193	Navaz	Navarra	NC	Navarra	NA	Atez	31040	42.8929	-1.6767	4
+ES	31193	Belzunce	Navarra	NC	Navarra	NA	Atez	31040	42.8986	-1.6846	3
+ES	31193	Beorburu	Navarra	NC	Navarra	NA	Atez	31040	42.9225	-1.728	4
+ES	31193	Ollacarizqueta	Navarra	NC	Navarra	NA	Atez	31040	42.8826	-1.6944	3
+ES	31193	Larrayoz	Navarra	NC	Navarra	NA	Atez	31040	42.9075	-1.7013	3
+ES	31193	Garciriain	Navarra	NC	Navarra	NA	Atez	31040	42.9075	-1.7013	3
+ES	31193	Usi	Navarra	NC	Navarra	NA	Atez	31040	42.9128	-1.68	3
+ES	31193	Eguaras	Navarra	NC	Navarra	NA	Atez	31040	42.9167	-1.6833	4
+ES	31193	Marcalain	Navarra	NC	Navarra	NA	Atez	31040	42.8979	-1.6953	4
+ES	31193	Amalain	Navarra	NC	Navarra	NA	Atez	31040	42.9075	-1.7013	3
+ES	31193	Osacar	Navarra	NC	Navarra	NA	Atez	31040	42.9075	-1.7013	3
+ES	31240	Ayegui/Aiegi	Navarra	NC	Navarra	NA	Ayegui / Aiegi	31041	42.6568	-2.0383	4
+ES	31320	Milagro	Navarra	NC	Navarra	NA	Milagro	31169	42.2419	-1.7648	4
+ES	31410	Urbanizacion Nautica De Leyre	Navarra	NC	Navarra	NA	Yesa	31261	42.6203	-1.2036	3
+ES	31410	Urbanizacion Lasaitasuna	Navarra	NC	Navarra	NA	Yesa	31261	42.6203	-1.2036	3
+ES	31410	Leyre (Monasterio)	Navarra	NC	Navarra	NA	Yesa	31261	42.6203	-1.2036	3
+ES	31410	Yesa	Navarra	NC	Navarra	NA	Yesa	31261	42.6198	-1.1999	4
+ES	31420	Urroz	Navarra	NC	Navarra	NA	Urroz-Villa	31243	42.778	-1.4591	4
+ES	31486	Ibiricu De Egües	Navarra	NC	Navarra	NA	Egüés	31086	42.8273	-1.5543	4
+ES	31486	Ustarroz (Egues)	Navarra	NC	Navarra	NA	Egüés	31086	42.8244	-1.5308	3
+ES	31486	Egües	Navarra	NC	Navarra	NA	Egüés	31086	42.8244	-1.5308	3
+ES	31486	Elia	Navarra	NC	Navarra	NA	Egüés	31086	42.8244	-1.5308	3
+ES	31486	Echalaz	Navarra	NC	Navarra	NA	Egüés	31086	42.8244	-1.5308	3
+ES	31486	Galduroz	Navarra	NC	Navarra	NA	Egüés	31086	42.8244	-1.5308	3
+ES	31486	Elcano	Navarra	NC	Navarra	NA	Egüés	31086	42.8281	-1.5545	4
+ES	31486	Alzuza	Navarra	NC	Navarra	NA	Egüés	31086	42.8387	-1.5661	3
+ES	31486	Eransus	Navarra	NC	Navarra	NA	Egüés	31086	42.8273	-1.5116	4
+ES	31486	Sagaseta	Navarra	NC	Navarra	NA	Egüés	31086	42.8425	-1.5435	3
+ES	31486	Egulbati	Navarra	NC	Navarra	NA	Egüés	31086	42.8574	-1.5358	3
+ES	31486	Azpa	Navarra	NC	Navarra	NA	Egüés	31086	42.8059	-1.5224	4
+ES	31500	Tudela	Navarra	NC	Navarra	NA	Tudela	31232	42.0598	-1.6075	4
+ES	31513	Arguedas	Navarra	NC	Navarra	NA	Arguedas	31032	42.1758	-1.5971	4
+ES	31591	Corella	Navarra	NC	Navarra	NA	Corella	31077	42.1148	-1.7887	4
+ES	31699	Olloki	Navarra	NC	Navarra	NA	Erro	31092	42.8381	-1.5816	3
+ES	31699	Zuriain	Navarra	NC	Navarra	NA	Erro	31092	42.8794	-1.5666	4
+ES	31699	Irotz	Navarra	NC	Navarra	NA	Erro	31092	42.8611	-1.5721	4
+ES	31699	Zabaldika	Navarra	NC	Navarra	NA	Erro	31092	42.856	-1.5814	4
+ES	31699	Arleta	Navarra	NC	Navarra	NA	Erro	31092	42.8693	-1.5706	3
+ES	31699	Ilurdotz	Navarra	NC	Navarra	NA	Erro	31092	42.8749	-1.5414	3
+ES	31699	Antxoritz	Navarra	NC	Navarra	NA	Erro	31092	42.872	-1.5726	3
+ES	31699	Gendulain (Esteribar)	Navarra	NC	Navarra	NA	Erro	31092	42.8803	-1.5661	4
+ES	31800	Altsasu/Alsasua	Navarra	NC	Navarra	NA	Altsasu/Alsasua	31010	42.8952	-2.171	4
+ES	31001	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8178	-1.6446	4
+ES	31002	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8144	-1.6422	4
+ES	31004	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8116	-1.6342	4
+ES	31005	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8054	-1.6419	4
+ES	31006	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8067	-1.6315	4
+ES	31008	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8095	-1.6667	4
+ES	31009	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8005	-1.67	4
+ES	31010	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8033	-1.6764	4
+ES	31011	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8155	-1.6609	4
+ES	31012	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8227	-1.6681	4
+ES	31015	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.829	-1.6314	4
+ES	31016	Pamplona/Iruña	Navarra	NC	Navarra	NA	Pamplona	31201	42.8107	-1.6144	4
+ES	31016	Mendillorri	Navarra	NC	Navarra	NA	Pamplona	31201	42.8169	-1.6432	3
+ES	31150	Mendigorria	Navarra	NC	Navarra	NA	Mendigorría	31167	42.6282	-1.8345	4
+ES	31229	Bargota	Navarra	NC	Navarra	NA	Desojo	31079	42.5605	-2.3111	4
+ES	31229	El Busto	Navarra	NC	Navarra	NA	Desojo	31079	42.5489	-2.2418	4
+ES	31229	Desojo	Navarra	NC	Navarra	NA	Desojo	31079	42.588	-2.2755	4
+ES	31229	Torres Del Rio	Navarra	NC	Navarra	NA	Desojo	31079	42.5516	-2.2729	4
+ES	31630	Zubiri	Navarra	NC	Navarra	NA	Esteribar	31098	42.9313	-1.5042	4
+ES	31630	Osteritz	Navarra	NC	Navarra	NA	Esteribar	31098	42.9183	-1.5058	3
+ES	31698	Ezkirotz	Navarra	NC	Navarra	NA	Esteribar	31098	42.9022	-1.5411	3
+ES	31698	Idoi	Navarra	NC	Navarra	NA	Esteribar	31098	42.8961	-1.5615	3
+ES	31698	Urdaitz/Urdaniz	Navarra	NC	Navarra	NA	Esteribar	31098	42.9022	-1.5411	3
+ES	31698	Inbuluzketa	Navarra	NC	Navarra	NA	Esteribar	31098	42.9245	-1.5413	3
+ES	31698	Sarasibar	Navarra	NC	Navarra	NA	Esteribar	31098	42.9029	-1.5685	3
+ES	31698	Irure	Navarra	NC	Navarra	NA	Esteribar	31098	42.8999	-1.5345	3
+ES	31698	Ilarratz	Navarra	NC	Navarra	NA	Esteribar	31098	42.911	-1.5169	3
+ES	31698	Errea	Navarra	NC	Navarra	NA	Esteribar	31098	42.8928	-1.4901	3
+ES	31698	Akerreta	Navarra	NC	Navarra	NA	Esteribar	31098	42.8963	-1.5433	3
+ES	31698	Setoain	Navarra	NC	Navarra	NA	Esteribar	31098	42.8992	-1.5225	3
+ES	31698	Larrasoaña	Navarra	NC	Navarra	NA	Esteribar	31098	42.902	-1.5411	4
+ES	48850	Aranguren	Pais Vasco	PV	Vizcaya	BI	Zalla	48096	43.2108	-3.1169	4

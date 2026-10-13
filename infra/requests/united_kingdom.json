@@ -1,0 +1,6 @@
+{
+  "country": "UNITED_KINGDOM",
+  "target_filename": "BasicCompanyDataAsOneFile.csv",
+  "resolver": "template",
+  "url_template": "https://download.companieshouse.gov.uk/BasicCompanyDataAsOneFile-{first_of_month}.zip"
+}

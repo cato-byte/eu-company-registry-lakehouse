@@ -1,0 +1,301 @@
+FR	75001	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75001	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75007	Paris 07	Île-de-France	11	Paris	75	Paris	751	48.8565	2.321	5
+FR	75007	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75010	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75010	Paris 10	Île-de-France	11	Paris	75	Paris	751	48.8709	2.3561	5
+FR	75016	Paris 16	Île-de-France	11	Paris	75	Paris	751	48.8637	2.2769	5
+FR	75016	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75018	Paris 18	Île-de-France	11	Paris	75	Paris	751	48.8925	2.3444	5
+FR	75018	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75020	Paris 20	Île-de-France	11	Paris	75	Paris	751	48.8646	2.3984	5
+FR	75020	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	21380	Curtil-Saint-Seine	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4495	4.9277	5
+FR	21380	Asnières-lès-Dijon	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.3833	5.0333	5
+FR	21380	Savigny-le-Sec	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4321	5.053	5
+FR	21380	Messigny-et-Vantoux	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4067	5.0171	5
+FR	21380	Épagny	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4487	5.0603	5
+FR	21380	Marsannay-le-Bois	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4399	5.0955	5
+FR	21380	Saussy	Bourgogne-Franche-Comté	27	Côte-d'Or	21	Dijon	212	47.4676	4.962	5
+FR	39000	Lons-le-Saunier	Bourgogne-Franche-Comté	27	Jura	39	Lons-le-Saunier	392	46.6754	5.5557	5
+FR	71000	Varennes-lès-Mâcon	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Mâcon	715	46.2714	4.8014	5
+FR	71000	Sancé	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Mâcon	715	46.3393	4.8305	5
+FR	71000	Mâcon	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Mâcon	715	46.3141	4.8282	5
+FR	71800	Curbigny	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3079	4.3104	5
+FR	71800	Vareilles	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2979	4.2609	5
+FR	71800	Saint-Julien-de-Civry	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3663	4.2312	5
+FR	71800	Varennes-sous-Dun	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2901	4.3328	5
+FR	71800	Saint-Laurent-en-Brionnais	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2735	4.2586	5
+FR	71800	Saint-Germain-en-Brionnais	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3543	4.2649	5
+FR	71800	Ouroux-sous-le-Bois-Sainte-Marie	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3588	4.3105	5
+FR	71800	Prizy	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3577	4.2263	5
+FR	71800	La Chapelle-sous-Dun	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2603	4.2951	5
+FR	71800	Saint-Christophe-en-Brionnais	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2888	4.1772	5
+FR	71800	Baudemont	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.288	4.2866	5
+FR	71800	Amanzé	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3319	4.2413	5
+FR	71800	Saint-Racho	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2649	4.3675	5
+FR	71800	Châtenay	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2909	4.3836	5
+FR	71800	Vauban	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.2612	4.2234	5
+FR	71800	Saint-Symphorien-des-Bois	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3328	4.2817	5
+FR	71800	Dyo	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3592	4.2764	5
+FR	71800	Bois-Sainte-Marie	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3298	4.3557	5
+FR	71800	La Clayette	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.29	4.3042	5
+FR	71800	Gibles	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3241	4.3777	5
+FR	71800	Oyé	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3236	4.191	5
+FR	71800	Colombier-en-Brionnais	Bourgogne-Franche-Comté	27	Saône-et-Loire	71	Charolles	713	46.3558	4.3337	5
+FR	50310	Azeville	Normandie	28	Manche	50	Cherbourg	502	49.4589	-1.3131	5
+FR	50310	Joganville	Normandie	28	Manche	50	Cherbourg	502	49.4699	-1.3486	5
+FR	50310	Fresville	Normandie	28	Manche	50	Cherbourg	502	49.4386	-1.3558	5
+FR	50310	Écausseville	Normandie	28	Manche	50	Cherbourg	502	49.4612	-1.3758	5
+FR	50310	Le Ham	Normandie	28	Manche	50	Cherbourg	502	49.4455	-1.4077	5
+FR	50310	Éroudeville	Normandie	28	Manche	50	Cherbourg	502	49.4762	-1.39	5
+FR	50310	Saint-Cyr	Normandie	28	Manche	50	Cherbourg	502	49.4879	-1.4199	5
+FR	50310	Lestre	Normandie	28	Manche	50	Cherbourg	502	49.526	-1.3355	5
+FR	50310	Saint-Martin-d'Audouville	Normandie	28	Manche	50	Cherbourg	502	49.5293	-1.3639	5
+FR	50310	Fontenay-sur-Mer	Normandie	28	Manche	50	Cherbourg	502	49.4896	-1.3163	5
+FR	50310	Saint-Floxel	Normandie	28	Manche	50	Cherbourg	502	49.4913	-1.3517	5
+FR	50310	Vaudreville	Normandie	28	Manche	50	Cherbourg	502	49.5165	-1.3708	5
+FR	50310	Ozeville	Normandie	28	Manche	50	Cherbourg	502	49.5	-1.3333	5
+FR	50310	Émondeville	Normandie	28	Manche	50	Cherbourg	502	49.4591	-1.3431	5
+FR	50310	Montebourg	Normandie	28	Manche	50	Cherbourg	502	49.4877	-1.3804	5
+FR	50310	Saint-Marcouf	Normandie	28	Manche	50	Cherbourg	502	49.4733	-1.2889	5
+FR	50310	Sortosville	Normandie	28	Manche	50	Cherbourg	502	49.4799	-1.4332	5
+FR	50310	Quinéville	Normandie	28	Manche	50	Cherbourg	502	49.5156	-1.2928	5
+FR	50750	Saint-Martin-de-Bonfossé	Normandie	28	Manche	50	Saint-Lô	504	49.0527	-1.1697	5
+FR	50750	Quibou	Normandie	28	Manche	50	Saint-Lô	504	49.0667	-1.2	5
+FR	50750	Canisy	Normandie	28	Manche	50	Saint-Lô	504	49.0757	-1.1759	5
+FR	50750	Saint-Ébremond-de-Bonfossé	Normandie	28	Manche	50	Saint-Lô	504	49.0676	-1.1501	5
+FR	50750	Bourgvallées	Normandie	28	Manche	50	Saint-Lô	504	49.0489	-1.1289	5
+FR	50750	Saint-Romphaire	Normandie	28	Manche	50	Saint-Lô	504	49.0383	-1.1058	5
+FR	50750	Soulles	Normandie	28	Manche	50	Saint-Lô	504	49.0126	-1.1892	5
+FR	50750	Le Mesnil-Herman	Normandie	28	Manche	50	Saint-Lô	504	49.0274	-1.1447	5
+FR	50750	La Mancellière-sur-Vire	Normandie	28	Manche	50	Saint-Lô	504	49.069	-1.0706	5
+FR	50750	Gourfaleur	Normandie	28	Manche	50	Saint-Lô	504	49.082	-1.1122	5
+FR	50750	Dangy	Normandie	28	Manche	50	Saint-Lô	504	49.0446	-1.2241	5
+FR	50750	Saint-Samson-de-Bonfossé	Normandie	28	Manche	50	Saint-Lô	504	49.0495	-1.1285	5
+FR	50750	Sainte-Suzanne-sur-Vire	Normandie	28	Manche	50	Saint-Lô	504	49.0621	-1.0594	5
+FR	62850	Haut-Loquin	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.7407	1.9669	5
+FR	62850	Bainghen	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7525	1.9073	5
+FR	62850	Licques	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7842	1.9384	5
+FR	62850	Alquines	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.7411	1.9932	5
+FR	62850	Alembon	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7847	1.8887	5
+FR	62850	Sanghen	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7785	1.9081	5
+FR	62850	Hocquinghen	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7682	1.9376	5
+FR	62850	Journy	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.7531	1.9953	5
+FR	62850	Escœuilles	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.7333	1.9333	5
+FR	62850	Herbinghen	Hauts-de-France	32	Pas-de-Calais	62	Calais	626	50.7732	1.91	5
+FR	62850	Surques	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.74	1.9176	5
+FR	62850	Rebergues	Hauts-de-France	32	Pas-de-Calais	62	Saint-Omer	625	50.7557	1.9595	5
+FR	80150	Vitz-sur-Authie	Hauts-de-France	32	Somme	80	Abbeville	801	50.2531	2.067	5
+FR	80150	Le Boisle	Hauts-de-France	32	Somme	80	Abbeville	801	50.2712	1.9844	5
+FR	80150	Vironchaux	Hauts-de-France	32	Somme	80	Abbeville	801	50.2882	1.8229	5
+FR	80150	Neuilly-le-Dien	Hauts-de-France	32	Somme	80	Abbeville	801	50.2239	2.0423	5
+FR	80150	Machiel	Hauts-de-France	32	Somme	80	Abbeville	801	50.269	1.8248	5
+FR	80150	Gapennes	Hauts-de-France	32	Somme	80	Abbeville	801	50.1821	1.9537	5
+FR	80150	Gueschart	Hauts-de-France	32	Somme	80	Abbeville	801	50.2391	2.0109	5
+FR	80150	Yvrencheux	Hauts-de-France	32	Somme	80	Abbeville	801	50.1827	1.9963	5
+FR	80150	Forest-l'Abbaye	Hauts-de-France	32	Somme	80	Abbeville	801	50.2029	1.8235	5
+FR	80150	Fontaine-sur-Maye	Hauts-de-France	32	Somme	80	Abbeville	801	50.2361	1.9293	5
+FR	80150	Ponches-Estruval	Hauts-de-France	32	Somme	80	Abbeville	801	50.3095	1.8942	5
+FR	80150	Maison-Ponthieu	Hauts-de-France	32	Somme	80	Abbeville	801	50.207	2.043	5
+FR	80150	Noyelles-en-Chaussée	Hauts-de-France	32	Somme	80	Abbeville	801	50.2073	1.9816	5
+FR	80150	Boufflers	Hauts-de-France	32	Somme	80	Abbeville	801	50.2646	2.016	5
+FR	80150	Agenvillers	Hauts-de-France	32	Somme	80	Abbeville	801	50.1785	1.9183	5
+FR	80150	Brailly-Cornehotte	Hauts-de-France	32	Somme	80	Abbeville	801	50.2178	1.9601	5
+FR	80150	Machy	Hauts-de-France	32	Somme	80	Abbeville	801	50.2712	1.8019	5
+FR	80150	Dompierre-sur-Authie	Hauts-de-France	32	Somme	80	Abbeville	801	50.3037	1.9169	5
+FR	80150	Crécy-en-Ponthieu	Hauts-de-France	32	Somme	80	Abbeville	801	50.2519	1.8808	5
+FR	80150	Ligescourt	Hauts-de-France	32	Somme	80	Abbeville	801	50.2895	1.8757	5
+FR	80150	Canchy	Hauts-de-France	32	Somme	80	Abbeville	801	50.1869	1.876	5
+FR	80150	Lamotte-Buleux	Hauts-de-France	32	Somme	80	Abbeville	801	50.1882	1.8326	5
+FR	80150	Froyelles	Hauts-de-France	32	Somme	80	Abbeville	801	50.2285	1.9278	5
+FR	80150	Domvast	Hauts-de-France	32	Somme	80	Abbeville	801	50.1979	1.9216	5
+FR	80150	Yvrench	Hauts-de-France	32	Somme	80	Abbeville	801	50.1791	2.0032	5
+FR	80150	Estrées-lés-Crécy	Hauts-de-France	32	Somme	80	Abbeville	801	50.2539	1.9276	5
+FR	44600	Saint-Nazaire	Pays de la Loire	52	Loire-Atlantique	44	Saint-Nazaire	443	47.2751	-2.2179	5
+FR	85330	Noirmoutier-en-l'Île	Pays de la Loire	52	Vendée	85	Sables-d'Olonne	853	47.0046	-2.2415	5
+FR	29730	Treffiagat	Bretagne	53	Finistère	29	Quimper	294	47.8035	-4.2635	5
+FR	29730	Guilvinec	Bretagne	53	Finistère	29	Quimper	294	47.7973	-4.2846	5
+FR	35800	Saint-Lunaire	Bretagne	53	Ille-et-Vilaine	35	Saint-Malo	354	48.6343	-2.1094	5
+FR	35800	Dinard	Bretagne	53	Ille-et-Vilaine	35	Saint-Malo	354	48.6329	-2.0627	5
+FR	35800	Saint-Briac-sur-Mer	Bretagne	53	Ille-et-Vilaine	35	Saint-Malo	354	48.6205	-2.1335	5
+FR	79360	Les Fosses	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1672	-0.3739	5
+FR	79360	Prissé-la-Charrière	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.15	-0.5	5
+FR	79360	Belleville	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1266	-0.4993	5
+FR	79360	Villiers-en-Bois	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1479	-0.4066	5
+FR	79360	Boisserolles	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1139	-0.4709	5
+FR	79360	Marigny	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1981	-0.4189	5
+FR	79360	Saint-Étienne-la-Cigogne	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1167	-0.5	5
+FR	79360	Granzay-Gript	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.2167	-0.4833	5
+FR	79360	Beauvoir-sur-Niort	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.182	-0.474	5
+FR	79360	La Foye-Monjault	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.1862	-0.5381	5
+FR	79360	Thorigny-sur-le-Mignon	Nouvelle-Aquitaine	75	Deux-Sèvres	79	Niort	792	46.15	-0.55	5
+FR	11210	Port-La Nouvelle	Occitanie	76	Aude	11	Narbonne	113	43.0183	3.05	5
+FR	04400	Les Thuiles	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3934	6.5709	5
+FR	04400	Uvernet-Fours	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3619	6.6269	5
+FR	04400	Faucon-de-Barcelonnette	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3939	6.6788	5
+FR	04400	Saint-Pons	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3922	6.6281	5
+FR	04400	Enchastrayes	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3672	6.6951	5
+FR	04400	Barcelonnette	Provence-Alpes-Côte d'Azur	93	Alpes-de-Haute-Provence	04	Barcelonnette	041	44.3869	6.6518	5
+FR	06160	Antibes	Provence-Alpes-Côte d'Azur	93	Alpes-Maritimes	06	Grasse	061	43.5813	7.1249	5
+FR	06220	Vallauris	Provence-Alpes-Côte d'Azur	93	Alpes-Maritimes	06	Grasse	061	43.578	7.0545	5
+FR	06400	Cannes	Provence-Alpes-Côte d'Azur	93	Alpes-Maritimes	06	Grasse	061	43.5513	7.0128	5
+FR	06560	Valbonne	Provence-Alpes-Côte d'Azur	93	Alpes-Maritimes	06	Grasse	061	43.6329	6.9991	5
+FR	13008	Marseille 08	Provence-Alpes-Côte d'Azur	93	Bouches-du-Rhône	13	Marseille	133	43.2708	5.3821	5
+FR	83140	Six-Fours-les-Plages	Provence-Alpes-Côte d'Azur	93	Var	83	Toulon	832	43.0917	5.8247	5
+FR	83170	La Celle	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.3952	6.0375	5
+FR	83170	Tourves	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.408	5.9239	5
+FR	83170	Vins-sur-Caramy	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.4342	6.1419	5
+FR	83170	Rougiers	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.3923	5.8511	5
+FR	83170	Brignoles	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.4058	6.0617	5
+FR	83170	Camps-la-Source	Provence-Alpes-Côte d'Azur	93	Var	83	Brignoles	833	43.3863	6.0961	5
+FR	75000	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75002	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75002	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75003	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75003	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75004	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75004	Paris 04	Île-de-France	11	Paris	75	Paris	751	48.8601	2.3507	5
+FR	75005	Paris 05	Île-de-France	11	Paris	75	Paris	751	48.8448	2.3471	5
+FR	75005	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75006	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75006	Paris 06	Île-de-France	11	Paris	75	Paris	751	48.8493	2.33	5
+FR	75008	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75008	Paris 08	Île-de-France	11	Paris	75	Paris	751	48.8763	2.3183	5
+FR	75009	Paris 09	Île-de-France	11	Paris	75	Paris	751	48.8718	2.3399	5
+FR	75009	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75011	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75011	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75012	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75012	Paris 12	Île-de-France	11	Paris	75	Paris	751	48.8412	2.3876	5
+FR	75013	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75013	Paris 13	Île-de-France	11	Paris	75	Paris	751	48.8322	2.3561	5
+FR	75014	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75014	Paris 14	Île-de-France	11	Paris	75	Paris	751	48.8331	2.3264	5
+FR	75015	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75015	Paris 15	Île-de-France	11	Paris	75	Paris	751	48.8412	2.3003	5
+FR	75017	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75017	Paris 17	Île-de-France	11	Paris	75	Paris	751	48.8835	2.3219	5
+FR	75019	Paris	Île-de-France	11	Paris	75	Paris	751	48.8534	2.3488	5
+FR	75019	Paris 19	Île-de-France	11	Paris	75	Paris	751	48.8817	2.3822	5
+FR	75021 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75023 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75024 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75026 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75028 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75029 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75030 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75031 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75032 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75033 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75034 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75035 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75036 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75038 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75039 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75040 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75041 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75042 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75043 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75044 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75045 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75046 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75047 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75048 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75049 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75051 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75052 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75053 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75054 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75055 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75056 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75058 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75059 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75060 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75061 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75062 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75063 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75064 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75065 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75066 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75067 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75068 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75069 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75072 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75073 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75074 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75075 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75076 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75077 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75078 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75079 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75080 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75081 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75082 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75083 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75084 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75085 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75086 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75087 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75088 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75089 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75090 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75092 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75093 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75094 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75095 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75096 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75097 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75100 CEDEX 01	Paris 01	Île-de-France	11	Paris	75	Paris	751	48.8592	2.3417	5
+FR	75101 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75102 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75103 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75104 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75105 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75106 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75107 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75108 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75109 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75110 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75111 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75112 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75113 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75114 CEDEX 08	Paris 08	Île-de-France	11	Paris	75	Paris	751	48.8763	2.3183	5
+FR	75115 CEDEX 15	Paris 15	Île-de-France	11	Paris	75	Paris	751	48.8412	2.3003	5
+FR	75116	Paris 16	Île-de-France	11	Paris	75	Paris	751	48.8637	2.2769	5
+FR	75118 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75119 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75120 CEDEX 02	Paris 02	Île-de-France	11	Paris	75	Paris	751	48.8655	2.3426	5
+FR	75122 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75123 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75124 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75125 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75126 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75127 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75128 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75129 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75130 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75131 CEDEX 12	Paris 12	Île-de-France	11	Paris	75	Paris	751	48.8412	2.3876	5
+FR	75134 CEDEX 11	Paris 11	Île-de-France	11	Paris	75	Paris	751	48.8574	2.3795	5
+FR	75138 CEDEX 07	Paris 07	Île-de-France	11	Paris	75	Paris	751	48.8565	2.321	5
+FR	75139 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75140 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75141 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75142 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75144 CEDEX 19	Paris 19	Île-de-France	11	Paris	75	Paris	751	48.8817	2.3822	5
+FR	75150 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75151 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75152 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75153 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75154 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75155 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75156 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75157 CEDEX 03	Paris 03	Île-de-France	11	Paris	75	Paris	751	48.8637	2.3615	5
+FR	75158 CEDEX 14	Paris 14	Île-de-France	11	Paris	75	Paris	751	48.8331	2.3264	5
+FR	75159 CEDEX 14	Paris 14	Île-de-France	11	Paris	75	Paris	751	48.8331	2.3264	5
+FR	75161 CEDEX 04	Paris 04	Île-de-France	11	Paris	75	Paris	751	48.8601	2.3507	5
+FR	75162 CEDEX 04	Paris 04	Île-de-France	11	Paris	75	Paris	751	48.8601	2.3507	5
+FR	75163 CEDEX 04	Paris 04	Île-de-France	11	Paris	75	Paris	751	48.8601	2.3507	5
+FR	75164 CEDEX 19	Paris 19	Île-de-France	11	Paris	75	Paris	751	48.8817	2.3822	5
+FR	75165 CEDEX 19	Paris 19	Île-de-France	11	Paris	75	Paris	751	48.8817	2.3822	5
+FR	75166 CEDEX 19	Paris 19	Île-de-France	11	Paris	75	Paris	751	48.8817	2.3822	5

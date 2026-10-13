@@ -1,0 +1,14 @@
+IE	H91	Galway	Connacht	C					53.2719	-9.0489	4
+IE	A92	Drogheda	Leinster	L					53.7189	-6.3478	4
+IE	A94	Blackrock	Leinster	L					53.3015	-6.1778	4
+IE	C15	Trim	Leinster	L					53.555	-6.7917	4
+IE	D02	Dublin 2	Leinster	L					53.34	-6.2543	
+IE	D04	Dublin 4	Leinster	L					53.3334	-6.2335	
+IE	D11	Dublin 11	Leinster	L					53.3899	-6.293	
+IE	D18	Dublin 18	Leinster	L					53.2469	-6.1774	
+IE	E45	Nenagh	Munster	M					52.8619	-8.1967	4
+IE	T23	Cork city northside	Munster	M					51.8972	-8.4702	
+IE	V94	Limerick	Munster	M					52.6647	-8.6231	4
+IE	F92	Letterkenny	Ulster	U					54.95	-7.7333	4
+IE	Y35	Wexford	Leinster	L					52.3342	-6.4575	4
+IE	E34	Tipperary	Munster	M					52.4733	-8.1558	4

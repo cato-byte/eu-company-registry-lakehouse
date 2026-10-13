@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "registry-lakehouse"
+version = "0.2.0"
+description = "Pan-European company registry lakehouse on Databricks serverless (AWS): medallion pipeline, data quality, tiered free geocoding and static publishing."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "cato-byte" }]
+# Runtime deps are provided by Databricks serverless (pyspark, delta). Keep this list minimal.
+dependencies = ["pyyaml>=6"]
+
+[project.optional-dependencies]
+local = ["pyspark==4.0.1", "delta-spark==4.0.0", "pandas>=2.2", "pyarrow>=16"]
+ingestion = ["boto3>=1.34", "ijson>=3.3"]
+dev = [
+  "pytest>=8",
+  "pytest-cov>=5",
+  "hypothesis>=6.100",
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "pyproj>=3.6",
+  "faker>=25",
+  "pre-commit>=3.7",
+]
+
+[project.scripts]
+registry-lakehouse = "registry_lakehouse.cli:main"
+registry-cost = "registry_lakehouse.ops.cost:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+registry_lakehouse = ["contracts/*.yml", "reference/*.csv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+markers = [
+  "spark: needs a local SparkSession (slower)",
+  "e2e: runs the whole pipeline on the synthetic fixtures",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+# E/F: correctness, B: bugbear (mutable defaults, loop closures), UP: modern syntax,
+# SIM: simplifications, PL: pylint subset, PERF: perf anti-patterns, S: bandit security.
+select = ["E", "F", "W", "B", "UP", "SIM", "I", "PLE", "PLW", "PERF", "S", "RUF"]
+ignore = ["S101", "S608", "RUF012", "PERF401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["registry_lakehouse", "tests", "tools"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "PLW", "SIM115", "E501"]
+"tools/**" = ["S", "PLW2901", "SIM115", "E501", "RUF005"]
+# These modules only open https:// URLs (checked in code, or taken from reviewed request files).
+"src/registry_lakehouse/ingestion/*.py" = ["S310"]
+"src/registry_lakehouse/ops/alerts.py" = ["S310"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = true

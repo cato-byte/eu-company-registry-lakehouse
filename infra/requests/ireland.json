@@ -1,0 +1,8 @@
+{
+  "country": "IRELAND",
+  "target_filename": "companies.csv",
+  "resolver": "ckan",
+  "api_base": "https://opendata.cro.ie",
+  "dataset": "companies",
+  "resource_format": "CSV"
+}

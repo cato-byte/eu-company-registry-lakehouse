@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EU Company Registry Map</title>
+<meta name="description" content="Where companies are in six European registers, by town and industry, with a fishing focus. Static page built from the lakehouse gold tables.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f4f3ef; --surface-1: #fcfcfb; --border: #dddcd5;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
+    --seq: #2a78d6; --seq-soft: #86b6ef; --fish: #eb6834;
+    --grid: #e6e5df;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --border: #33332f;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #94938a;
+      --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --grid: #2a2a27;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19; --border: #33332f;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #94938a;
+    --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --grid: #2a2a27;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.1rem; margin: 0 0 12px; }
+  p.lede { color: var(--text-secondary); margin: 0 0 20px; max-width: 70ch; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 12px; }
+  label { display: grid; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+  select, button { font: inherit; color: var(--text-primary); background: var(--surface-0); border: 1px solid var(--border);
+                   border-radius: 8px; padding: 6px 10px; }
+  button[aria-pressed="true"] { border-color: var(--fish); box-shadow: inset 0 0 0 1px var(--fish); }
+  #map { height: 520px; border-radius: 8px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .stat b { display: block; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 12px; color: var(--text-secondary); }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+  .bars { display: grid; gap: 6px; }
+  .bar-row { display: grid; grid-template-columns: minmax(120px, 260px) 1fr 70px; gap: 10px; align-items: center; font-size: 13px; }
+  .bar-row .name { color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { height: 14px; position: relative; }
+  .bar { height: 14px; border-radius: 0 4px 4px 0; background: var(--seq); min-width: 2px; }
+  .bar-row:hover .bar { filter: brightness(1.1); }
+  .bar-row .val { text-align: right; font-variant-numeric: tabular-nums; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+  th { color: var(--text-secondary); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .note { font-size: 12px; color: var(--text-muted); }
+  .tip { position: fixed; pointer-events: none; background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--border);
+         border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 16px rgb(0 0 0 / .15); display: none; z-index: 1000; }
+  .leaflet-container { background: var(--surface-0); font: inherit; }
+  .basemap { filter: saturate(0.35) brightness(1.04); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .basemap { filter: invert(1) hue-rotate(180deg) saturate(0.3) brightness(0.85); } }
+  :root[data-theme="dark"] .basemap { filter: invert(1) hue-rotate(180deg) saturate(0.3) brightness(0.85); }
+  .leaflet-tooltip { background: var(--surface-1); color: var(--text-primary); border-color: var(--border); }
+  pre { margin: 0; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+  @media (max-width: 600px) { #map { height: 380px; } .bar-row { grid-template-columns: 110px 1fr 56px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Where Europe's registered companies are</h1>
+  <p class="lede">Six national company registers (France, United Kingdom, Ireland, Norway, Estonia and Navarra in Spain),
+    cleaned and harmonised in a Databricks lakehouse and reduced to aggregate counts per town. Circles show active
+    companies by town. Switch to <b>fishing</b> to see NACE division 03 (fishing and aquaculture).</p>
+
+  <div class="stats" id="stats"></div>
+
+  <section class="card" aria-labelledby="map-title">
+    <h2 id="map-title">Map</h2>
+    <div class="filters">
+      <label>Country <select id="f-country"><option value="">All</option></select></label>
+      <label>Industry (NACE section) <select id="f-section"><option value="">All industries</option></select></label>
+      <button id="f-fish" aria-pressed="false" type="button">Fishing &amp; aquaculture only</button>
+    </div>
+    <div id="map" role="img" aria-label="Map of active companies by town"></div>
+    <div class="legend" id="map-legend"></div>
+  </section>
+
+  <section class="card" aria-labelledby="ind-title">
+    <h2 id="ind-title">Active companies by industry</h2>
+    <div class="bars" id="industry-bars"></div>
+    <p class="note">Estonia's basic-data file carries no activity code, so it is absent here. French codes from
+      pre-2008 nomenclatures are not mapped to NACE.</p>
+  </section>
+
+  <section class="card" aria-labelledby="pipe-title">
+    <h2 id="pipe-title">Through the pipeline</h2>
+    <p class="note">Rows per stage of the latest run: raw snapshot (bronze), harmonised current companies (silver),
+      quarantined by data-quality rules, and companies placed on the map (gold).</p>
+    <div class="scroll"><table id="funnel"></table></div>
+    <h2 style="margin-top:20px">Geocoding precision</h2>
+    <div class="scroll"><table id="precision"></table></div>
+    <h2 style="margin-top:20px">Data-quality findings</h2>
+    <div class="scroll"><table id="dq"></table></div>
+  </section>
+
+  <section class="card" id="samples-card" aria-labelledby="samples-title" hidden>
+    <h2 id="samples-title">One record, three stages</h2>
+    <p class="note">Synthetic sample rows (generated test fixtures, not real companies) showing what each stage does to
+      the data: raw strings in bronze, typed and harmonised columns in silver, the map-ready dimension in gold.</p>
+    <div class="tabs" id="sample-tabs"></div>
+    <div class="scroll"><table id="sample-table"></table></div>
+  </section>
+
+  <p class="note" id="meta"></p>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const fmt = new Intl.NumberFormat("en");
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const COUNTRY = { FR: "France", GB: "United Kingdom", IE: "Ireland", EE: "Estonia", ES: "Spain (Navarra)", NO: "Norway" };
+
+// Production data lives in data/ (copied from the pipeline's publish location). Otherwise use the
+// synthetic demo in data/demo/. One probe decides, so the browser logs at most one 404.
+const BASE = fetch("data/meta.json").then(r => r.ok ? "data/" : "data/demo/").catch(() => "data/demo/");
+async function load(name) {
+  try { const r = await fetch((await BASE) + name); return r.ok ? await r.json() : null; } catch (e) { return null; }
+}
+
+const tip = document.getElementById("tip");
+function showTip(html, ev) { tip.innerHTML = html; tip.style.display = "block";
+  tip.style.left = Math.min(ev.clientX + 12, innerWidth - 260) + "px"; tip.style.top = (ev.clientY + 12) + "px"; }
+function hideTip() { tip.style.display = "none"; }
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+(async function main() {
+  const [cities, fishing, industry, pipeline, meta, samples] = await Promise.all(
+    ["cities.geojson", "fishing.geojson", "industry_by_country.json", "pipeline.json", "meta.json", "stage_samples.json"].map(load));
+  if (!cities) { document.getElementById("map").textContent = "No data found in data/ or data/demo/."; return; }
+
+  // ---------------- filters
+  const fCountry = document.getElementById("f-country"), fSection = document.getElementById("f-section"),
+        fFish = document.getElementById("f-fish");
+  const countries = [...new Set(cities.features.map(f => f.properties.country_code))].sort();
+  countries.forEach(c => fCountry.add(new Option(COUNTRY[c] || c, c)));
+  const sections = new Map((industry || []).filter(r => r.nace_section).map(r => [r.nace_section, r.section_label]));
+  [...sections].sort().forEach(([k, v]) => fSection.add(new Option(`${k} · ${v}`, k)));
+
+  // ---------------- stats
+  const totalActive = cities.features.reduce((a, f) => a + f.properties.active_companies, 0);
+  const totalFish = (fishing?.features || []).reduce((a, f) => a + f.properties.fishing_companies, 0);
+  document.getElementById("stats").innerHTML = [
+    [fmt.format(totalActive), "active companies on the map"],
+    [fmt.format(cities.features.length), "towns"],
+    [fmt.format(totalFish), "fishing & aquaculture companies"],
+    [countries.length, "registers"],
+  ].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  // ---------------- map
+  const map = L.map("map", { scrollWheelZoom: false, preferCanvas: true }).setView([54, 6], 4);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · postcodes &amp; towns: <a href="https://www.geonames.org/">GeoNames</a> (CC BY 4.0)',
+    maxZoom: 12, className: "basemap" }).addTo(map);
+  const layer = L.layerGroup().addTo(map);
+
+  function draw() {
+    layer.clearLayers();
+    const cc = fCountry.value, sec = fSection.value, fish = fFish.getAttribute("aria-pressed") === "true";
+    const source = fish ? (fishing?.features || []) : cities.features;
+    const rows = source.map(f => {
+      const p = f.properties;
+      const n = fish ? p.fishing_companies : (sec ? (p.by_section?.[sec] || 0) : p.active_companies);
+      return { f, p, n };
+    }).filter(r => r.n > 0 && (!cc || r.p.country_code === cc));
+    const max = Math.max(1, ...rows.map(r => r.n));
+    const color = fish ? css("--fish") : css("--seq");
+    rows.sort((a, b) => b.n - a.n).forEach(({ f, p, n }) => {
+      const [lon, lat] = f.geometry.coordinates;
+      const detail = fish ? ["marine_fishing", "freshwater_fishing", "marine_aquaculture", "freshwater_aquaculture"]
+          .filter(k => p[k]).map(k => `${k.replace(/_/g, " ")}: ${p[k]}`).join("<br>") : "";
+      L.circleMarker([lat, lon], { radius: 4 + 16 * Math.sqrt(n / max), color: css("--surface-1"), weight: 1,
+                                   fillColor: color, fillOpacity: 0.7 })
+        .bindTooltip(`<b>${esc(p.city)}</b> · ${esc(COUNTRY[p.country_code] || p.country_code)}<br>${fmt.format(n)} ${fish ? "fishing/aquaculture" : "active"} companies${detail ? "<br>" + detail : ""}`)
+        .addTo(layer);
+    });
+    document.getElementById("map-legend").innerHTML =
+      `<span><span class="dot" style="background:${color}"></span>${fish ? "fishing & aquaculture companies per town" : "active companies per town"} (area ∝ count)</span>
+       <span>${fmt.format(rows.length)} towns shown</span>`;
+    drawIndustry(cc);
+  }
+  fCountry.onchange = draw; fSection.onchange = draw;
+  fFish.onclick = () => { fFish.setAttribute("aria-pressed", fFish.getAttribute("aria-pressed") !== "true"); draw(); };
+
+  // ---------------- industry bars (single series: one hue, no legend)
+  function drawIndustry(cc) {
+    const agg = new Map();
+    (industry || []).filter(r => r.nace_section && (!cc || r.country_code === cc)).forEach(r => {
+      const k = r.nace_section; agg.set(k, { label: r.section_label, n: (agg.get(k)?.n || 0) + (r.active_companies || 0) });
+    });
+    const rows = [...agg].sort((a, b) => b[1].n - a[1].n);
+    const max = Math.max(1, ...rows.map(r => r[1].n));
+    const el = document.getElementById("industry-bars");
+    el.innerHTML = rows.map(([k, v]) => `<div class="bar-row" data-tip="<b>${esc(k)} · ${esc(v.label)}</b><br>${fmt.format(v.n)} active companies">
+        <span class="name">${esc(k)} · ${esc(v.label)}</span>
+        <span class="bar-track"><span class="bar" style="display:block;width:${(100 * v.n / max).toFixed(1)}%"></span></span>
+        <span class="val">${fmt.format(v.n)}</span></div>`).join("") || '<p class="note">No industry codes for this selection.</p>';
+    el.querySelectorAll(".bar-row").forEach(r => { r.onmousemove = e => showTip(r.dataset.tip, e); r.onmouseleave = hideTip; });
+  }
+  draw();
+
+  // ---------------- pipeline tables
+  if (pipeline) {
+    const st = pipeline.stages || {};
+    const order = [["bronze", "Bronze (raw rows)"], ["silver_current", "Silver (current companies)"],
+                   ["quarantined", "Quarantined"], ["gold_on_map", "Gold (on the map)"]];
+    const cs = Object.keys(COUNTRY).filter(c => Object.values(st).some(s => c in s));
+    document.getElementById("funnel").innerHTML =
+      `<tr><th>Stage</th>${cs.map(c => `<th class="num">${c}</th>`).join("")}</tr>` +
+      order.map(([k, l]) => `<tr><td>${l}</td>${cs.map(c => `<td class="num">${st[k]?.[c] != null ? fmt.format(st[k][c]) : "–"}</td>`).join("")}</tr>`).join("");
+    const precs = ["ADDRESS", "POSTCODE", "DISTRICT", "CITY", "NONE"], gp = pipeline.geo_precision || {};
+    document.getElementById("precision").innerHTML =
+      `<tr><th>Precision</th>${cs.map(c => `<th class="num">${c}</th>`).join("")}</tr>` +
+      precs.map(p => `<tr><td>${p.toLowerCase()}</td>${cs.map(c => `<td class="num">${gp[c + ":" + p] ? fmt.format(gp[c + ":" + p]) : "–"}</td>`).join("")}</tr>`).join("");
+    const dq = (pipeline.data_quality || []).filter(r => r.failed_rows > 0);
+    document.getElementById("dq").innerHTML = `<tr><th>Country</th><th>Rule</th><th>Severity</th><th class="num">Failed</th><th class="num">Rate</th></tr>` +
+      dq.map(r => `<tr><td>${esc(r.country_code)}</td><td>${esc(r.rule.replace(/_/g, " "))}</td><td>${esc(r.severity)}</td>
+        <td class="num">${fmt.format(r.failed_rows)}</td><td class="num">${(100 * r.failure_rate).toFixed(1)}%</td></tr>`).join("");
+  }
+
+  // ---------------- stage samples (synthetic only)
+  if (samples && Object.keys(samples).length) {
+    document.getElementById("samples-card").hidden = false;
+    const tabs = document.getElementById("sample-tabs"), table = document.getElementById("sample-table");
+    let country = Object.keys(samples)[0], stage = "bronze";
+    const render = () => {
+      tabs.innerHTML = Object.keys(samples).map(c => `<button type="button" data-c="${c}" aria-pressed="${c === country}">${c}</button>`).join("") +
+        ["bronze", "silver", "gold"].map(s => `<button type="button" data-s="${s}" aria-pressed="${s === stage}">${s}</button>`).join("");
+      const rows = samples[country][stage] || [];
+      const cols = rows.length ? Object.keys(rows[0]).filter(k => !k.startsWith("_")) : [];
+      table.innerHTML = `<tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr>` +
+        rows.map(r => `<tr>${cols.map(c => `<td>${esc(typeof r[c] === "object" && r[c] !== null ? JSON.stringify(r[c]) : r[c])}</td>`).join("")}</tr>`).join("");
+      tabs.querySelectorAll("button").forEach(b => b.onclick = () => { country = b.dataset.c || country; stage = b.dataset.s || stage; render(); });
+    };
+    render();
+  }
+  if (meta) document.getElementById("meta").textContent = `Generated ${meta.generated_at} · run ${meta.run_id} · ${meta.attribution}`;
+})();
+</script>
+</body>
+</html>

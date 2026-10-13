@@ -1,0 +1,6 @@
+{
+  "country": "SPAIN",
+  "target_filename": "navarra_establecimientos.csv",
+  "resolver": "static",
+  "url": "https://datosabiertos.navarra.es/datastore/dump/0c4b4747-026f-479a-9966-6568a88957f5"
+}

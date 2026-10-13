@@ -1,0 +1,51 @@
+# Databricks Asset Bundle: the jobs, schedule, alerting and guard rails as code.
+#
+#   databricks bundle validate -t dev
+#   databricks bundle deploy   -t dev --var landing_root=/Volumes/<catalog>/landing/files --var alert_email=<you>
+#   databricks bundle run      -t dev registry_lakehouse
+#
+# Environment-specific values (bucket, volume, e-mail) are passed with --var or BUNDLE_VAR_<name>
+# environment variables, so they never live in this public repository.
+
+bundle:
+  name: eu-company-registry-lakehouse
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that holds the bronze/silver/gold/ops schemas
+    default: registry_dev
+  landing_root:
+    description: Landing location (UC volume path or s3:// URL behind an external location)
+  publish_root:
+    description: Where the static website JSON is written (UC volume path or s3:// URL)
+  alert_email:
+    description: Recipient of failure / duration alerts
+  secret_scope:
+    description: Databricks secret scope holding alert-webhook and pseudonym-key
+    default: registry-lakehouse
+  pause_status:
+    description: Schedule state. Dev stays paused so nothing runs (or costs) by accident
+    default: PAUSED
+
+artifacts:
+  registry_wheel:
+    type: whl
+    build: python -m pip wheel --no-deps --wheel-dir dist .
+    path: .
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalog: registry_dev
+      pause_status: PAUSED
+
+  prod:
+    mode: production
+    variables:
+      catalog: registry
+      pause_status: UNPAUSED
