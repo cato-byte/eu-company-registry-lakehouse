@@ -13,8 +13,9 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
 from registry_lakehouse.config import Settings
+from registry_lakehouse.gold import insights as ins
 from registry_lakehouse.silver.classify import nace_divisions
-from registry_lakehouse.spark import ensure_schema
+from registry_lakehouse.spark import ensure_schema, table_exists
 
 log = logging.getLogger(__name__)
 
@@ -45,6 +46,8 @@ def dim_company(company_current: DataFrame, location: DataFrame, industry: DataF
             "is_natural_person", "legal_form_category", "status", "is_active", "registration_date",
             "nace_code", "nace_division", "division_label", "nace_section", "section_label",
             "employees_min", "employees_max", "postal_code", "city", "region",
+            "location_key", F.col("address_line").isNotNull().alias("has_street_address"), "address_line",
+            "closure_date", "is_dormant", "pending_strike_off",
             "latitude", "longitude", F.coalesce("geo_precision", F.lit("NONE")).alias("geo_precision"),
             "geo_source", F.col("valid_from").alias("version_valid_from"),
         )
@@ -65,7 +68,8 @@ def agg_city_industry(dim: DataFrame) -> DataFrame:
     centroid = active.where("latitude IS NOT NULL").groupBy("country_code", "city").agg(
         F.round(F.avg("latitude"), 5).alias("latitude"), F.round(F.avg("longitude"), 5).alias("longitude"))
     counts = active.groupBy("country_code", "city", "nace_section", "section_label").agg(
-        F.count(F.lit(1)).alias("active_companies"))
+        F.count(F.lit(1)).alias("active_companies"),
+        F.sum(F.col("is_operating").cast("int")).alias("operating_companies"))
     return counts.join(centroid, ["country_code", "city"], "left")
 
 
@@ -81,30 +85,47 @@ def fishing_by_city(dim: DataFrame) -> DataFrame:
     )
 
 
+def _save(spark: SparkSession, settings: Settings, name: str, df: DataFrame) -> None:
+    df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+        settings.table("gold", name))
+
+
 def build_gold(spark: SparkSession, settings: Settings) -> dict[str, int]:
     ensure_schema(spark, settings.catalog, settings.gold_schema)
-    company = spark.table(settings.table("silver", "company")).where("is_current")
+    silver = spark.table(settings.table("silver", "company"))
+    company = silver.where("is_current")
     location = spark.table(settings.table("silver", "location"))
     industry = dim_industry(spark)
-    dim = dim_company(company, location, industry)
-    outputs = {
-        "dim_industry": industry,
-        "dim_company": dim,
-    }
-    counts = {}
-    for name, df in outputs.items():
-        df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-            settings.table("gold", name))
-    # Aggregates read the persisted dimension instead of recomputing its joins three times.
+    _save(spark, settings, "dim_industry", industry)
+
+    # Mass-registration addresses are found on the plain dimension, then flagged on it.
+    base = dim_company(company, location, industry)
+    _save(spark, settings, "registered_office_hotspots",
+          ins.mass_addresses(base, settings.mass_address_min_companies))
+    hotspots = spark.table(settings.table("gold", "registered_office_hotspots"))
+    _save(spark, settings, "dim_company", ins.flag_operating(base, hotspots))
+
+    # Everything else reads the persisted dimension instead of recomputing its joins.
     dim_t = spark.table(settings.table("gold", "dim_company"))
-    for name, df in {
+    as_of_row = silver.agg(F.max("snapshot_date")).first()
+    as_of = as_of_row[0] if as_of_row and as_of_row[0] else settings.snapshot_date
+    towns_table = settings.table("silver", "ref_place")
+    towns = spark.table(towns_table) if table_exists(spark, towns_table) else None
+    outputs = {
         "agg_country_industry": agg_country_industry(dim_t),
         "agg_city_industry": agg_city_industry(dim_t),
         "fishing_by_city": fishing_by_city(dim_t),
-    }.items():
-        df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-            settings.table("gold", name))
-    for name in ["dim_company", "agg_country_industry", "agg_city_industry", "fishing_by_city"]:
-        counts[name] = spark.table(settings.table("gold", name)).count()
+        "company_activity_summary": ins.company_activity_summary(dim_t),
+        "company_demography": ins.company_demography(silver, as_of),
+        "cohort_survival": ins.cohort_survival(company, as_of),
+        "fishing_hubs": ins.fishing_hubs(dim_t, towns, settings.fishing_hub_min_companies),
+        "employment_by_region_industry": ins.employment_by_region_industry(dim_t),
+        "distress_by_industry": ins.distress_by_industry(dim_t),
+        "insight_coverage": ins.insight_coverage(spark),
+    }
+    for name, df in outputs.items():
+        _save(spark, settings, name, df)
+    counts = {name: spark.table(settings.table("gold", name)).count()
+              for name in ["dim_company", "registered_office_hotspots", *outputs]}
     log.info("gold %s", counts)
     return counts

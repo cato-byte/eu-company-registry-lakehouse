@@ -62,6 +62,7 @@ def cities_geojson(city_industry: DataFrame, max_cities: int) -> dict:
         city_industry.where("latitude IS NOT NULL")
         .groupBy("country_code", "city", "latitude", "longitude")
         .agg(F.sum("active_companies").alias("active_companies"),
+             F.sum("operating_companies").alias("operating_companies"),
              F.map_from_entries(F.collect_list(F.struct(F.coalesce("nace_section", F.lit("?")),
                                                         "active_companies"))).alias("by_section"))
         .orderBy(F.col("active_companies").desc(), "country_code", "city")
@@ -69,7 +70,8 @@ def cities_geojson(city_industry: DataFrame, max_cities: int) -> dict:
     features = [
         {"type": "Feature",
          "geometry": {"type": "Point", "coordinates": [r["longitude"], r["latitude"]]},
-         "properties": {k: r[k] for k in ("country_code", "city", "active_companies", "by_section")}}
+         "properties": {k: r[k] for k in ("country_code", "city", "active_companies", "operating_companies",
+                                         "by_section")}}
         for r in _rows(per_city, max_cities)
     ]
     return {"type": "FeatureCollection", "features": features}
@@ -146,6 +148,45 @@ def stage_samples(spark: SparkSession, settings: Settings, per_country: int = 3)
     return out
 
 
+def insights(spark: SparkSession, settings: Settings) -> dict:
+    """Bounded, aggregate-only extracts of the gold insight tables for the website."""
+    def t(name: str) -> DataFrame:
+        return spark.table(settings.table("gold", name))
+
+    demography = (t("company_demography").where("year >= 2000")
+                  .groupBy("country_code", "year", "survivorship_biased")
+                  .agg(F.sum("births").alias("births"), F.sum("deaths").alias("deaths"))
+                  .orderBy("country_code", "year"))
+    employment = (t("employment_by_region_industry")
+                  .groupBy("country_code", "nace_section")
+                  .agg(F.sum("employees_low").alias("employees_low"), F.sum("employees_high").alias("employees_high"),
+                       F.sum("companies_reporting").alias("companies_reporting"),
+                       F.max("has_exact_counts").alias("exact"))
+                  .orderBy("country_code", "nace_section"))
+    fishing_jobs = (t("employment_by_region_industry").where("nace_division = '03'")
+                    .groupBy("country_code", "region")
+                    .agg(F.sum("employees_low").alias("employees_low"), F.sum("employees_high").alias("employees_high"),
+                         F.sum("companies_reporting").alias("companies"))
+                    .where("employees_high > 0")
+                    .orderBy(F.col("employees_high").desc()))
+    return {
+        "activity": _rows(t("company_activity_summary").orderBy("country_code"), 10),
+        "hotspots": _rows(t("registered_office_hotspots").orderBy(F.col("companies").desc())
+                          .select("country_code", "city", "postal_code", "address_line", "companies",
+                                  "dormant_companies", "pending_strike_off", "distinct_industries"), 25),
+        "demography": _rows(demography, 1000),
+        "survival": _rows(t("cohort_survival").where("nace_section = 'ALL' AND cohort_year >= 1995")
+                          .orderBy("country_code", "cohort_year"), 200),
+        "survival_by_section": _rows(t("cohort_survival").where("nace_section <> 'ALL'")
+                                     .orderBy("country_code", "nace_section"), 100),
+        "fishing_hubs": _rows(t("fishing_hubs").orderBy(F.col("location_quotient").desc(), "city"), 50),
+        "employment": _rows(employment, 200),
+        "fishing_employment": _rows(fishing_jobs, 30),
+        "distress": _rows(t("distress_by_industry").orderBy("country_code", "nace_section"), 200),
+        "coverage": _rows(t("insight_coverage").orderBy("insight", "country_code"), 100),
+    }
+
+
 def publish(spark: SparkSession, settings: Settings, *, include_samples: bool = False,
             max_cities: int = 5000) -> list[str]:
     gold = settings.publish_root
@@ -157,6 +198,7 @@ def publish(spark: SparkSession, settings: Settings, *, include_samples: bool = 
                    _rows(spark.table(settings.table("gold", "agg_country_industry"))
                          .orderBy("country_code", "nace_section"), 10_000)),
         write_json(gold, "pipeline.json", pipeline_stats(spark, settings)),
+        write_json(gold, "insights.json", insights(spark, settings)),
     ]
     if include_samples:
         written.append(write_json(gold, "stage_samples.json", stage_samples(spark, settings)))

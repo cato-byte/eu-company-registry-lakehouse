@@ -12,7 +12,7 @@
     color-scheme: light;
     --surface-0: #f4f3ef; --surface-1: #fcfcfb; --border: #dddcd5;
     --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
-    --seq: #2a78d6; --seq-soft: #86b6ef; --fish: #eb6834;
+    --seq: #2a78d6; --seq-soft: #86b6ef; --fish: #eb6834; --series-2: #1baf7a;
     --grid: #e6e5df;
   }
   @media (prefers-color-scheme: dark) {
@@ -20,14 +20,14 @@
       color-scheme: dark;
       --surface-0: #111110; --surface-1: #1a1a19; --border: #33332f;
       --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #94938a;
-      --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --grid: #2a2a27;
+      --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --series-2: #199e70; --grid: #2a2a27;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
     --surface-0: #111110; --surface-1: #1a1a19; --border: #33332f;
     --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #94938a;
-    --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --grid: #2a2a27;
+    --seq: #3987e5; --seq-soft: #1c5cab; --fish: #d95926; --series-2: #199e70; --grid: #2a2a27;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--surface-0); color: var(--text-primary);
@@ -70,6 +70,12 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .basemap { filter: invert(1) hue-rotate(180deg) saturate(0.3) brightness(0.85); } }
   :root[data-theme="dark"] .basemap { filter: invert(1) hue-rotate(180deg) saturate(0.3) brightness(0.85); }
   .leaflet-tooltip { background: var(--surface-1); color: var(--text-primary); border-color: var(--border); }
+  .chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart .axis text { fill: var(--text-muted); font-size: 11px; }
+  .chart .grid line { stroke: var(--grid); }
+  .chart .lbl { font-size: 12px; fill: var(--text-secondary); }
+  details summary { cursor: pointer; color: var(--text-secondary); font-size: 13px; }
+  .pill { display: inline-block; padding: 0 6px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); }
   pre { margin: 0; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
   @media (max-width: 600px) { #map { height: 380px; } .bar-row { grid-template-columns: 110px 1fr 56px; } }
 </style>
@@ -89,6 +95,7 @@
       <label>Country <select id="f-country"><option value="">All</option></select></label>
       <label>Industry (NACE section) <select id="f-section"><option value="">All industries</option></select></label>
       <button id="f-fish" aria-pressed="false" type="button">Fishing &amp; aquaculture only</button>
+      <button id="f-oper" aria-pressed="false" type="button" title="Exclude dormant companies, companies being struck off and mass-registration addresses">Operating companies only</button>
     </div>
     <div id="map" role="img" aria-label="Map of active companies by town"></div>
     <div class="legend" id="map-legend"></div>
@@ -99,6 +106,54 @@
     <div class="bars" id="industry-bars"></div>
     <p class="note">Estonia's basic-data file carries no activity code, so it is absent here. French codes from
       pre-2008 nomenclatures are not mapped to NACE.</p>
+  </section>
+
+  <section class="card" id="ins-operating" aria-labelledby="op-title" hidden>
+    <h2 id="op-title">Registered is not the same as operating</h2>
+    <p class="note">A registered office is a legal address, not a place of work. Formation agents and virtual offices
+      host hundreds of companies at one address, and many registered companies are dormant or being struck off.
+      "Operating" excludes all three wherever the register publishes the signal (– = not published).</p>
+    <div class="scroll"><table id="activity"></table></div>
+    <h2 style="margin-top:20px">Mass-registration addresses</h2>
+    <div class="scroll"><table id="hotspots"></table></div>
+  </section>
+
+  <section class="card" id="ins-fishing" aria-labelledby="hub-title" hidden>
+    <h2 id="hub-title">Where fishing really matters</h2>
+    <p class="note">Location quotient = a town's share of fishing companies ÷ its country's share. 10 means fishing is
+      ten times more prominent there than nationally, so small fishing ports rank above big cities with a few fishing firms.</p>
+    <div class="bars" id="hub-bars"></div>
+    <h2 style="margin-top:20px">Fishing &amp; aquaculture jobs by region</h2>
+    <div class="scroll"><table id="fish-jobs"></table></div>
+  </section>
+
+  <section class="card" id="ins-demography" aria-labelledby="demo-title" hidden>
+    <h2 id="demo-title">Company births and deaths per year</h2>
+    <div class="filters"><label>Register <select id="f-demo"></select></label></div>
+    <div class="chart" id="demo-chart"></div>
+    <p class="note" id="demo-note"></p>
+  </section>
+
+  <section class="card" id="ins-survival" aria-labelledby="surv-title" hidden>
+    <h2 id="surv-title">How long do new companies survive?</h2>
+    <p class="note">Share of each year's new registrations still registered 1, 3, 5 and 10 years later. Only France and
+      Ireland keep closed units with their closure date. Young cohorts show – until they are old enough.</p>
+    <div class="scroll"><table id="survival"></table></div>
+  </section>
+
+  <section class="card" id="ins-jobs" aria-labelledby="jobs-title" hidden>
+    <h2 id="jobs-title">Jobs by industry</h2>
+    <div class="filters"><label>Register <select id="f-jobs"></select></label></div>
+    <div class="bars" id="jobs-bars"></div>
+    <p class="note">Norway publishes exact headcounts. France and Navarra publish bands, shown as midpoints with the
+      range on hover (open top bands count at their lower bound).</p>
+  </section>
+
+  <section class="card" id="ins-distress" aria-labelledby="dist-title" hidden>
+    <h2 id="dist-title">Liquidation, insolvency and strike-off by industry</h2>
+    <div class="scroll"><table id="distress"></table></div>
+    <details style="margin-top:12px"><summary>Which register feeds which insight</summary>
+      <div class="scroll"><table id="coverage"></table></div></details>
   </section>
 
   <section class="card" aria-labelledby="pipe-title">
@@ -142,14 +197,122 @@ function showTip(html, ev) { tip.innerHTML = html; tip.style.display = "block";
 function hideTip() { tip.style.display = "none"; }
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+const pct = v => v == null ? "–" : (100 * v).toFixed(1) + "%";
+const num = v => v == null ? "–" : fmt.format(v);
+const cname = c => esc(COUNTRY[c] || c);
+function table(id, head, rows) {
+  document.getElementById(id).innerHTML = `<tr>${head.map(([h, n]) => `<th${n ? ' class="num"' : ""}>${h}</th>`).join("")}</tr>` +
+    rows.map(r => `<tr>${r.map((v, i) => `<td${head[i][1] ? ' class="num"' : ""}>${v}</td>`).join("")}</tr>`).join("");
+}
+function bars(id, rows, color) {  // rows: [label, value, tooltipHtml, valueText]
+  const el = document.getElementById(id), max = Math.max(1, ...rows.map(r => r[1]));
+  el.innerHTML = rows.map(([label, v, t, txt]) => `<div class="bar-row" data-tip="${esc(t)}"><span class="name">${esc(label)}</span>
+    <span class="bar-track"><span class="bar" style="display:block;width:${(100 * v / max).toFixed(1)}%;${color ? `background:var(${color})` : ""}"></span></span>
+    <span class="val">${txt ?? fmt.format(v)}</span></div>`).join("") || '<p class="note">No data for this selection.</p>';
+  el.querySelectorAll(".bar-row").forEach(r => { r.onmousemove = e => showTip(r.dataset.tip, e); r.onmouseleave = hideTip; });
+}
+function lineChart(id, years, series) {  // series: [{name, color, values}]
+  const W = 720, H = 260, m = { l: 48, r: 72, t: 12, b: 28 };
+  const max = Math.max(1, ...series.flatMap(s => s.values));
+  const x = i => m.l + (years.length < 2 ? 0 : i * (W - m.l - m.r) / (years.length - 1));
+  const y = v => H - m.b - v * (H - m.t - m.b) / max;
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(f * max));
+  const step = Math.max(1, Math.ceil(years.length / 8));
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s => s.name).join(" and ")} per year">
+    <g class="grid">${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}"/>`).join("")}</g>
+    <g class="axis">${ticks.map(t => `<text x="${m.l - 6}" y="${y(t) + 4}" text-anchor="end">${fmt.format(t)}</text>`).join("")}
+      ${years.map((yr, i) => i % step ? "" : `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${yr}</text>`).join("")}</g>
+    ${series.map(s => `<path d="${s.values.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("")}"
+        fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>
+      <text class="lbl" x="${x(years.length - 1) + 6}" y="${y(s.values.at(-1)) + 4}">${esc(s.name)}</text>`).join("")}
+    <line id="${id}-x" y1="${m.t}" y2="${H - m.b}" stroke="var(--text-muted)" stroke-dasharray="3 3" visibility="hidden"/>
+    <rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent" id="${id}-hit"/></svg>
+    ${series.length > 1 ? `<div class="legend">${series.map(s => `<span><span class="dot" style="background:${s.color}"></span>${esc(s.name)}</span>`).join("")}</div>` : ""}`;
+  const el = document.getElementById(id); el.innerHTML = svg;
+  const hit = document.getElementById(id + "-hit"), cross = document.getElementById(id + "-x");
+  hit.onmousemove = e => {
+    const r = hit.getBoundingClientRect(), f = (e.clientX - r.left) / r.width;
+    const i = Math.max(0, Math.min(years.length - 1, Math.round(f * (years.length - 1))));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+    showTip(`<b>${years[i]}</b><br>` + series.map(s => `${esc(s.name)}: ${fmt.format(s.values[i])}`).join("<br>"), e);
+  };
+  hit.onmouseleave = () => { cross.setAttribute("visibility", "hidden"); hideTip(); };
+}
+
+function renderInsights(ins) {
+  const show = id => { document.getElementById(id).hidden = false; };
+  if (ins.activity?.length) {
+    show("ins-operating");
+    table("activity", [["Register"], ["Active", 1], ["Dormant", 1], ["Being struck off", 1], ["At mass addresses", 1], ["Operating", 1]],
+      ins.activity.map(r => [cname(r.country_code), num(r.active_companies), pct(r.dormant_share), pct(r.pending_strike_off_share),
+                             pct(r.mass_address_share), `<b>${pct(r.operating_share)}</b>`]));
+    table("hotspots", [["Register"], ["Town"], ["Address"], ["Companies", 1], ["Dormant", 1], ["Industries", 1]],
+      (ins.hotspots || []).map(r => [cname(r.country_code), esc(r.city), esc(`${r.address_line ?? ""} ${r.postal_code ?? ""}`),
+                                     num(r.companies), num(r.dormant_companies), num(r.distinct_industries)]));
+  }
+  if (ins.fishing_hubs?.length) {
+    show("ins-fishing");
+    bars("hub-bars", ins.fishing_hubs.slice(0, 15).map(r => [`${r.city} · ${r.country_code}`, r.location_quotient,
+      `<b>${esc(r.city)}</b> · ${cname(r.country_code)}<br>${num(r.fishing_companies)} of ${num(r.active_companies)} companies fish (${pct(r.fishing_share)})<br>`
+      + `national share ${pct(r.country_share)}` + (r.fishing_per_10k_inhabitants != null ? `<br>${r.fishing_per_10k_inhabitants} per 10,000 inhabitants` : ""),
+      `×${r.location_quotient}`]), "--fish");
+    table("fish-jobs", [["Register"], ["Region"], ["Companies", 1], ["Jobs", 1]],
+      (ins.fishing_employment || []).map(r => [cname(r.country_code), esc(r.region ?? "–"), num(r.companies),
+        r.employees_low === r.employees_high ? num(r.employees_low) : `${num(r.employees_low)}–${num(r.employees_high)}`]));
+  }
+  if (ins.demography?.length) {
+    show("ins-demography");
+    const sel = document.getElementById("f-demo");
+    const regs = [...new Set(ins.demography.map(r => r.country_code))].sort();
+    regs.forEach(c => sel.add(new Option(COUNTRY[c] || c, c)));
+    const draw = () => {
+      const rows = ins.demography.filter(r => r.country_code === sel.value).sort((a, b) => a.year - b.year);
+      const hasDeaths = rows.some(r => r.deaths > 0);
+      const series = [{ name: "Births", color: css("--seq"), values: rows.map(r => r.births) }];
+      if (hasDeaths) series.push({ name: "Deaths", color: css("--series-2"), values: rows.map(r => r.deaths) });
+      lineChart("demo-chart", rows.map(r => r.year), series);
+      document.getElementById("demo-note").textContent = (rows[0]?.survivorship_biased
+        ? "This register lists live companies only: companies born long ago and already closed are missing, so older years are under-counted and deaths are not shown. "
+        : "") + (sel.value === "ES" ? "Navarra publishes no dates: births and deaths are entries into and exits from the yearly panel." : "");
+    };
+    sel.onchange = draw; draw();
+  }
+  if (ins.survival?.length) {
+    show("ins-survival");
+    table("survival", [["Register"], ["Cohort"], ["New companies", 1], ["1 year", 1], ["3 years", 1], ["5 years", 1], ["10 years", 1]],
+      ins.survival.map(r => [cname(r.country_code), r.cohort_year, num(r.cohort_size), pct(r.survival_1y), pct(r.survival_3y),
+                             pct(r.survival_5y), pct(r.survival_10y)]));
+  }
+  if (ins.employment?.length) {
+    show("ins-jobs");
+    const sel = document.getElementById("f-jobs");
+    [...new Set(ins.employment.map(r => r.country_code))].sort().forEach(c => sel.add(new Option(COUNTRY[c] || c, c)));
+    const draw = () => bars("jobs-bars", ins.employment.filter(r => r.country_code === sel.value && r.nace_section)
+      .map(r => [r.nace_section, Math.round((r.employees_low + r.employees_high) / 2),
+        `<b>Section ${esc(r.nace_section)}</b><br>${r.exact ? fmt.format(r.employees_low) : `${fmt.format(r.employees_low)}–${fmt.format(r.employees_high)}`} jobs<br>${num(r.companies_reporting)} companies reporting`])
+      .sort((a, b) => b[1] - a[1]));
+    sel.onchange = draw; draw();
+  }
+  if (ins.distress?.length) {
+    show("ins-distress");
+    table("distress", [["Register"], ["Section"], ["Registered", 1], ["Liquidation", 1], ["Insolvent", 1], ["Distress rate", 1], ["Strike-off rate", 1]],
+      [...ins.distress].sort((a, b) => b.distress_rate - a.distress_rate).slice(0, 30)
+        .map(r => [cname(r.country_code), esc(r.nace_section ?? "–"), num(r.registered), num(r.in_liquidation), num(r.insolvent),
+                   pct(r.distress_rate), pct(r.strike_off_rate)]));
+    table("coverage", [["Insight"], ["Register"], ["Included"], ["Why"]],
+      (ins.coverage || []).map(r => [esc(r.insight.replace(/_/g, " ")), cname(r.country_code), r.included ? "yes" : "no", esc(r.reason)]));
+  }
+}
+
 (async function main() {
-  const [cities, fishing, industry, pipeline, meta, samples] = await Promise.all(
-    ["cities.geojson", "fishing.geojson", "industry_by_country.json", "pipeline.json", "meta.json", "stage_samples.json"].map(load));
+  const [cities, fishing, industry, pipeline, meta, samples, insights] = await Promise.all(
+    ["cities.geojson", "fishing.geojson", "industry_by_country.json", "pipeline.json", "meta.json", "stage_samples.json",
+     "insights.json"].map(load));
   if (!cities) { document.getElementById("map").textContent = "No data found in data/ or data/demo/."; return; }
 
   // ---------------- filters
   const fCountry = document.getElementById("f-country"), fSection = document.getElementById("f-section"),
-        fFish = document.getElementById("f-fish");
+        fFish = document.getElementById("f-fish"), fOper = document.getElementById("f-oper");
   const countries = [...new Set(cities.features.map(f => f.properties.country_code))].sort();
   countries.forEach(c => fCountry.add(new Option(COUNTRY[c] || c, c)));
   const sections = new Map((industry || []).filter(r => r.nace_section).map(r => [r.nace_section, r.section_label]));
@@ -175,10 +338,12 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
   function draw() {
     layer.clearLayers();
     const cc = fCountry.value, sec = fSection.value, fish = fFish.getAttribute("aria-pressed") === "true";
+    const oper = !fish && !sec && fOper.getAttribute("aria-pressed") === "true";
     const source = fish ? (fishing?.features || []) : cities.features;
     const rows = source.map(f => {
       const p = f.properties;
-      const n = fish ? p.fishing_companies : (sec ? (p.by_section?.[sec] || 0) : p.active_companies);
+      const n = fish ? p.fishing_companies : (sec ? (p.by_section?.[sec] || 0)
+        : (oper ? (p.operating_companies ?? p.active_companies) : p.active_companies));
       return { f, p, n };
     }).filter(r => r.n > 0 && (!cc || r.p.country_code === cc));
     const max = Math.max(1, ...rows.map(r => r.n));
@@ -189,16 +354,17 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
           .filter(k => p[k]).map(k => `${k.replace(/_/g, " ")}: ${p[k]}`).join("<br>") : "";
       L.circleMarker([lat, lon], { radius: 4 + 16 * Math.sqrt(n / max), color: css("--surface-1"), weight: 1,
                                    fillColor: color, fillOpacity: 0.7 })
-        .bindTooltip(`<b>${esc(p.city)}</b> · ${esc(COUNTRY[p.country_code] || p.country_code)}<br>${fmt.format(n)} ${fish ? "fishing/aquaculture" : "active"} companies${detail ? "<br>" + detail : ""}`)
+        .bindTooltip(`<b>${esc(p.city)}</b> · ${esc(COUNTRY[p.country_code] || p.country_code)}<br>${fmt.format(n)} ${fish ? "fishing/aquaculture" : oper ? "operating" : "active"} companies${detail ? "<br>" + detail : ""}`)
         .addTo(layer);
     });
     document.getElementById("map-legend").innerHTML =
-      `<span><span class="dot" style="background:${color}"></span>${fish ? "fishing & aquaculture companies per town" : "active companies per town"} (area ∝ count)</span>
+      `<span><span class="dot" style="background:${color}"></span>${fish ? "fishing & aquaculture companies per town" : oper ? "operating companies per town" : "active companies per town"} (area ∝ count)</span>
        <span>${fmt.format(rows.length)} towns shown</span>`;
     drawIndustry(cc);
   }
   fCountry.onchange = draw; fSection.onchange = draw;
-  fFish.onclick = () => { fFish.setAttribute("aria-pressed", fFish.getAttribute("aria-pressed") !== "true"); draw(); };
+  const toggle = b => () => { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); draw(); };
+  fFish.onclick = toggle(fFish); fOper.onclick = toggle(fOper);
 
   // ---------------- industry bars (single series: one hue, no legend)
   function drawIndustry(cc) {
@@ -252,6 +418,7 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
     };
     render();
   }
+  if (insights) renderInsights(insights);
   if (meta) document.getElementById("meta").textContent = `Generated ${meta.generated_at} · run ${meta.run_id} · ${meta.attribution}`;
 })();
 </script>

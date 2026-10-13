@@ -50,5 +50,9 @@ def map_united_kingdom(bronze: DataFrame, snapshot_date: date) -> DataFrame:
         F.lit(None).cast("double").alias("source_x"),
         F.lit(None).cast("double").alias("source_y"),
         F.lit(None).cast("string").alias("source_crs"),
+        (F.coalesce(F.upper(p.clean_text("Accounts_AccountCategory")) == "DORMANT", F.lit(False))
+         | F.coalesce(p.clean_text("SICCode_SicText_1"), F.lit("")).startswith("99999")).alias("is_dormant"),
+        F.coalesce(p.clean_text("CompanyStatus").rlike("(?i)proposal to strike off"), F.lit(False))
+        .alias("pending_strike_off"),
         F.lit(snapshot_date).cast("date").alias("snapshot_date"),
     )

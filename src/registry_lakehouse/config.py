@@ -35,6 +35,10 @@ class Settings:
     dq_fatal_threshold: float = 0.05
     # Failure-rate thresholds are statistically meaningless on tiny snapshots.
     dq_min_rows_for_rate: int = 1000
+    # Insights: an address with at least this many active companies is a mass-registration address.
+    mass_address_min_companies: int = 50
+    # Insights: towns need at least this many fishing companies to be ranked as a fishing hub.
+    fishing_hub_min_companies: int = 3
     # Volume anomaly: abort if a snapshot has fewer rows than this share of the previous one.
     min_volume_ratio: float = 0.8
     # Alerting: name of the env var / Databricks secret holding a Slack/Teams webhook URL.
@@ -66,4 +70,6 @@ def settings_from_env() -> Settings:
         max_landing_bytes=int(_env("REGISTRY_MAX_LANDING_BYTES", str(20 * 1024**3)) or 0),
         snapshot_date=date.fromisoformat(snapshot) if snapshot else date.today(),
         run_id=_env("REGISTRY_RUN_ID", "local") or "local",
+        mass_address_min_companies=int(_env("REGISTRY_MASS_ADDRESS_MIN", "50") or 50),
+        fishing_hub_min_companies=int(_env("REGISTRY_FISHING_HUB_MIN", "3") or 3),
     )

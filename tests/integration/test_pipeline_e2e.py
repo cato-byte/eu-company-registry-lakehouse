@@ -31,7 +31,7 @@ def run(spark, tmp_path_factory):
     shutil.copytree(LANDING, landing)
     s = Settings(landing_root=str(landing), bronze_schema="e2e_bronze", silver_schema="e2e_silver",
                  gold_schema="e2e_gold", ops_schema="e2e_ops", publish_root=str(publish),
-                 snapshot_date=date(2026, 7, 31), run_id="e2e-1")
+                 snapshot_date=date(2026, 7, 31), run_id="e2e-1", mass_address_min_companies=3)
     countries = list(COUNTRY_CODES)
     cli.run_bronze(spark, s, countries)
     cli.run_silver(spark, s, countries)
@@ -83,7 +83,7 @@ def test_published_files_are_small_and_contain_no_personal_names(run):
     out = Path(run.publish_root)
     names = {p.name for p in out.iterdir()}
     assert {"cities.geojson", "fishing.geojson", "industry_by_country.json", "pipeline.json", "meta.json",
-            "stage_samples.json"} <= names
+            "stage_samples.json", "insights.json"} <= names
     cities = json.loads((out / "cities.geojson").read_text())
     assert cities["features"] and all(f["geometry"]["type"] == "Point" for f in cities["features"])
     total = sum(p.stat().st_size for p in out.iterdir())
@@ -119,3 +119,28 @@ def test_delta_history_and_change_data_feed(spark, run):
     assert props.get("delta.enableChangeDataFeed") == "true"
     changes = spark.read.option("readChangeFeed", "true").option("startingVersion", 0).table(table)
     assert changes.where("_change_type = 'update_postimage'").count() > 0
+
+
+def test_insight_tables_respect_country_coverage(spark, run):
+    def t(name):
+        return spark.table(run.table("gold", name))
+
+    def countries(name):
+        return {r.country_code for r in t(name).select("country_code").distinct().collect()}
+
+    hot = t("registered_office_hotspots").collect()
+    assert [(r.country_code, r.city, r.companies, r.dormant_companies) for r in hot] == [("GB", "LONDON", 4, 2)]
+    gb = t("company_activity_summary").where("country_code = 'GB'").first()
+    assert gb.dormant >= 2 and gb.operating_estimate < gb.active_companies
+    assert t("company_activity_summary").where("country_code = 'NO'").first().dormant is None
+
+    assert countries("cohort_survival") <= {"FR", "IE"}
+    assert countries("employment_by_region_industry") <= {"NO", "FR", "ES"}
+    assert countries("distress_by_industry") <= {"GB", "IE", "EE", "NO"}
+    assert "EE" not in countries("fishing_hubs") and countries("fishing_hubs")
+    assert t("company_demography").where("country_code = 'ES' AND year = 2022 AND births > 0").count() > 0
+
+    dim = t("dim_company")
+    assert dim.where("at_mass_address AND is_operating").count() == 0
+    published = json.loads((Path(run.publish_root) / "insights.json").read_text())
+    assert published["hotspots"] and published["coverage"]

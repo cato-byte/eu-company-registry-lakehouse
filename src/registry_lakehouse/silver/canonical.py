@@ -43,6 +43,9 @@ MAPPED_COLUMNS: list[tuple[str, str, str]] = [
     ("source_x", "DOUBLE", "Projected X coordinate supplied by the register"),
     ("source_y", "DOUBLE", "Projected Y coordinate supplied by the register"),
     ("source_crs", "STRING", "CRS of source_x/source_y, e.g. EPSG:2154"),
+    ("is_dormant", "BOOLEAN", "Registered but not trading (UK dormant accounts / SIC 99999). NULL if not published"),
+    ("pending_strike_off", "BOOLEAN", "Still registered but being removed (UK proposal to strike off, IE strike-off "
+                                      "list). NULL if not published"),
 ]
 MAPPED = [c[0] for c in MAPPED_COLUMNS]
 
@@ -51,6 +54,7 @@ TRACKED = [
     "company_name", "legal_form_local", "legal_form_category", "status", "registration_date", "closure_date",
     "nace_code", "industry_code_local", "employees_min", "employees_max", "vat_number",
     "address_line", "postal_code", "city", "municipality_code", "region", "address_country",
+    "is_dormant", "pending_strike_off",
 ]
 
 DERIVED_COLUMNS: list[tuple[str, str, str]] = [

@@ -313,6 +313,14 @@ def build_uk(used_places: dict) -> None:
                 r[ix[col]] = fake_company(r[ix[col]])
         used_places["GB"].add((r[ix["RegAddress.PostCode"]], r[ix["RegAddress.PostTown"]]))
         out.append(r)
+    # A formation-agent style address: four companies registered at one office, two of them dormant.
+    agents = [r for r in out if r[ix["CompanyStatus"]] == "Active"][3:7]
+    for i, r in enumerate(agents):
+        r[ix["RegAddress.AddressLine1"]], r[ix["RegAddress.AddressLine2"]] = "1 EXAMPLE SQUARE", "SUITE 100"
+        r[ix["RegAddress.PostTown"]], r[ix["RegAddress.PostCode"]] = "LONDON", "WC2H 9JQ"
+        if i < 2:
+            r[ix["Accounts.AccountCategory"]] = "DORMANT"
+    used_places["GB"].add(("WC2H 9JQ", "LONDON"))
     # Edge cases: incorporation date in the future, and a lowercase postcode without a space.
     out[-1][ix["IncorporationDate"]] = "01/01/2099"
     out[-2][ix["RegAddress.PostCode"]] = out[-2][ix["RegAddress.PostCode"]].replace(" ", "").lower()

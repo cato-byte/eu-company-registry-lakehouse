@@ -70,5 +70,8 @@ def map_ireland(bronze: DataFrame, snapshot_date: date) -> DataFrame:
         F.lit(None).cast("double").alias("source_x"),
         F.lit(None).cast("double").alias("source_y"),
         F.lit(None).cast("string").alias("source_crs"),
+        F.lit(None).cast("boolean").alias("is_dormant"),
+        F.coalesce(p.clean_text("company_status").rlike("(?i)strike off listed"), F.lit(False))
+        .alias("pending_strike_off"),
         F.lit(snapshot_date).cast("date").alias("snapshot_date"),
     )

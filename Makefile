@@ -23,6 +23,7 @@ test-all: lint test e2e
 run-local:        ## run every stage locally and write the demo site data
 	rm -rf .local && mkdir -p .local && cp -r tests/fixtures/landing .local/landing
 	REGISTRY_LANDING_ROOT=.local/landing REGISTRY_SNAPSHOT_DATE=2026-07-31 REGISTRY_PUBLISH_ROOT=site/data/demo \
+		REGISTRY_MASS_ADDRESS_MIN=3 REGISTRY_FISHING_HUB_MIN=1 \
 		$(VENV_BIN)/registry-lakehouse all --samples
 
 fixtures:         ## rebuild synthetic fixtures from private samples (needs data/samples)

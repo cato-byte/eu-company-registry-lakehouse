@@ -62,5 +62,7 @@ def map_estonia(bronze: DataFrame, snapshot_date: date) -> DataFrame:
         F.lit(None).cast("double").alias("source_x"),
         F.lit(None).cast("double").alias("source_y"),
         F.lit(None).cast("string").alias("source_crs"),
+        F.lit(None).cast("boolean").alias("is_dormant"),
+        F.lit(None).cast("boolean").alias("pending_strike_off"),
         F.lit(snapshot_date).cast("date").alias("snapshot_date"),
     )

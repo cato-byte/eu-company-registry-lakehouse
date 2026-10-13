@@ -81,5 +81,7 @@ def map_france(bronze: DataFrame, snapshot_date: date) -> DataFrame:
         F.when(lambert_ok, p.parse_decimal("coordonneeLambertOrdonneeEtablissement")).alias("source_y"),
         F.when(lambert_ok & p.parse_decimal("coordonneeLambertAbscisseEtablissement").isNotNull(),
                F.lit("EPSG:2154")).alias("source_crs"),
+        F.lit(None).cast("boolean").alias("is_dormant"),
+        F.lit(None).cast("boolean").alias("pending_strike_off"),
         F.lit(snapshot_date).cast("date").alias("snapshot_date"),
     )
