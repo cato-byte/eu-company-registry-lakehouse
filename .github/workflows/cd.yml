@@ -1,0 +1,98 @@
+# Continuous deployment to production.
+#
+#   push to main ──► ci (all tests) ──► [production approval] ──► AWS ingestion (SAM)
+#                                                            └──► Databricks job (bundle)
+#
+# Credentials:
+#   * Databricks: OAuth machine-to-machine with a service principal (no personal tokens).
+#   * AWS: GitHub OIDC -> short-lived role (no access keys stored anywhere).
+# Everything identifying (host, bucket, e-mail, ids) is a *secret* of the `production`
+# environment, because the logs of a public repository are public and only secrets are masked.
+# See docs/deployment.md for the one-time setup.
+
+name: cd
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_job:
+        description: Start a production run right after deploying
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false  # never interrupt a deployment half-way
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  aws:
+    name: Deploy ingestion (AWS SAM)
+    needs: tests
+    if: vars.DEPLOY_AWS == 'true'  # repository variable: switch on once the AWS setup is done
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write  # GitHub OIDC -> AWS role
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Build and deploy
+        run: |
+          sam build -t infra/template.yaml
+          sam deploy \
+            --stack-name eu-registry-ingestion \
+            --resolve-s3 \
+            --capabilities CAPABILITY_IAM \
+            --no-confirm-changeset --no-fail-on-empty-changeset \
+            --parameter-overrides "BucketName=${{ secrets.LANDING_BUCKET }}" "AlertEmail=${{ secrets.ALERT_EMAIL }}"
+
+  databricks:
+    name: Deploy lakehouse job (Databricks bundle)
+    needs: tests
+    if: vars.DEPLOY_DATABRICKS == 'true'  # repository variable: switch on once the workspace setup is done
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+      BUNDLE_VAR_service_principal_id: ${{ secrets.DATABRICKS_CLIENT_ID }}
+      BUNDLE_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+      BUNDLE_VAR_catalog: ${{ vars.DATABRICKS_CATALOG || 'registry' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: databricks/setup-cli@main
+        with:
+          version: "1.20.0"
+      - name: Stamp a unique wheel version
+        run: python tools/set_version.py "0.2.${{ github.run_number }}+g${GITHUB_SHA::7}"
+      - name: Validate against the workspace
+        run: databricks bundle validate -t prod --strict
+      - name: Deploy
+        run: databricks bundle deploy -t prod
+      - name: Start a run (optional)
+        if: github.event_name == 'workflow_dispatch' && inputs.run_job
+        run: databricks bundle run -t prod registry_lakehouse --no-wait

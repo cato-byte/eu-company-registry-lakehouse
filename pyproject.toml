@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "registry-lakehouse"
-version = "0.2.0"
+dynamic = ["version"]
 description = "Pan-European company registry lakehouse on Databricks serverless (AWS): medallion pipeline, data quality, tiered free geocoding and static publishing."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -30,6 +30,11 @@ dev = [
 [project.scripts]
 registry-lakehouse = "registry_lakehouse.cli:main"
 registry-cost = "registry_lakehouse.ops.cost:main"
+
+[tool.setuptools.dynamic]
+# CD stamps a unique version per deploy (tools/set_version.py), so serverless never reuses a
+# cached wheel with the same file name.
+version = { attr = "registry_lakehouse.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -2,7 +2,7 @@
 PY ?= .venv/bin/python
 VENV_BIN := .venv/bin
 
-.PHONY: setup lint test e2e test-all run-local fixtures cost site clean
+.PHONY: setup lint test e2e test-all run-local fixtures cost site clean bundle-check
 
 setup:            ## create the virtualenv with Spark + Delta + test tooling
 	python3 -m venv .venv && $(VENV_BIN)/pip install -e ".[local,ingestion,dev]" && $(VENV_BIN)/pre-commit install
@@ -27,6 +27,9 @@ run-local:        ## run every stage locally and write the demo site data
 
 fixtures:         ## rebuild synthetic fixtures from private samples (needs data/samples)
 	$(PY) tools/make_fixtures.py
+
+bundle-check:     ## strict validation of the Databricks bundle (dev + prod), no workspace needed
+	$(PY) tools/bundle_check.py databricks
 
 cost:             ## predicted cost of a full production run
 	$(VENV_BIN)/registry-cost estimate --sizes FR=9.3GB,GB=2.6GB,IE=184MB,NO=2.8GB,EE=92MB,ES=69MB

@@ -1,0 +1,6 @@
+{
+  "country": "REFERENCE/geonames/EE",
+  "target_filename": "EE.txt",
+  "resolver": "static",
+  "url": "https://download.geonames.org/export/zip/EE.zip"
+}

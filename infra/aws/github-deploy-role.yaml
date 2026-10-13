@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  One-time bootstrap: lets GitHub Actions (only the `production` environment of this repository)
+  deploy the ingestion SAM stack with short-lived credentials. There are no AWS keys in GitHub.
+    aws cloudformation deploy --template-file infra/aws/github-deploy-role.yaml \
+      --stack-name eu-registry-github-deploy --capabilities CAPABILITY_NAMED_IAM \
+      --parameter-overrides LandingBucket=<bucket>
+
+Parameters:
+  GitHubRepo:
+    Type: String
+    Default: cato-byte/eu-company-registry-lakehouse
+  LandingBucket:
+    Type: String
+    Description: Bucket the ingestion Lambdas write to (they get access to it, the deploy role does not)
+  CreateOidcProvider:
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "true"
+    Description: Set to false if the account already has the token.actions.githubusercontent.com provider
+
+Conditions:
+  CreateProvider: !Equals [!Ref CreateOidcProvider, "true"]
+
+Resources:
+  GitHubOidc:
+    Type: AWS::IAM::OIDCProvider
+    Condition: CreateProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList: [sts.amazonaws.com]
+
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: eu-registry-github-deploy
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                # Only jobs running in the protected `production` environment of this repo
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubRepo}:environment:production
+      Policies:
+        - PolicyName: sam-deploy-eu-registry-ingestion
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: Stacks
+                Effect: Allow
+                Action: cloudformation:*
+                Resource:
+                  - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eu-registry-ingestion/*
+                  - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/aws-sam-cli-managed-default/*
+                  - !Sub arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31
+              - Sid: ChangeSetsAndValidation
+                Effect: Allow
+                Action: [cloudformation:ValidateTemplate, cloudformation:GetTemplateSummary, cloudformation:ListStacks]
+                Resource: "*"
+              - Sid: SamArtifactsBucket
+                Effect: Allow
+                Action: s3:*
+                Resource: ["arn:aws:s3:::aws-sam-cli-managed-default-*", "arn:aws:s3:::aws-sam-cli-managed-default-*/*"]
+              - Sid: StackResources
+                Effect: Allow
+                Action: [lambda:*, scheduler:*, sns:*, cloudwatch:PutMetricAlarm, cloudwatch:DeleteAlarms,
+                         cloudwatch:DescribeAlarms, logs:*]
+                Resource: "*"
+              - Sid: FunctionRoles
+                Effect: Allow
+                Action: [iam:CreateRole, iam:DeleteRole, iam:GetRole, iam:PassRole, iam:TagRole, iam:UntagRole,
+                         iam:AttachRolePolicy, iam:DetachRolePolicy, iam:PutRolePolicy, iam:DeleteRolePolicy,
+                         iam:GetRolePolicy, iam:UpdateAssumeRolePolicy]
+                Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/eu-registry-ingestion-*
+
+Outputs:
+  DeployRoleArn:
+    Description: Store as GitHub secret AWS_DEPLOY_ROLE_ARN in the `production` environment
+    Value: !GetAtt DeployRole.Arn

@@ -48,13 +48,9 @@ resources:
       environments:
         - environment_key: default
           spec:
-            environment_version: "3"
+            environment_version: "4"  # Spark 4 / Python 3.12, same as the local test stack
             dependencies:
               - ../dist/*.whl
-
-      parameters:
-        - name: snapshot_date
-          default: ""
 
       tasks:
         - task_key: bronze

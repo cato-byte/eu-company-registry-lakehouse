@@ -1,17 +1,20 @@
 name: ci
 
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_call:  # pushes to main run it through cd.yml, as the gate before any deployment
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  DATABRICKS_CLI_VERSION: "1.20.0"
+
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,6 +44,13 @@ jobs:
           python tools/spark_lint.py src
           git ls-files | xargs python tools/check_sensitive.py
 
+      - uses: databricks/setup-cli@main
+        with:
+          version: ${{ env.DATABRICKS_CLI_VERSION }}
+
+      - name: Databricks bundle (strict validation of dev and prod, no workspace needed)
+        run: python tools/bundle_check.py databricks
+
       - name: Unit tests
         run: pytest tests -m "not e2e" --cov=registry_lakehouse --cov-report=term-missing
 
@@ -49,19 +59,3 @@ jobs:
 
       - name: Cost estimate for a full production run (priors)
         run: registry-cost estimate --sizes FR=9.3GB,GB=2.6GB,IE=184MB,NO=2.8GB,EE=92MB,ES=69MB
-
-  bundle:
-    runs-on: ubuntu-latest
-    if: ${{ vars.DATABRICKS_HOST != '' }}
-    needs: checks
-    steps:
-      - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@main
-      - name: Validate the Databricks bundle
-        env:
-          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          BUNDLE_VAR_landing_root: ${{ vars.LANDING_ROOT }}
-          BUNDLE_VAR_publish_root: ${{ vars.PUBLISH_ROOT }}
-          BUNDLE_VAR_alert_email: ${{ vars.ALERT_EMAIL }}
-        run: databricks bundle validate -t dev

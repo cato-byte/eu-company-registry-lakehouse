@@ -1,0 +1,6 @@
+{
+  "country": "REFERENCE/geonames/NO",
+  "target_filename": "NO.txt",
+  "resolver": "static",
+  "url": "https://download.geonames.org/export/zip/NO.zip"
+}

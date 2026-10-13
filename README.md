@@ -41,12 +41,13 @@ make cost       # predicted cost of a full production run
 
 ## Deploying
 
-1. **Ingestion (AWS):** `sam build -t infra/template.yaml && sam deploy --guided --parameter-overrides BucketName=<bucket> AlertEmail=<you>`
-2. **Databricks:** create a secret scope `registry-lakehouse` with `pseudonym-key` (and optionally `alert-webhook`), then
-   `databricks bundle deploy -t prod --var landing_root=<volume or s3 path> --var publish_root=<...> --var alert_email=<you>`
-3. **Website:** copy the files from `publish_root` next to `site/index.html` (in a `data/` folder) on any static host.
+Production deploys are continuous. Every push to `main` runs the full test suite, waits for approval
+in the GitHub `production` environment, then deploys the ingestion Lambdas (AWS SAM, via GitHub OIDC)
+and the Databricks job (Asset Bundle, as a service principal). One-time setup and rollback are in
+[docs/deployment.md](docs/deployment.md).
 
-Bucket names, volumes and e-mail addresses are never committed. They are passed at deploy time.
+Bucket names, workspace host and e-mail addresses are never committed: they are GitHub environment
+secrets, masked in the public Actions logs.
 
 ## Repository layout
 

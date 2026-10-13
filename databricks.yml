@@ -1,11 +1,13 @@
 # Databricks Asset Bundle: the jobs, schedule, alerting and guard rails as code.
 #
+# Production is deployed by GitHub Actions (.github/workflows/cd.yml) as a service principal.
+# Manual use, e.g. a personal dev copy:
 #   databricks bundle validate -t dev
-#   databricks bundle deploy   -t dev --var landing_root=/Volumes/<catalog>/landing/files --var alert_email=<you>
+#   databricks bundle deploy   -t dev
 #   databricks bundle run      -t dev registry_lakehouse
 #
-# Environment-specific values (bucket, volume, e-mail) are passed with --var or BUNDLE_VAR_<name>
-# environment variables, so they never live in this public repository.
+# Environment-specific values (volumes, e-mail, service principal) are passed as BUNDLE_VAR_<name>
+# environment variables (GitHub environment variables in CD), so they never live in this public repo.
 
 bundle:
   name: eu-company-registry-lakehouse
@@ -18,9 +20,11 @@ variables:
     description: Unity Catalog catalog that holds the bronze/silver/gold/ops schemas
     default: registry_dev
   landing_root:
-    description: Landing location (UC volume path or s3:// URL behind an external location)
+    description: Landing location, an external UC volume over the S3 landing prefix
+    default: /Volumes/${var.catalog}/files/landing
   publish_root:
-    description: Where the static website JSON is written (UC volume path or s3:// URL)
+    description: Where the static website JSON is written, an external UC volume over the site's S3 prefix
+    default: /Volumes/${var.catalog}/files/site_data
   alert_email:
     description: Recipient of failure / duration alerts
   secret_scope:
@@ -29,6 +33,9 @@ variables:
   pause_status:
     description: Schedule state. Dev stays paused so nothing runs (or costs) by accident
     default: PAUSED
+  service_principal_id:
+    description: Application id of the service principal that owns and runs the production job
+    default: ""
 
 artifacts:
   registry_wheel:
@@ -46,6 +53,11 @@ targets:
 
   prod:
     mode: production
+    workspace:
+      # One copy, owned by the deploying service principal: not writable by other workspace users.
+      root_path: /Workspace/Users/${var.service_principal_id}/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      service_principal_name: ${var.service_principal_id}
     variables:
       catalog: registry
       pause_status: UNPAUSED

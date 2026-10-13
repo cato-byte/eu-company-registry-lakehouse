@@ -174,3 +174,16 @@ def test_norway(bronze):
     assert df.where("address_country <> 'NO'").count() >= 1  # foreign addresses kept but flagged
     assert df.where("id_checksum_valid").count() == df.count()
     assert df.where("vat_number IS NOT NULL AND vat_number NOT RLIKE '^NO[0-9]{9}MVA$'").count() == 0
+
+
+def test_latest_reference_file_per_source(spark, tmp_path):
+    from registry_lakehouse.bronze.landing import latest_reference_files
+
+    for rel in ["REF/FR/ingest_date=2026-08-01/FR.txt", "REF/FR/ingest_date=2026-09-01/FR.txt",
+                "REF/FR/ingest_date=2026-09-01/readme.txt", "REF/GB/ingest_date=2026-07-01/GB_full.txt"]:
+        p = tmp_path / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text("x")
+    files = latest_reference_files(spark, str(tmp_path), "REF")
+    assert [f.split(str(tmp_path))[-1] for f in files] == [
+        "/REF/FR/ingest_date=2026-09-01/FR.txt", "/REF/GB/ingest_date=2026-07-01/GB_full.txt"]

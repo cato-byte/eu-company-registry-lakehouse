@@ -25,6 +25,22 @@ def test_request_files_have_no_bucket_and_valid_resolvers():
             assert url is None or url.startswith("https://"), f.name
 
 
+def test_reference_requests_land_one_folder_per_source():
+    files = sorted((ROOT / "infra" / "requests" / "reference").glob("*.json"))
+    specs = [json.loads(f.read_text()) for f in files]
+    countries = [s["country"] for s in specs]
+    assert len(countries) == len(set(countries)) == 7  # one prefix each: the size guard compares like with like
+    assert all(c.startswith(("REFERENCE/geonames/", "REFERENCE/geonames_cities/")) for c in countries)
+    assert all(s["url"].startswith("https://download.geonames.org/") for s in specs)
+
+
+def test_sam_template_schedules_every_request():
+    template = (ROOT / "infra" / "template.yaml").read_text()
+    requests = [*(ROOT / "infra" / "requests").glob("*.json"), *(ROOT / "infra" / "requests" / "reference").glob("*.json")]
+    for f in requests:
+        assert f'"country": "{json.loads(f.read_text())["country"]}"' in template.replace('"country":"', '"country": "'), f.name
+
+
 def test_template_resolver_uses_first_of_month():
     r = d.Request(country="UNITED_KINGDOM", target_filename="x.csv", resolver="template",
                   url_template="https://download.companieshouse.gov.uk/BasicCompanyDataAsOneFile-{first_of_month}.zip")

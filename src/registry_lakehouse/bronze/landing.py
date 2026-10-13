@@ -62,6 +62,26 @@ def list_landing_files(spark: SparkSession, landing_root: str, country: str) -> 
     return sorted(files, key=lambda f: f.path)
 
 
+def latest_reference_files(spark: SparkSession, landing_root: str, folder: str, suffix: str = ".txt") -> list[str]:
+    """Latest download of every reference file under <landing_root>/<folder>.
+
+    Reference dumps are landed one per source (REFERENCE/geonames/FR/ingest_date=.../FR.txt), on
+    different days. Taking the newest ingest_date per source, instead of the newest folder overall,
+    keeps every country present. GeoNames' bundled readme.txt is skipped.
+    """
+    latest: dict[str, LandingFile] = {}
+    for f in list_landing_files(spark, landing_root, folder):
+        if not f.path.endswith(suffix) or f.path.rsplit("/", 1)[-1].lower().startswith("readme"):
+            continue
+        source = f.path.split("/ingest_date=")[0] if f.snapshot_date else f.path
+        best = latest.get(source)
+        if best is None or (f.snapshot_date or date.min) > (best.snapshot_date or date.min):
+            latest[source] = f
+    if not latest:
+        raise FileNotFoundError(f"No reference files under {landing_root}/{folder}")
+    return sorted(f.path for f in latest.values())
+
+
 def pick_snapshot(files: list[LandingFile], country: str, as_of: date | None = None) -> LandingSnapshot:
     """Latest dated snapshot on or before ``as_of``; falls back to undated files."""
     if not files:

@@ -12,6 +12,7 @@ from pyspark.sql import Column, DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import DoubleType, StringType, StructField, StructType
 
+from registry_lakehouse.bronze.landing import latest_reference_files
 from registry_lakehouse.config import Settings
 from registry_lakehouse.spark import ensure_schema
 
@@ -70,8 +71,7 @@ def load_place_reference(spark: SparkSession, settings: Settings) -> int:
     register has no usable postcode (e.g. most Irish companies have no Eircode)."""
     raw = (
         spark.read.format("csv").schema(CITIES_SCHEMA).option("sep", "\t").option("quote", "")
-        .option("recursiveFileLookup", "true").option("pathGlobFilter", "*.txt")
-        .load(f"{settings.landing_root}/REFERENCE/geonames_cities")
+        .load(latest_reference_files(spark, settings.landing_root, "REFERENCE/geonames_cities"))
     )
     names = raw.select("country_code", "name", "latitude", "longitude", "population").unionByName(
         raw.select("country_code", F.col("asciiname").alias("name"), "latitude", "longitude", "population"))
@@ -85,10 +85,9 @@ def load_place_reference(spark: SparkSession, settings: Settings) -> int:
 
 
 def load_postal_reference(spark: SparkSession, settings: Settings) -> int:
-    path = f"{settings.landing_root}/REFERENCE/geonames"
     raw = (
         spark.read.format("csv").schema(GEONAMES_SCHEMA).option("sep", "\t").option("header", "false")
-        .option("recursiveFileLookup", "true").option("pathGlobFilter", "*.txt").load(path)
+        .load(latest_reference_files(spark, settings.landing_root, "REFERENCE/geonames"))
     )
     ref = raw.select(
         "country_code",

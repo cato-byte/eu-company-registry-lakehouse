@@ -1,0 +1,6 @@
+{
+  "country": "REFERENCE/geonames_cities/ALL",
+  "target_filename": "cities500.txt",
+  "resolver": "static",
+  "url": "https://download.geonames.org/export/dump/cities500.zip"
+}

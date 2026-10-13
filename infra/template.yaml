@@ -20,7 +20,7 @@ Globals:
   Function:
     Runtime: python3.12
     CodeUri: ../src
-    Architectures: [arm64]
+    Architectures: [x86_64]  # matches the GitHub runner that builds the dependencies
     Environment:
       Variables:
         TARGET_S3_BUCKET: !Ref BucketName
@@ -77,6 +77,43 @@ Resources:
           Properties:
             ScheduleExpression: cron(0 6 5 * ? *)
             Input: '{"country":"SPAIN","target_filename":"navarra_establecimientos.csv","resolver":"static","url":"https://datosabiertos.navarra.es/datastore/dump/0c4b4747-026f-479a-9966-6568a88957f5"}'
+
+        # GeoNames gazetteers (CC BY 4.0) for offline geocoding, refreshed monthly
+        GeonamesEe:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(10 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/EE", "target_filename": "EE.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/EE.zip"}'
+        GeonamesEs:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(11 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/ES", "target_filename": "ES.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/ES.zip"}'
+        GeonamesFr:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(12 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/FR", "target_filename": "FR.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/FR.zip"}'
+        GeonamesGb:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(13 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/GB", "target_filename": "GB_full.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/GB_full.csv.zip"}'
+        GeonamesIe:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(14 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/IE", "target_filename": "IE.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/IE.zip"}'
+        GeonamesNo:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(15 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames/NO", "target_filename": "NO.txt", "resolver": "static", "url": "https://download.geonames.org/export/zip/NO.zip"}'
+        GeonamesTowns:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(16 4 1 * ? *)
+            Input: '{"country": "REFERENCE/geonames_cities/ALL", "target_filename": "cities500.txt", "resolver": "static", "url": "https://download.geonames.org/export/dump/cities500.zip"}'
 
   GeocodeWorkerFunction:
     Type: AWS::Serverless::Function
