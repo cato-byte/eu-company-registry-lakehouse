@@ -76,6 +76,9 @@ If you run it with a non-admin IAM user, that user needs a temporary inline poli
 the `eu-registry-github-deploy` role and the GitHub OIDC provider. Remove the policy afterwards: the
 power to edit a role includes the power to change who may assume it. If a first attempt failed,
 the stack may sit in `REVIEW_IN_PROGRESS`; re-running `deploy` recovers it.
+If CD then fails with *Not authorized to perform sts:AssumeRoleWithWebIdentity*, the token's `sub`
+claim differs from `GitHubSubjectPrefix`: repositories with immutable OIDC subjects send
+`repo:<owner>@<id>/<repo>@<id>`, others send `repo:<owner>/<repo>`.
 
 ### 2. Databricks: service principal and Unity Catalog
 
