@@ -17,7 +17,9 @@ Parameters:
     Type: String
     AllowedValues: ["true", "false"]
     Default: "true"
-    Description: Set to false if the account already has the token.actions.githubusercontent.com provider
+    Description: >
+      Set to false if the account already has the token.actions.githubusercontent.com provider
+      (aws iam list-open-id-connect-providers). Creating a duplicate fails the stack.
 
 Conditions:
   CreateProvider: !Equals [!Ref CreateOidcProvider, "true"]

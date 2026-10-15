@@ -122,7 +122,8 @@ Resources:
       Description: Geocodes one exported batch with free government geocoders / Nominatim
       Timeout: 900
       MemorySize: 256
-      ReservedConcurrentExecutions: 1  # one worker at a time: respects provider rate limits
+      # No reserved concurrency: new accounts (limit 10) reject any reservation. Each pipeline run
+      # writes one request file, so only one worker runs at a time and provider rate limits hold.
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref BucketName

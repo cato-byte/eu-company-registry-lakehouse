@@ -71,6 +71,12 @@ aws cloudformation describe-stacks --stack-name eu-registry-github-deploy \
   --query "Stacks[0].Outputs[?OutputKey=='DeployRoleArn'].OutputValue" --output text
 ```
 
+If you run it with a non-admin IAM user, that user needs a temporary inline policy for the
+`cloudformation:*ChangeSet*` / `DescribeStacks` actions on this stack, plus create/get/update/delete on
+the `eu-registry-github-deploy` role and the GitHub OIDC provider. Remove the policy afterwards: the
+power to edit a role includes the power to change who may assume it. If a first attempt failed,
+the stack may sit in `REVIEW_IN_PROGRESS`; re-running `deploy` recovers it.
+
 ### 2. Databricks: service principal and Unity Catalog
 
 1. **Service principal:** Settings → Identity and access → Service principals → Add. Name it
@@ -85,6 +91,11 @@ aws cloudformation describe-stacks --stack-name eu-registry-github-deploy \
    If a `CREATE EXTERNAL LOCATION` fails with `LOCATION_OVERLAP`, an existing external location
    (e.g. one created for earlier notebooks) already covers that S3 path. Skip that statement and keep
    the rest: Unity Catalog uses the existing location, whose credential then needs read/write on those prefixes.
+   For the website prefix, give that credential's IAM role an inline policy limited to the `data/`
+   prefix (GetBucketLocation on the bucket; ListBucket with an `s3:prefix` condition; Get/Put/DeleteObject
+   on `<prefix>/*`). An existing location marked *read-only* must be switched to read/write.
+   Grants on the `system` catalog (step 5) need a **metastore admin** (account console → Catalog →
+   metastore). Without them only the `cost_report` task is skipped, and it logs a warning.
 5. **Secret scope** (with your own CLI login):
    ```bash
    databricks secrets create-scope registry-lakehouse
