@@ -7,9 +7,13 @@ Description: >
       --parameter-overrides LandingBucket=<bucket>
 
 Parameters:
-  GitHubRepo:
+  GitHubSubjectPrefix:
     Type: String
-    Default: cato-byte/eu-company-registry-lakehouse
+    # Immutable form (owner@owner-id/repo@repo-id): a repository deleted and recreated under the
+    # same name cannot inherit this trust. Read it with:
+    #   gh api repos/<owner>/<repo>/actions/oidc/customization/sub   -> sub_claim_prefix
+    # For repositories without immutable subjects use: repo:<owner>/<repo>
+    Default: repo:cato-byte@188286963/eu-company-registry-lakehouse@1416326229
   LandingBucket:
     Type: String
     Description: Bucket the ingestion Lambdas write to (they get access to it, the deploy role does not)
@@ -48,7 +52,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
                 # Only jobs running in the protected `production` environment of this repo
-                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubRepo}:environment:production
+                token.actions.githubusercontent.com:sub: !Sub ${GitHubSubjectPrefix}:environment:production
       Policies:
         - PolicyName: sam-deploy-eu-registry-ingestion
           PolicyDocument:
