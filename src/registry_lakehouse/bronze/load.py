@@ -27,7 +27,9 @@ from registry_lakehouse.bronze.landing import LandingSnapshot, list_landing_file
 from registry_lakehouse.bronze.schema_drift import DriftReport, detect_drift, enforce, normalise_header
 from registry_lakehouse.config import Settings
 from registry_lakehouse.contracts import SourceContract, bronze_column_name, get_contract
-from registry_lakehouse.spark import create_table_if_missing, ensure_schema, overwrite_partition
+from registry_lakehouse.ops import freshness
+from registry_lakehouse.ops.freshness import files_fingerprint
+from registry_lakehouse.spark import create_table_if_missing, ensure_schema, overwrite_partition, table_exists
 
 log = logging.getLogger(__name__)
 
@@ -48,6 +50,7 @@ class BronzeResult:
     corrupt_rows: int
     input_bytes: int
     drift: DriftReport
+    skipped: bool = False  # this exact snapshot was already loaded
 
 
 # --------------------------------------------------------------------------------------
@@ -148,11 +151,35 @@ def add_lineage(df: DataFrame, snapshot_date: date, run_id: str) -> DataFrame:
 # --------------------------------------------------------------------------------------
 # Orchestration for one source
 # --------------------------------------------------------------------------------------
+def _already_loaded(spark: SparkSession, settings: Settings, table: str, snapshot: LandingSnapshot,
+                    snapshot_date: date, stage: str, fp: str) -> bool:
+    """No recorded fingerprint, but the table already holds exactly these source files: adopt it."""
+    if freshness.last_fingerprint(spark, settings, stage) is not None:
+        return False
+    loaded = (spark.table(table).where(F.col("_snapshot_date") == F.lit(snapshot_date))
+              .select("_source_file").distinct()
+              .collect())  # spark-lint: ok[SPK001] one row per source file
+    names = {r._source_file.rsplit("/", 1)[-1] for r in loaded if r._source_file}
+    if names and names == {p.rsplit("/", 1)[-1] for p in snapshot.paths}:
+        log.info("[%s] snapshot %s already in bronze: adopting it", stage, snapshot_date)
+        freshness.record(spark, settings, stage, fp)
+        return True
+    return False
+
+
 def load_bronze(spark: SparkSession, settings: Settings, country_code: str) -> BronzeResult:
     contract = get_contract(country_code)
     files = list_landing_files(spark, settings.landing_root, contract.country)
     snapshot = pick_snapshot(files, contract.country, settings.snapshot_date)
     snapshot_date = snapshot.snapshot_date or settings.snapshot_date
+    table = bronze_table_name(settings, country_code)
+
+    # Same files as the last successful load: nothing to read, nothing to pay for.
+    stage, fp = f"bronze:{country_code}", files_fingerprint(list(snapshot.files))
+    if table_exists(spark, table) and (freshness.unchanged(spark, settings, stage, fp)
+                                       or _already_loaded(spark, settings, table, snapshot, snapshot_date, stage, fp)):
+        return BronzeResult(country_code, table, snapshot_date, 0, 0, snapshot.total_bytes,
+                            DriftReport(country_code), skipped=True)
 
     if snapshot.total_bytes > settings.max_landing_bytes:
         raise RuntimeError(
@@ -177,7 +204,6 @@ def load_bronze(spark: SparkSession, settings: Settings, country_code: str) -> B
         log.warning(drift.summary())
 
     bronze = add_lineage(conform_to_contract(raw, contract), snapshot_date, settings.run_id)
-    table = bronze_table_name(settings, country_code)
     ensure_schema(spark, settings.catalog, settings.bronze_schema)
     ddl = ", ".join(f"`{c}` STRING" for c in contract.bronze_columns)
     create_table_if_missing(
@@ -202,4 +228,5 @@ def load_bronze(spark: SparkSession, settings: Settings, country_code: str) -> B
     result = BronzeResult(country_code, table, snapshot_date, stats.rows, stats.corrupt,
                           snapshot.total_bytes, drift)
     log.info("bronze %s", json.dumps({**result.__dict__, "drift": drift.summary()}, default=str))
+    freshness.record(spark, settings, stage, fp)
     return result

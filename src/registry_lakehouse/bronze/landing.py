@@ -47,10 +47,14 @@ class LandingSnapshot:
 
 def list_landing_files(spark: SparkSession, landing_root: str, country: str) -> list[LandingFile]:
     base = f"{landing_root.rstrip('/')}/{country}"
+    try:
+        listing = spark.read.format("binaryFile").option("recursiveFileLookup", "true").load(base)
+    except Exception as exc:  # folder does not exist (yet)
+        if "PATH_NOT_FOUND" in str(exc) or "does not exist" in str(exc):
+            return []
+        raise
     rows = (
-        spark.read.format("binaryFile")
-        .option("recursiveFileLookup", "true")
-        .load(base)
+        listing
         .select("path", "length")
         .where(~F.col("path").rlike(r"/(_|\.)[^/]*$"))  # skip _SUCCESS, .crc, hidden files
         .collect()  # spark-lint: ok[SPK001] file listing: one row per file, never data rows

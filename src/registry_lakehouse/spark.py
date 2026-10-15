@@ -95,19 +95,30 @@ def create_table_if_missing(
     constraints: dict[str, str] | None = None,
     extra_properties: dict[str, str] | None = None,
 ) -> None:
-    """Create a Delta table once, with liquid clustering, CHECK constraints and documentation."""
+    """Create a Delta table once, with liquid clustering, CHECK constraints and documentation.
+
+    Safe when several tasks race to create the same table (the job runs countries in parallel):
+    IF NOT EXISTS for the table, and constraints that already exist are left alone.
+    """
     if table_exists(spark, full_name):
         return
     props = {**DEFAULT_TBLPROPERTIES, **(extra_properties or {})}
     props_sql = ", ".join(f"'{k}' = '{v}'" for k, v in props.items())
     cluster_sql = f"CLUSTER BY ({', '.join(cluster_by)})" if cluster_by else ""
-    comment_sql = f"COMMENT '{comment}'" if comment else ""
+    comment_sql = "COMMENT '{}'".format(comment.replace("'", "\\'")) if comment else ""
     spark.sql(
-        f"CREATE TABLE {full_name} ({ddl_columns}) USING DELTA {cluster_sql} {comment_sql} "
+        f"CREATE TABLE IF NOT EXISTS {full_name} ({ddl_columns}) USING DELTA {cluster_sql} {comment_sql} "
         f"TBLPROPERTIES ({props_sql})"
     )
+    existing = {r.key for r in spark.sql(f"SHOW TBLPROPERTIES {full_name}").collect()}  # spark-lint: ok[SPK001] props
     for name, expr in (constraints or {}).items():
-        spark.sql(f"ALTER TABLE {full_name} ADD CONSTRAINT {name} CHECK ({expr})")
+        if f"delta.constraints.{name.lower()}" in existing:
+            continue
+        try:
+            spark.sql(f"ALTER TABLE {full_name} ADD CONSTRAINT {name} CHECK ({expr})")
+        except Exception as exc:  # another task added it in the meantime
+            if "already exists" not in str(exc).lower():
+                raise
     log.info("created table %s", full_name)
 
 

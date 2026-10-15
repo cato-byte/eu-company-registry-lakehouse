@@ -38,7 +38,7 @@ def employee_band(col: str) -> tuple[Column, Column]:
 _STREET_NOISE = r"\b(DE|DEL|LA|LAS|LOS|EL|KM)\b|[^A-Z]"
 
 
-def street_key(col: str) -> Column:
+def street_key(col: str | Column) -> Column:
     plain = F.translate(F.upper(p.clean_text(col)), "ÁÉÍÓÚÜÑ", "AEIOUUN")
     return F.regexp_replace(F.regexp_replace(plain, r"KM\s*\d+", ""), _STREET_NOISE, "")
 
@@ -59,11 +59,24 @@ def map_spain(bronze: DataFrame, snapshot_date: date) -> DataFrame:
     street_no = p.parse_int("portalt").cast("string")
     address = F.upper(p.concat_clean(p.clean_text("msiglat"), p.clean_text("callet"), street_no,
                                      p.clean_text("restot", extra_sentinels=["-PBJ-"])))
-    municipality = p.clean_text("cod_cmun")
-    # No establishment id is published: the establishment is the tax id at a given address.
-    natural_key = F.concat_ws("|", tax_id, F.coalesce(p.numeric_code("cod_cmun", 3), F.lit("")),
-                              F.coalesce(street_key("callet"), F.lit("")),
-                              F.coalesce(street_no, F.lit("")))
+    # No establishment id is published: the establishment is the tax id at a street address. The
+    # municipality is NOT part of the key: the 2020 release has no municipality at all, so a key
+    # with it would make every establishment "new" in 2020 and "new" again in 2021.
+    def establishment(df: DataFrame) -> Column:
+        return F.concat_ws("|", F.upper(p.clean_text(df["dnici"])), F.coalesce(street_key(df["callet"]), F.lit("")),
+                           F.coalesce(p.parse_int(df["portalt"]).cast("string"), F.lit("")))
+
+    # The town of an establishment, from the latest year that publishes it (fills the 2020 gap).
+    towns = (
+        bronze.select(establishment(bronze).alias("_est"), p.numeric_code("cod_cmun", 3).alias("_muni"),
+                      p.clean_text("nombre_cmun").alias("_town"), p.parse_int("anio").alias("_year"))
+        .where("_muni IS NOT NULL")
+        .groupBy("_est").agg(F.max_by(F.struct("_muni", "_town"), "_year").alias("_known"))
+    )
+    rows = rows.withColumn("_est", establishment(rows)).join(towns, "_est", "left")
+    municipality = F.coalesce(p.numeric_code("cod_cmun", 3), F.col("_known._muni"))
+    town = F.coalesce(p.clean_text("nombre_cmun"), F.col("_known._town"))
+    natural_key = F.col("_est")
     emp_min, emp_max = employee_band("tramo_asal")
     local_code = F.coalesce(p.numeric_code("cnae09_local"), p.numeric_code("cnae09_ppal"))
     return rows.select(
@@ -87,9 +100,8 @@ def map_spain(bronze: DataFrame, snapshot_date: date) -> DataFrame:
         F.lit(None).cast("string").alias("vat_number"),
         F.when(~natural, address).alias("address_line"),
         p.postal_code("codpost", "ES").alias("postal_code"),
-        F.upper(p.split_part("nombre_cmun", r"\s*/\s*", 0)).alias("city"),
-        F.when(municipality.isNotNull(), F.concat(F.lit("31"), F.lpad(municipality, 3, "0")))
-        .alias("municipality_code"),
+        F.upper(p.split_part(town, r"\s*/\s*", 0)).alias("city"),
+        F.when(municipality.isNotNull(), F.concat(F.lit("31"), municipality)).alias("municipality_code"),
         F.lit("NAVARRA").alias("region"),
         F.lit("ES").alias("address_country"),
         F.lit(None).cast("double").alias("source_x"),

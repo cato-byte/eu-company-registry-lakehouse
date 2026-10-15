@@ -187,8 +187,23 @@ def insights(spark: SparkSession, settings: Settings) -> dict:
     }
 
 
+PUBLISHED_GOLD_TABLES = ("agg_city_industry", "fishing_by_city", "agg_country_industry", "dim_company",
+                         "company_activity_summary", "registered_office_hotspots", "company_demography",
+                         "cohort_survival", "fishing_hubs", "employment_by_region_industry",
+                         "distress_by_industry", "insight_coverage")
+
+
 def publish(spark: SparkSession, settings: Settings, *, include_samples: bool = False,
-            max_cities: int = 5000) -> list[str]:
+            max_cities: int = 5000) -> list[str] | None:
+    """Write the website JSON, unless the gold tables are unchanged since the last publish (None)."""
+    from registry_lakehouse.ops import freshness
+
+    fp = freshness.fingerprint({
+        "tables": freshness.data_versions(spark, [settings.table("gold", t) for t in PUBLISHED_GOLD_TABLES]),
+        "options": [include_samples, max_cities, settings.publish_root],
+    })
+    if freshness.unchanged(spark, settings, "publish", fp):
+        return None
     gold = settings.publish_root
     written = [
         write_json(gold, "cities.geojson", cities_geojson(spark.table(settings.table("gold", "agg_city_industry")),
@@ -206,4 +221,5 @@ def publish(spark: SparkSession, settings: Settings, *, include_samples: bool = 
                                                   "run_id": settings.run_id,
                                                   "attribution": "Postcode centroids: GeoNames (CC BY 4.0)"}))
     log.info("published %s", written)
+    freshness.record(spark, settings, "publish", fp)
     return written

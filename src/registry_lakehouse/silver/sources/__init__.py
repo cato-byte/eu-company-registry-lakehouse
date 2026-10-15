@@ -23,6 +23,8 @@ class SourceMapper:
     grain: str
     # True when one landing file holds several snapshots (Navarra's yearly panel).
     embedded_snapshots: bool = False
+    # Bump when the business key changes: silver then rebuilds that country's history from bronze.
+    key_version: int = 1
 
 
 MAPPERS: dict[str, SourceMapper] = {
@@ -30,6 +32,8 @@ MAPPERS: dict[str, SourceMapper] = {
     "GB": SourceMapper(map_united_kingdom, "COMPANIES_HOUSE", "LEGAL_ENTITY"),
     "IE": SourceMapper(map_ireland, "CRO", "LEGAL_ENTITY"),
     "EE": SourceMapper(map_estonia, "RIK_ARIREGISTER", "LEGAL_ENTITY"),
-    "ES": SourceMapper(map_spain, "NAVARRA_ESTABLECIMIENTOS", "ESTABLISHMENT", embedded_snapshots=True),
+    # v2: establishment key without municipality (the 2020 release has none)
+    "ES": SourceMapper(map_spain, "NAVARRA_ESTABLECIMIENTOS", "ESTABLISHMENT", embedded_snapshots=True,
+                       key_version=2),
     "NO": SourceMapper(map_norway, "BRREG_ENHETSREGISTERET", "LEGAL_ENTITY"),
 }

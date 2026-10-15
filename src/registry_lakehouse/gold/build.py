@@ -14,6 +14,7 @@ from pyspark.sql import functions as F
 
 from registry_lakehouse.config import Settings
 from registry_lakehouse.gold import insights as ins
+from registry_lakehouse.ops import freshness
 from registry_lakehouse.silver.classify import nace_divisions
 from registry_lakehouse.spark import ensure_schema, table_exists
 
@@ -90,8 +91,22 @@ def _save(spark: SparkSession, settings: Settings, name: str, df: DataFrame) -> 
         settings.table("gold", name))
 
 
-def build_gold(spark: SparkSession, settings: Settings) -> dict[str, int]:
+def gold_fingerprint(spark: SparkSession, settings: Settings) -> str:
+    return freshness.fingerprint({
+        "tables": freshness.data_versions(
+            spark, [settings.table("silver", t) for t in ("company", "location", "ref_place")]),
+        "settings": [settings.mass_address_min_companies, settings.fishing_hub_min_companies],
+    })
+
+
+def build_gold(spark: SparkSession, settings: Settings) -> dict[str, int] | None:
+    """Rebuild all gold tables, unless silver and the insight settings are unchanged (None)."""
     ensure_schema(spark, settings.catalog, settings.gold_schema)
+    fp = gold_fingerprint(spark, settings)
+    if freshness.unchanged(spark, settings, "gold", fp,
+                           outputs=[settings.table("gold", t) for t in ("dim_company", "fishing_hubs")],
+                           inputs=[settings.table("silver", t) for t in ("company", "location", "ref_place")]):
+        return None
     silver = spark.table(settings.table("silver", "company"))
     company = silver.where("is_current")
     location = spark.table(settings.table("silver", "location"))
@@ -128,4 +143,5 @@ def build_gold(spark: SparkSession, settings: Settings) -> dict[str, int]:
     counts = {name: spark.table(settings.table("gold", name)).count()
               for name in ["dim_company", "registered_office_hotspots", *outputs]}
     log.info("gold %s", counts)
+    freshness.record(spark, settings, "gold", fp)
     return counts

@@ -53,6 +53,9 @@ def main(argv: list[str]) -> int:
         "DATABRICKS_TOKEN": "stub",
         "BUNDLE_VAR_alert_email": "alerts@example.com",
         "BUNDLE_VAR_service_principal_id": FAKE_SP,
+        # Never fall back to a developer's real login profile (~/.databrickscfg).
+        "DATABRICKS_CONFIG_FILE": os.devnull,
+        "DATABRICKS_AUTH_TYPE": "pat",
     }
     for var in ("DATABRICKS_CLIENT_ID", "DATABRICKS_CLIENT_SECRET", "DATABRICKS_CONFIG_PROFILE"):
         env.pop(var, None)

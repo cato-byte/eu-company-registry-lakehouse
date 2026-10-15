@@ -4,13 +4,27 @@
 
 | What | Where | When |
 |---|---|---|
-| Register downloads | EventBridge Scheduler → `DownloaderFunction` (`infra/template.yaml`) | FR/GB/IE monthly after publication, EE/NO weekly, ES monthly check (yearly data) |
-| Lakehouse job | Databricks job `registry-lakehouse-<target>` (`resources/registry_job.yml`) | weekly, Monday 04:00 Europe/Paris (paused in `dev`) |
+| Register downloads | EventBridge Scheduler → `DownloaderFunction` (`infra/template.yaml`) | monthly, before the pipeline run on the 6th: FR 2nd, GB/IE 3rd, EE/NO 4th, ES 5th (yearly data, skipped when unchanged), GeoNames 1st |
+| Lakehouse job | Databricks job `registry-lakehouse-<target>` (`resources/registry_job.yml`) | monthly, the 6th at 04:00 Europe/Paris, after the monthly downloads (paused in `dev`) |
 | Precise geocoding | `GeocodeWorkerFunction`, S3-triggered by the job's request file | after each job run |
 
 Alternative to the cron schedule: a **file-arrival trigger** on the landing location (commented in the
 job). The downloader writes `_manifest.json` last and skips unchanged files by checksum, so the job then
 runs only when a register really changed. That is the cheapest option.
+
+### Unchanged data costs (almost) nothing
+
+The first task, `detect_changes`, compares each register's newest landing snapshot (file paths and
+sizes), the GeoNames files and the geocoding results with what was last processed. If nothing
+changed, the condition task `has_changes` stops the run there: one small task instead of a full
+pipeline. If some registers changed, the bronze and silver loops run only for those.
+
+Every stage also checks its own inputs (`ops.stage_state`, see `ops/freshness.py`) and skips when
+they are unchanged. Maintenance commits such as `OPTIMIZE` or `VACUUM` don't count as changes. If
+the state table is lost, existing results are adopted, not recomputed: bronze when it already holds
+the same files, geo and gold when their outputs are newer than their inputs. The end-to-end test
+`test_rerun_with_unchanged_inputs_detects_nothing_and_writes_nothing` asserts that a re-run on the
+same files produces no new data version in any table and rewrites no published file.
 
 ### Job shape
 

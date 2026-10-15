@@ -1,8 +1,11 @@
-# The pipeline as one Lakeflow (Databricks) job on serverless compute.
+# The pipeline as one Lakeflow (Databricks) job on serverless compute, run monthly.
 #
-#   bronze (for each country, 3 in parallel) -> silver (for each country) --+
-#   reference (gazetteer) ---------------------------------------------------+-> geo -> gold -> publish
-#                                                                                         \-> cost_report
+#   detect_changes -> has_changes? --no--> (run ends: nothing new, nothing paid)
+#                          |yes
+#                          +-> bronze (changed countries) -> silver (changed countries) --+
+#                          +-> reference (gazetteer) -------------------------------------+-> geo -> gold -> publish
+#                                                                                                       \-> cost_report
+# Each stage also skips itself when its inputs are unchanged (ops.stage_state).
 #
 # Guard rails:
 #   * timeout_seconds per task and per job: a stuck task is killed, not billed for hours
@@ -21,7 +24,8 @@ resources:
         layer: batch
 
       schedule:
-        quartz_cron_expression: "0 0 4 ? * MON"  # weekly, Monday 04:00. Registers publish monthly or daily
+        # Monthly, on the 6th at 04:00: after the monthly downloads (FR 2nd, GB/IE 3rd, ES 5th).
+        quartz_cron_expression: "0 0 4 6 * ?"
         timezone_id: Europe/Paris
         pause_status: ${var.pause_status}
       # Event-driven alternative: run only when the ingestion Lambda lands a new snapshot.
@@ -53,9 +57,28 @@ resources:
               - ../dist/*.whl
 
       tasks:
+        # Gate: compare landing / reference / geocoding inputs with what was last processed.
+        # Unchanged data -> everything below is skipped and the run costs one small task.
+        - task_key: detect_changes
+          environment_key: default
+          timeout_seconds: 900
+          python_wheel_task:
+            package_name: registry_lakehouse
+            entry_point: registry-lakehouse
+            parameters: [ "detect-changes", "--catalog", "${var.catalog}", "--landing-root", "${var.landing_root}",
+                          "--run-id", "{{job.run_id}}" ]
+
+        - task_key: has_changes
+          depends_on: [ { task_key: detect_changes } ]
+          condition_task:
+            op: EQUAL_TO
+            left: "{{tasks.detect_changes.values.run}}"
+            right: "true"
+
         - task_key: bronze
+          depends_on: [ { task_key: has_changes, outcome: "true" } ]
           for_each_task:
-            inputs: '["FR","GB","IE","EE","ES","NO"]'
+            inputs: "{{tasks.detect_changes.values.countries}}"  # only registers with a new snapshot
             concurrency: 3
             task:
               task_key: bronze_country
@@ -73,8 +96,8 @@ resources:
         - task_key: silver
           depends_on: [ { task_key: bronze } ]
           for_each_task:
-            inputs: '["FR","GB","IE","EE","ES","NO"]'
-            concurrency: 3
+            inputs: "{{tasks.detect_changes.values.countries}}"  # only registers with a new snapshot
+            concurrency: 1  # all countries MERGE into silver.company: one at a time avoids commit conflicts
             task:
               task_key: silver_country
               environment_key: default
@@ -88,6 +111,7 @@ resources:
                               "--secret-scope", "${var.secret_scope}" ]
 
         - task_key: reference
+          depends_on: [ { task_key: has_changes, outcome: "true" } ]
           environment_key: default
           timeout_seconds: 900
           python_wheel_task:

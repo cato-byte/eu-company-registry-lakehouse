@@ -187,3 +187,25 @@ def test_latest_reference_file_per_source(spark, tmp_path):
     files = latest_reference_files(spark, str(tmp_path), "REF")
     assert [f.split(str(tmp_path))[-1] for f in files] == [
         "/REF/FR/ingest_date=2026-09-01/FR.txt", "/REF/GB/ingest_date=2026-07-01/GB_full.txt"]
+
+
+def test_spain_year_without_municipality_keeps_identity_and_town(spark):
+    """Navarra's 2020 release has no municipality (code and name empty) in 100% of rows."""
+    from registry_lakehouse.contracts import get_contract
+
+    cols = list(get_contract("ES").bronze_columns)
+
+    def row(year, cod, name):
+        r = dict.fromkeys(cols, None)
+        r.update({"_id": "1", "anio": str(year), "dnici": "B31234567", "nombre": "EXAMPLE SL", "msiglat": "Calle",
+                  "callet": "MAYOR", "portalt": "5.0", "codpost": "31001", "cod_cmun": cod, "nombre_cmun": name,
+                  "tramo_asal": "Ninguna", "cnae09_ppal": "4711.0", "cnae09_local": "4711.0"})
+        return r
+
+    bronze = spark.createDataFrame([row(2019, "201", "Pamplona / Iruña"), row(2020, "", "")],
+                                   ", ".join(f"`{c}` string" for c in cols))
+    y19 = canonical_snapshot(bronze, "ES", date(2019, 12, 31)).first()
+    y20 = canonical_snapshot(bronze, "ES", date(2020, 12, 31)).first()
+    assert y20.company_key == y19.company_key  # same establishment, no spurious SCD2 version
+    assert (y20.city, y20.municipality_code) == ("PAMPLONA", "31201")  # filled from the other year
+    assert y20.hash_diff == y19.hash_diff

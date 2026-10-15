@@ -62,15 +62,15 @@ Resources:
           Properties:
             ScheduleExpression: cron(0 6 3 * ? *)
             Input: '{"country":"IRELAND","target_filename":"companies.csv","resolver":"ckan","api_base":"https://opendata.cro.ie","dataset":"companies","resource_format":"CSV"}'
-        Estonia:         # published daily; weekly is enough for a map
+        Estonia:         # published daily; monthly matches the monthly pipeline run (the 6th)
           Type: ScheduleV2
           Properties:
-            ScheduleExpression: cron(0 5 ? * SUN *)
+            ScheduleExpression: cron(0 5 4 * ? *)
             Input: '{"country":"ESTONIA","target_filename":"ettevotja_rekvisiidid__lihtandmed.csv","resolver":"static","url":"https://avaandmed.ariregister.rik.ee/sites/default/files/avaandmed/ettevotja_rekvisiidid__lihtandmed.csv.zip"}'
-        Norway:
+        Norway:          # published daily; monthly matches the monthly pipeline run
           Type: ScheduleV2
           Properties:
-            ScheduleExpression: cron(0 5 ? * SUN *)
+            ScheduleExpression: cron(0 5 4 * ? *)
             Input: '{"country":"NORWAY","target_filename":"enheter.json.gz","resolver":"static","url":"https://data.brreg.no/enhetsregisteret/api/enheter/lastned/json","transform":"json_array_to_ndjson"}'
         Spain:           # yearly panel; unchanged files are skipped by checksum
           Type: ScheduleV2
