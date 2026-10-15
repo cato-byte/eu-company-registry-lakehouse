@@ -27,8 +27,9 @@ after every run, so the history builds up automatically.
 
 ## What keeps the bill small
 
-* **Skip unchanged inputs.** The Lambda skips files whose SHA-256 matches the previous ingest, and with
-  the file-arrival trigger no job runs at all.
+* **Skip unchanged inputs.** The Lambda skips files whose SHA-256 matches the previous ingest. The
+  monthly job starts with a change gate: on unchanged data it ends after one small task, and only
+  registers with a new snapshot are reprocessed (see `docs/operations.md`).
 * **Incremental silver.** Unchanged companies produce no writes (hash_diff). Only new versions are written.
 * **No geocoding API calls inside Spark.** Offline joins, plus a free external worker.
 * **Read once.** The annotated snapshot is materialised to a staging Delta table (serverless has no

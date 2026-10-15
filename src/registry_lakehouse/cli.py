@@ -1,5 +1,6 @@
 """Single entrypoint for every pipeline task (Databricks python_wheel_task or local).
 
+    registry-lakehouse detect-changes             # anything new since the last run? (job gate)
     registry-lakehouse bronze  --country FR
     registry-lakehouse silver  --country FR
     registry-lakehouse reference
@@ -61,10 +62,9 @@ def run_silver(spark, settings: Settings, countries: list[str]) -> None:
 
 
 def run_reference(spark, settings: Settings) -> None:
-    from registry_lakehouse.geo.reference import load_place_reference, load_postal_reference
+    from registry_lakehouse.geo.reference import load_references
 
-    log.info("postal reference rows: %s", load_postal_reference(spark, settings))
-    log.info("town reference rows: %s", load_place_reference(spark, settings))
+    log.info("reference rows: %s", load_references(spark, settings))
 
 
 def run_geo(spark, settings: Settings, batch: int) -> None:
@@ -83,6 +83,14 @@ def run_publish(spark, settings: Settings, samples: bool) -> None:
     from registry_lakehouse.publish.static_export import publish
 
     publish(spark, settings, include_samples=samples)
+
+
+def run_detect(spark, settings: Settings):
+    from registry_lakehouse.ops.detect import detect_changes, publish_task_values
+
+    changes = detect_changes(spark, settings)
+    publish_task_values(changes)
+    return changes
 
 
 def run_cost_report(spark, settings: Settings) -> None:
@@ -114,7 +122,8 @@ def load_secrets(scope: str | None) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="registry-lakehouse")
-    ap.add_argument("stage", choices=["bronze", "silver", "reference", "geo", "gold", "publish", "cost-report", "all"])
+    ap.add_argument("stage", choices=["detect-changes", "bronze", "silver", "reference", "geo", "gold", "publish",
+                                      "cost-report", "all"])
     ap.add_argument("--country", action="append", choices=COUNTRY_CODES,
                     help="repeatable. Default: all countries")
     ap.add_argument("--landing-root")
@@ -136,6 +145,13 @@ def main(argv: list[str] | None = None) -> int:
     countries = args.country or list(COUNTRY_CODES)
     started = time.monotonic()
     try:
+        if args.stage in ("detect-changes", "all"):
+            changes = run_detect(spark, settings)
+            if args.stage == "all":
+                if not changes.run:
+                    log.info("nothing changed since the last run: done")
+                    return 0
+                countries = [c for c in changes.countries_to_process if c in countries]
         if args.stage in ("bronze", "all"):
             run_bronze(spark, settings, countries)
         if args.stage in ("silver", "all"):

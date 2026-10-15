@@ -96,8 +96,76 @@ def test_published_files_are_small_and_contain_no_personal_names(run):
     assert persons and not [p for p in persons if p in published]
 
 
+def _all_data_versions(spark, run):
+    from registry_lakehouse.ops.freshness import data_version
+
+    versions = {}
+    for schema in (run.bronze_schema, run.silver_schema, run.gold_schema):
+        for t in spark.catalog.listTables(schema):
+            versions[f"{schema}.{t.name}"] = data_version(spark, f"{schema}.{t.name}")
+    return versions
+
+
+def test_rerun_with_unchanged_inputs_detects_nothing_and_writes_nothing(spark, run):
+    """The money test: same landing files -> the gate says "nothing to do", and even if every stage
+    is started anyway, no table gets a new data version and no published file is rewritten."""
+    from registry_lakehouse.ops.detect import detect_changes
+
+    changes = detect_changes(spark, run)
+    assert not changes.run and changes.countries_to_process == []
+
+    before = _all_data_versions(spark, run)
+    published = {p.name: p.stat().st_mtime_ns for p in Path(run.publish_root).iterdir()}
+    countries = list(COUNTRY_CODES)
+    cli.run_bronze(spark, run, countries)
+    cli.run_silver(spark, run, countries)
+    cli.run_reference(spark, run)
+    cli.run_geo(spark, run, batch=50)
+    cli.run_gold(spark, run)
+    cli.run_publish(spark, run, samples=True)
+    assert _all_data_versions(spark, run) == before
+    assert {p.name: p.stat().st_mtime_ns for p in Path(run.publish_root).iterdir()} == published
+
+
+def test_lost_state_is_rebuilt_without_recomputing(spark, run):
+    """If ops.stage_state is lost, existing results are adopted, not recomputed."""
+    from registry_lakehouse.ops.detect import detect_changes
+
+    before = _all_data_versions(spark, run)
+    spark.sql(f"DELETE FROM {run.table('ops', 'stage_state')} WHERE stage LIKE 'bronze:%' OR stage IN ('geo', 'gold')")
+    cli.run_bronze(spark, run, list(COUNTRY_CODES))
+    cli.run_geo(spark, run, batch=50)
+    cli.run_gold(spark, run)
+    assert _all_data_versions(spark, run) == before
+    assert not detect_changes(spark, run).countries
+
+
+def test_business_key_change_rebuilds_only_that_country(spark, run, monkeypatch):
+    from registry_lakehouse.ops.detect import detect_changes
+    from registry_lakehouse.silver import sources
+
+    company = run.table("silver", "company")
+    before = {r.country_code: r["count"] for r in spark.table(company).groupBy("country_code").count().collect()}
+    no_keys = {r.company_key for r in spark.table(company).where("country_code = 'NO'").collect()}
+    bumped = sources.MAPPERS["ES"].__class__(**{**sources.MAPPERS["ES"].__dict__, "key_version": 99})
+    monkeypatch.setitem(sources.MAPPERS, "ES", bumped)
+    assert "ES" in detect_changes(spark, run).countries  # a logic change is never skipped as "no new data"
+    cli.run_silver(spark, run, ["ES"])
+    after = {r.country_code: r["count"] for r in spark.table(company).groupBy("country_code").count().collect()}
+    assert after == before  # history rebuilt with the same content
+    assert {r.company_key for r in spark.table(company).where("country_code = 'NO'").collect()} == no_keys
+    assert "ES" not in detect_changes(spark, run).countries
+    # back to the real key version (a second rebuild), so later tests see a settled pipeline
+    monkeypatch.undo()
+    cli.run_silver(spark, run, ["ES"])
+    assert "ES" not in detect_changes(spark, run).countries
+
+
 def test_second_snapshot_builds_scd2_history(spark, run):
+    from registry_lakehouse.ops.detect import detect_changes
+
     later = replace(run, snapshot_date=date(2026, 8, 31), run_id="e2e-2")
+    assert detect_changes(spark, later).countries == ("GB",)  # only the register with a new snapshot
     cli.run_bronze(spark, later, ["GB"])
     cli.run_silver(spark, later, ["GB"])
     gb = spark.table(run.table("silver", "company")).where("country_code = 'GB'")

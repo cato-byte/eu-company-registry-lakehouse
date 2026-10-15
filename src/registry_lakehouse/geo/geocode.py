@@ -189,8 +189,32 @@ def export_requests(located: DataFrame, settings: Settings, batch_size: int) -> 
     return batch.count()
 
 
-def build_locations(spark: SparkSession, settings: Settings, request_batch_size: int = 1000) -> dict[str, int]:
+def worker_result_files(spark: SparkSession, settings: Settings) -> list:
+    from registry_lakehouse.bronze.landing import list_landing_files
+
+    return list_landing_files(spark, settings.landing_root, "_GEOCODE/results")
+
+
+def geo_fingerprint(spark: SparkSession, settings: Settings) -> str:
+    from registry_lakehouse.ops import freshness
+
+    return freshness.fingerprint({
+        "tables": freshness.data_versions(spark, [settings.table("silver", t) for t in
+                                                  ("company", "ref_postal_code", "ref_place")]),
+        "worker_results": freshness.files_fingerprint(worker_result_files(spark, settings)),
+    })
+
+
+def build_locations(spark: SparkSession, settings: Settings, request_batch_size: int = 1000) -> dict[str, int] | None:
+    """Rebuild silver.location, unless companies, gazetteers and worker results are all unchanged (None)."""
+    from registry_lakehouse.ops import freshness
+
     ensure_schema(spark, settings.catalog, settings.silver_schema)
+    fp = geo_fingerprint(spark, settings)
+    inputs = [settings.table("silver", t) for t in ("company", "ref_postal_code", "ref_place")]
+    if freshness.unchanged(spark, settings, "geo", fp, outputs=[settings.table("silver", "location")],
+                           inputs=inputs if not worker_result_files(spark, settings) else None):
+        return None
     ingest_worker_results(spark, settings)
     company = spark.table(settings.table("silver", "company")).where("is_current")
     ref = spark.table(reference_table(settings))
@@ -209,4 +233,8 @@ def build_locations(spark: SparkSession, settings: Settings, request_batch_size:
     if request_batch_size:
         stats["requests_exported"] = export_requests(spark.table(table), settings, request_batch_size)
     log.info("geocoding precision: %s", stats)
+    freshness.record(spark, settings, "geo", fp)
+    from registry_lakehouse.ops.detect import remember_worker_results
+
+    remember_worker_results(spark, settings)
     return stats

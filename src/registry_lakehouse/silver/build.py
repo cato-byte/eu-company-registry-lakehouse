@@ -60,8 +60,12 @@ def _pending_snapshots(spark: SparkSession, settings: Settings, country: str, br
     else:
         latest = bronze.agg(F.max("_snapshot_date").alias("d")).first()
         candidates = [latest.d] if latest and latest.d else []
-    # Include `last` itself so a re-run reports "skipped" instead of doing nothing silently.
-    return [d for d in candidates if last is None or d >= last]
+    # Only snapshots newer than the last merged one: re-processing the same snapshot would parse
+    # the whole register again just to find that nothing changed.
+    pending = [d for d in candidates if last is None or d > last]
+    if not pending:
+        log.info("[%s] no snapshot newer than %s: skipping", country, last)
+    return pending
 
 
 def _bronze_for(bronze_all: DataFrame, country: str, snapshot: date) -> DataFrame:
@@ -81,6 +85,28 @@ def ensure_quarantine_table(spark: SparkSession, table: str) -> None:
     )
 
 
+def rebuild_if_key_changed(spark: SparkSession, settings: Settings, country: str) -> bool:
+    """If the country's business key changed since its rows were written, remove them so that all
+    snapshots are reloaded with the new key. Returns True when a rebuild was triggered.
+
+    Without a recorded key version (history written before versioning existed), version 1 is
+    assumed: only countries whose key was bumped are rebuilt.
+    """
+    from registry_lakehouse.ops import freshness
+
+    stage, wanted = f"silver_key:{country}", str(MAPPERS[country].key_version)
+    recorded = freshness.last_fingerprint(spark, settings, stage) or "1"
+    if recorded == wanted:
+        if freshness.last_fingerprint(spark, settings, stage) is None:
+            freshness.record(spark, settings, stage, wanted)
+        return False
+    log.warning("[%s] business key changed (v%s -> v%s): rebuilding silver history", country, recorded, wanted)
+    for table in (settings.table("silver", "company"), settings.table("silver", "quarantine")):
+        spark.sql(f"DELETE FROM {table} WHERE country_code = '{country}'")
+    freshness.record(spark, settings, stage, wanted)
+    return True
+
+
 def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[SilverResult]:
     ensure_schema(spark, settings.catalog, settings.silver_schema)
     ensure_schema(spark, settings.catalog, settings.ops_schema)
@@ -89,6 +115,7 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
     dq_table = settings.table("ops", "dq_results")
     ensure_company_table(spark, company_table)
     ensure_quarantine_table(spark, quarantine_table)
+    rebuild_if_key_changed(spark, settings, country)
 
     bronze_all = spark.table(bronze_table_name(settings, country)).where(F.col("_corrupt_record").isNull())
     results = []

@@ -14,7 +14,7 @@ from pyspark.sql.types import DoubleType, StringType, StructField, StructType
 
 from registry_lakehouse.bronze.landing import latest_reference_files
 from registry_lakehouse.config import Settings
-from registry_lakehouse.spark import ensure_schema
+from registry_lakehouse.spark import ensure_schema, table_exists
 
 GEONAMES_SCHEMA = StructType([
     StructField("country_code", StringType()),
@@ -56,6 +56,23 @@ CITIES_SCHEMA = StructType([
     StructField("dem", StringType()), StructField("timezone", StringType()),
     StructField("modified", StringType()),
 ])
+
+
+def reference_inputs(spark: SparkSession, settings: Settings) -> list[str]:
+    return (latest_reference_files(spark, settings.landing_root, "REFERENCE/geonames")
+            + latest_reference_files(spark, settings.landing_root, "REFERENCE/geonames_cities"))
+
+
+def load_references(spark: SparkSession, settings: Settings) -> dict[str, int] | None:
+    """Reload both gazetteers, unless their files are the same as at the last load (returns None)."""
+    from registry_lakehouse.ops import freshness
+
+    fp = freshness.fingerprint(reference_inputs(spark, settings))
+    if table_exists(spark, reference_table(settings)) and freshness.unchanged(spark, settings, "reference", fp):
+        return None
+    counts = {"postal": load_postal_reference(spark, settings), "towns": load_place_reference(spark, settings)}
+    freshness.record(spark, settings, "reference", fp)
+    return counts
 
 
 def reference_table(settings: Settings) -> str:
