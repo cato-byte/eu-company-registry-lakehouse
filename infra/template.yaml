@@ -127,9 +127,15 @@ Resources:
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref BucketName
-  # The request files are written by the Databricks job. Configure the bucket notification
-  # (prefix <LandingPrefix>/_GEOCODE/requests/, suffix .json) to invoke GeocodeWorkerFunction.
-  # It is not declared here because SAM can only attach S3 events to buckets it creates.
+      # A daily sweep instead of an S3 event: the bucket's notification rules may already be taken
+      # (Databricks file events add an S3 -> SQS rule over the whole lakehouse prefix, and S3 rejects
+      # overlapping rules). The sweep also retries anything a previous run left over.
+      Events:
+        DailySweep:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: cron(0 6 * * ? *)
+            Input: '{"mode": "sweep"}'
 
   DownloaderErrors:
     Type: AWS::CloudWatch::Alarm

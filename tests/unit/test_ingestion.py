@@ -129,3 +129,44 @@ def test_worker_survives_provider_errors():
 
     reqs = [{"location_key": "n", "country_code": "NO", "address_line": "A", "postal_code": "4307", "city": "S"}]
     assert g.geocode_batch(reqs, fetch=boom, sleep=lambda s: None) == []
+
+
+class FakeS3:
+    def __init__(self, objects):
+        import datetime as _dt
+        self.objects = {k: (v, _dt.datetime(2026, 10, i + 1)) for i, (k, v) in enumerate(objects.items())}
+        self.put = {}
+
+    def get_paginator(self, _name):
+        outer = self
+
+        class P:
+            def paginate(self, Bucket, Prefix):
+                return [{"Contents": [{"Key": k, "LastModified": t} for k, (_, t) in outer.objects.items()
+                                      if k.startswith(Prefix)]}]
+        return P()
+
+    def get_object(self, Bucket, Key):
+        import io as _io
+        return {"Body": _io.BytesIO(self.objects[Key][0].encode())}
+
+    def put_object(self, Bucket, Key, Body):
+        self.put[Key] = Body
+
+
+def test_scheduled_sweep_processes_only_unanswered_request_files(monkeypatch):
+    p = "lake/landing/_GEOCODE"
+    req = json.dumps({"location_key": "k", "country_code": "NO", "address_line": "A", "postal_code": "4307", "city": "S"})
+    s3 = FakeS3({
+        f"{p}/requests/run_id=1/part-0.json": req,
+        f"{p}/results/run_id=1/part-0.json": "",      # already answered
+        f"{p}/requests/run_id=2/part-0.json": req,
+        f"{p}/requests/run_id=2/_SUCCESS": "",         # Spark marker, not a request
+    })
+    assert g.pending_requests(s3, "b", "lake/landing") == [f"{p}/requests/run_id=2/part-0.json"]
+    calls = []
+    monkeypatch.setattr(g, "_fetch_json", lambda url: calls.append(url) or fake_fetch(url))  # no network in tests
+    monkeypatch.setattr(g.time, "sleep", lambda s: None)
+    out = g.process(s3, "b", f"{p}/requests/run_id=2/part-0.json", lambda: 1e9)
+    assert out["geocoded"] == 1 and f"{p}/results/run_id=2/part-0.json" in s3.put
+    assert len(calls) == 1 and "geonorge" in calls[0]
