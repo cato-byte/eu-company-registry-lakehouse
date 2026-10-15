@@ -153,15 +153,12 @@ def ingest_worker_results(spark: SparkSession, settings: Settings) -> int:
     """Load result files written by the geocoding Lambda into the cache (insert-only MERGE)."""
     cache_table = settings.table("silver", "geocode_cache")
     ensure_cache_table(spark, cache_table)
-    path = f"{settings.landing_root}/_GEOCODE/results"
-    try:
-        results = spark.read.schema(
-            "location_key STRING, lat DOUBLE, lon DOUBLE, provider STRING, matched_address STRING"
-        ).json(path)
-    except Exception as exc:  # no results folder yet
-        if "PATH_NOT_FOUND" in str(exc) or "does not exist" in str(exc):
-            return 0
-        raise
+    files = [f.path for f in worker_result_files(spark, settings)]
+    if not files:  # nothing written by the worker yet (checked eagerly: serverless reads are lazy)
+        return 0
+    results = spark.read.schema(
+        "location_key STRING, lat DOUBLE, lon DOUBLE, provider STRING, matched_address STRING"
+    ).json(files)
     new = results.where(F.col("location_key").isNotNull()).dropDuplicates(["location_key"]).withColumn(
         "geocoded_at", F.current_timestamp())
     from delta.tables import DeltaTable
