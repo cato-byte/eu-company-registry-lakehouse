@@ -1,8 +1,10 @@
 """AWS Lambda: gradually geocode a batch of addresses with free providers.
 
-Triggered by the request file the pipeline writes to <landing>/_GEOCODE/requests/. Results go to
-<landing>/_GEOCODE/results/, and the next pipeline run merges them into silver.geocode_cache, so
-no address is ever geocoded twice.
+Runs on a daily schedule and processes every request file the pipeline wrote to
+<landing>/_GEOCODE/requests/ that has no result file yet (an S3 event trigger also works). Results
+go to <landing>/_GEOCODE/results/, and the next pipeline run merges them into
+silver.geocode_cache, so no address is ever geocoded twice. Addresses left over when time runs
+out are exported again by the next pipeline run.
 
 Providers are free public services, preferring each country's own government geocoder:
   NO  Kartverket adresse-API (ws.geonorge.no)
@@ -149,17 +151,52 @@ def geocode_batch(requests: list[dict], fetch: Fetch = _fetch_json,
     return out
 
 
+def result_key(request_key: str) -> str:
+    return request_key.replace("/_GEOCODE/requests/", "/_GEOCODE/results/")
+
+
+def is_request_file(key: str) -> bool:
+    name = key.rsplit("/", 1)[-1]
+    return key.endswith(".json") and not name.startswith(("_", "."))  # skip _SUCCESS, .crc, commit markers
+
+
+def pending_requests(s3: Any, bucket: str, prefix: str) -> list[str]:
+    """Request files without a result file, oldest first."""
+    def keys(p: str) -> list[dict]:
+        pages = s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=p)
+        return [o for page in pages for o in page.get("Contents", [])]
+
+    done = {o["Key"] for o in keys(f"{prefix}/_GEOCODE/results/")}
+    todo = [o for o in keys(f"{prefix}/_GEOCODE/requests/") if is_request_file(o["Key"])]
+    return [o["Key"] for o in sorted(todo, key=lambda o: o["LastModified"]) if result_key(o["Key"]) not in done]
+
+
+def process(s3: Any, bucket: str, key: str, time_left_s: Callable[[], float]) -> dict:
+    lines = s3.get_object(Bucket=bucket, Key=key)["Body"].read().decode("utf-8").splitlines()
+    requests = [json.loads(line) for line in lines if line.strip()]
+    results = geocode_batch(requests, fetch=_fetch_json, time_left_s=time_left_s)  # looked up at call time
+    s3.put_object(Bucket=bucket, Key=result_key(key),
+                  Body="\n".join(json.dumps(r) for r in results).encode("utf-8"))
+    logger.info("geocoded %d/%d -> s3://%s/%s", len(results), len(requests), bucket, result_key(key))
+    return {"request_key": key, "requested": len(requests), "geocoded": len(results)}
+
+
 def lambda_handler(event: dict, context: Any = None) -> dict:
     import boto3
 
     s3 = boto3.client("s3")
-    rec = event["Records"][0]["s3"]
-    bucket, key = rec["bucket"]["name"], urllib.parse.unquote_plus(rec["object"]["key"])
-    lines = s3.get_object(Bucket=bucket, Key=key)["Body"].read().decode("utf-8").splitlines()
-    requests = [json.loads(line) for line in lines if line.strip()]
     remaining = (lambda: context.get_remaining_time_in_millis() / 1000) if context else (lambda: 1e9)
-    results = geocode_batch(requests, time_left_s=remaining)
-    out_key = key.replace("/_GEOCODE/requests/", "/_GEOCODE/results/")
-    s3.put_object(Bucket=bucket, Key=out_key, Body="\n".join(json.dumps(r) for r in results).encode("utf-8"))
-    logger.info("geocoded %d/%d -> s3://%s/%s", len(results), len(requests), bucket, out_key)
-    return {"requested": len(requests), "geocoded": len(results), "results_key": out_key}
+    if "Records" in event:  # S3 event notification
+        rec = event["Records"][0]["s3"]
+        jobs = [(rec["bucket"]["name"], urllib.parse.unquote_plus(rec["object"]["key"]))]
+    else:  # scheduled sweep
+        bucket = os.environ["TARGET_S3_BUCKET"]
+        prefix = os.environ.get("LANDING_PREFIX", "company_records/lakehouse/landing").strip("/")
+        jobs = [(bucket, k) for k in pending_requests(s3, bucket, prefix)]
+    done = []
+    for bucket, key in jobs:
+        if remaining() < 60:
+            logger.info("time budget used: %d request file(s) left for the next run", len(jobs) - len(done))
+            break
+        done.append(process(s3, bucket, key, remaining))
+    return {"processed": done, "pending": len(jobs) - len(done)}

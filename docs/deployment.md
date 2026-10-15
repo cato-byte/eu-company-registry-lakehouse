@@ -133,9 +133,9 @@ Settings → Branches → protect `main` (require the `ci` check and a PR).
 
 ### 4. After the first AWS deploy
 
-* **Geocoding worker trigger:** S3 bucket → Properties → Event notifications → *All object create
-  events*, prefix `company_records/lakehouse/landing/_GEOCODE/requests/`, suffix `.json`, destination
-  the `GeocodeWorkerFunction` Lambda (its name is in the stack outputs).
+* **Geocoding worker:** nothing to do. It runs daily at 06:00 UTC and processes request files that
+  have no results yet. (An S3 event notification would conflict with Databricks *file events*,
+  which already own an S3 → SQS rule over the lakehouse prefix.)
 * **Confirm the SNS e-mail subscription** you receive.
 * **Fresh snapshots:** the old files sit directly under `landing/<COUNTRY>/`, and Norway's is still the
   raw JSON array. Either wait for the schedules, or start each download once from the Lambda console
