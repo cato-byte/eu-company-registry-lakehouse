@@ -47,18 +47,19 @@ class LandingSnapshot:
 
 def list_landing_files(spark: SparkSession, landing_root: str, country: str) -> list[LandingFile]:
     base = f"{landing_root.rstrip('/')}/{country}"
+    # The whole read is inside the try: classic Spark reports a missing folder at load(), but
+    # Spark Connect (serverless) is lazy and only reports it when the rows are fetched.
     try:
-        listing = spark.read.format("binaryFile").option("recursiveFileLookup", "true").load(base)
+        rows = (
+            spark.read.format("binaryFile").option("recursiveFileLookup", "true").load(base)
+            .select("path", "length")
+            .where(~F.col("path").rlike(r"/(_|\.)[^/]*$"))  # skip _SUCCESS, .crc, hidden files
+            .collect()  # spark-lint: ok[SPK001] file listing: one row per file, never data rows
+        )
     except Exception as exc:  # folder does not exist (yet)
         if "PATH_NOT_FOUND" in str(exc) or "does not exist" in str(exc):
             return []
         raise
-    rows = (
-        listing
-        .select("path", "length")
-        .where(~F.col("path").rlike(r"/(_|\.)[^/]*$"))  # skip _SUCCESS, .crc, hidden files
-        .collect()  # spark-lint: ok[SPK001] file listing: one row per file, never data rows
-    )
     files = []
     for r in rows:
         m = _SNAPSHOT_RE.search(r.path)
