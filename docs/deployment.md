@@ -82,6 +82,9 @@ aws cloudformation describe-stacks --stack-name eu-registry-github-deploy \
    `registry_s3`. Follow the trust-policy instructions shown, and give the role read/write on the
    landing bucket and on the website-data bucket/prefix.
 4. **Catalog, volumes and grants:** run `infra/databricks/setup.sql` after filling in the placeholders.
+   If a `CREATE EXTERNAL LOCATION` fails with `LOCATION_OVERLAP`, an existing external location
+   (e.g. one created for earlier notebooks) already covers that S3 path. Skip that statement and keep
+   the rest: Unity Catalog uses the existing location, whose credential then needs read/write on those prefixes.
 5. **Secret scope** (with your own CLI login):
    ```bash
    databricks secrets create-scope registry-lakehouse

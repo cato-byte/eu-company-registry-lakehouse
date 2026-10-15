@@ -9,6 +9,11 @@
 -- 1. Where the raw files and the website data live
 --    <landing-bucket>: the existing raw-data bucket. <site-bucket>/<site-data-prefix>: the bucket that serves
 --    the website, e.g. prefix en/projects/eu-company-registry/data, next to the project page.
+--
+--    An S3 path can belong to only one external location. If one already covers it (error
+--    LOCATION_OVERLAP), skip that CREATE: steps 2-3 use whichever location covers their paths.
+--    Check with:  SHOW EXTERNAL LOCATIONS;   DESCRIBE EXTERNAL LOCATION `<name>`;
+--    The existing location's credential must allow read/write on the prefixes used below.
 CREATE EXTERNAL LOCATION IF NOT EXISTS registry_landing
   URL 's3://<landing-bucket>/company_records/lakehouse'
   WITH (STORAGE CREDENTIAL `registry_s3`)
@@ -20,7 +25,8 @@ CREATE EXTERNAL LOCATION IF NOT EXISTS registry_site_data
   COMMENT 'Static JSON served by the website';
 
 -- 2. Catalog. Managed tables (bronze/silver/gold/ops) are stored under the landing bucket.
---    Omit MANAGED LOCATION if the metastore already has default storage.
+--    Omit MANAGED LOCATION if the metastore already has default storage. Needs CREATE MANAGED STORAGE
+--    (and CREATE EXTERNAL VOLUME for step 3) on the external location that covers the path.
 CREATE CATALOG IF NOT EXISTS registry
   MANAGED LOCATION 's3://<landing-bucket>/company_records/lakehouse/managed'
   COMMENT 'EU company registry lakehouse';
