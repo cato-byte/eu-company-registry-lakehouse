@@ -15,17 +15,17 @@
 
 ## Decision
 
-The pipeline's last task (`publish`) writes **small, aggregated JSON/GeoJSON** (towns × industries,
+The pipeline's last task (`publish`) writes small, aggregated JSON/GeoJSON (towns × industries,
 fishing per town, pipeline stage counts, data-quality results) to a publish location. The website
 serves those files next to `site/index.html` (Leaflet map + plain HTML/CSS charts).
 
-So yes: static is the right call. The trade-off is freshness, and the registers publish monthly (or
-daily but slowly changing), so the monthly refresh loses nothing.
+The cost is freshness: the map is as old as the last run. The registers publish monthly (or daily
+but change slowly), so a monthly refresh loses very little.
 
 ## Guard rails
 
 * Only aggregates are exported. No row-level company data and no names leave the lakehouse.
-* The "one record, three stages" tour (`stage_samples.json`) is generated **only** from the synthetic
+* The "one record, three stages" tour (`stage_samples.json`) is generated only from the synthetic
   test fixtures (`--samples` flag, used by `make run-local`), never in production.
 * Output size is tested (< 2 MB on fixtures; production is capped by `max_cities`).
 * QuickSight remains a fine choice for an internal, authenticated audience later. It would read the

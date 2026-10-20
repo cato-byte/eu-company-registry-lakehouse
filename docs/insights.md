@@ -1,9 +1,9 @@
 # Insights: what the registers say beyond "how many companies, where"
 
-All tables live in the gold schema, are rebuilt on every run from current silver (and the SCD2
-history), and are exported in aggregate form to `insights.json` for the website. A country is
-**excluded** from an insight when its register does not publish the needed fields, so an unknown
-value is never shown as zero. `gold.insight_coverage` lists every inclusion and exclusion with the reason.
+These tables live in the gold schema. They are rebuilt from current silver (and the SCD2 history)
+whenever silver changes, and exported as aggregates to `insights.json` for the website. When a
+register doesn't publish the fields an insight needs, its country is left out rather than shown
+as zero. `gold.insight_coverage` lists each inclusion and exclusion with the reason.
 
 | Table | Question | Registers |
 |---|---|---|
@@ -17,23 +17,28 @@ value is never shown as zero. `gold.insight_coverage` lists every inclusion and 
 
 ## Why these
 
-* **Registered office ≠ operating location.** In a random slice of the UK register, one virtual-office
-  address held 1,100 companies, and four such addresses held 3.6% of all companies. 11% were dormant
-  and 7.5% were being struck off. Without this correction a company map mostly shows where formation
-  agents are. `dim_company.is_operating` and the map's *Operating companies only* toggle remove them.
-  An address counts as a mass-registration address from `mass_address_min_companies` (default 50)
-  active companies. Natural persons have no street address, so they can never form one.
-* **Demography needs to know what the register keeps.** The UK, Estonian and Norwegian bulk files
-  list live companies only, so older years are under-counted (`survivorship_biased = true`), and
-  survival can only be measured where closed units are kept with their closure date (France, Ireland).
-  Survival counts only cohorts old enough to be observed for the full horizon.
-* **Fishing hubs.** Raw counts rank big cities first. The location quotient (town fishing share ÷ country
-  fishing share) surfaces the ports. Towns need `fishing_hub_min_companies` (default 3) fishing companies.
-* **Jobs.** Exact for Norway. France and Navarra publish bands, so low/high bounds are kept and open
-  top bands count at their lower bound.
+**A registered office is not where a company operates.** In a random slice of the UK register,
+one virtual-office address held 1,100 companies, and four such addresses held 3.6% of all
+companies; 11% were dormant and 7.5% were being struck off. Plotted as is, a company map mostly
+shows where formation agents sit. `dim_company.is_operating` and the map's *Operating companies
+only* toggle take them out. An address counts as a mass-registration address once it has
+`mass_address_min_companies` active companies (default 50). Natural persons have no street address
+in silver, so they never form one.
+
+**Demography depends on what the register keeps.** The UK, Estonian and Norwegian bulk files list
+live companies only, so older years are under-counted (`survivorship_biased = true`). Survival can
+only be measured where closed units stay in the file with a closure date, which means France and
+Ireland. Only cohorts old enough to be observed over the full horizon are counted.
+
+**Fishing hubs.** Ranked by raw counts, big cities come first. The location quotient (town fishing
+share ÷ country fishing share) brings the ports up instead. A town needs at least
+`fishing_hub_min_companies` fishing companies (default 3) to be ranked.
+
+**Jobs.** Norway reports exact headcounts. France and Navarra publish bands, so the lower and upper
+bounds are both kept, and open top bands count at their lower bound.
 
 ## Not yet possible (missing source files)
 
-* Estonia activity codes (separate RIK EMTAK file).
-* French legal form and company names (INSEE StockUniteLegale).
+* Estonian activity codes, which are in a separate RIK EMTAK file.
+* French legal form and company names, which are in INSEE StockUniteLegale.
 * Norwegian workplaces (`underenheter`), which would place fishing jobs at the actual site.

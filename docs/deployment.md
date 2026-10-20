@@ -6,16 +6,18 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
                                                      └──► Databricks job (Asset Bundle)
 ```
 
-* **Databricks** is deployed with `databricks bundle deploy -t prod`, as a **service principal**
-  over OAuth M2M. The production job runs as that principal, from a folder only it can write.
-  Each deploy builds a wheel with a unique version (`0.2.<run>+g<sha>`), so serverless never
-  reuses a stale wheel.
-* **AWS** is deployed with `sam deploy`, through **GitHub OIDC**: a short-lived role that only the
+* Databricks is deployed with `databricks bundle deploy -t prod` by a service principal over
+  OAuth M2M. The production job runs as that principal, from a folder only it can write. Each
+  deploy builds a wheel with a unique version (`0.2.<run>+g<sha>`), so serverless never picks up a
+  stale wheel.
+* AWS is deployed with `sam deploy` through GitHub OIDC, using a short-lived role that only the
   `production` environment of this repository can assume. No AWS keys are stored in GitHub.
-* Both deploy jobs are **off** until you switch them on (repository variables `DEPLOY_DATABRICKS` and
-  `DEPLOY_AWS`), so the pipeline stays green while the setup below is incomplete.
-* Nothing identifying is in the repository. Host, bucket, e-mail and ids are GitHub **secrets**,
-  which are masked in the (public) Actions logs.
+* Both deploy jobs stay off until the repository variables `DEPLOY_DATABRICKS` and `DEPLOY_AWS`
+  are set, so CI stays green while the setup below is incomplete.
+* Host, bucket, e-mail and ids are GitHub environment secrets, which are masked in the public
+  Actions logs. None of them is in the repository.
+* A deploy never starts a run. `bundle deploy` only creates or updates the job definition; runs
+  start from the schedule, from *Run now*, or from a manual `cd` run with `run_job` checked.
 
 ## How the pieces connect
 
@@ -32,7 +34,7 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
                                     └──────────────────────────┘
 ```
 
-**How the code reaches Databricks.** Databricks never pulls from GitHub. The CD workflow pushes:
+**How the code reaches Databricks.** Databricks never pulls from GitHub; the CD workflow pushes.
 `databricks bundle deploy` builds the Python package in `src/` into a wheel, uploads it with the job
 definition to the workspace (`/Workspace/Users/<service principal>/.bundle/...`), and creates or
 updates the job through the Jobs API. When the schedule fires, serverless compute starts, installs
@@ -151,7 +153,7 @@ Actions → `cd` → *Run workflow* with **run_job** checked, or Databricks → 
 ## Website
 
 The `publish` task writes `cities.geojson`, `fishing.geojson`, `industry_by_country.json`,
-`pipeline.json` and `meta.json` into the `registry.files.site_data` volume, which is an S3 prefix
+`pipeline.json`, `insights.json` and `meta.json` into the `registry.files.site_data` volume, which is an S3 prefix
 you control. Serve `site/index.html` with a `data/` folder pointing at that prefix (same bucket
 behind CloudFront, or a sync into your website repo). If the JSON is served from another origin,
 allow it with an S3 CORS rule for your site's domain.
