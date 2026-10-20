@@ -8,16 +8,16 @@
 | Lakehouse job | Databricks job `registry-lakehouse-<target>` (`resources/registry_job.yml`) | monthly, the 6th at 04:00 Europe/Paris, after the monthly downloads (paused in `dev`) |
 | Precise geocoding | `GeocodeWorkerFunction`, EventBridge Scheduler | daily at 06:00 UTC, processes request files without results |
 
-Alternative to the cron schedule: a **file-arrival trigger** on the landing location (commented in the
-job). The downloader writes `_manifest.json` last and skips unchanged files by checksum, so the job then
-runs only when a register really changed. That is the cheapest option.
+A file-arrival trigger on the landing location is the alternative to the cron schedule (it is
+commented out in the job). The downloader writes `_manifest.json` last and skips unchanged files by
+checksum, so with that trigger the job would only run when a register actually changed.
 
-### Unchanged data costs (almost) nothing
+### Skipping unchanged data
 
 The first task, `detect_changes`, compares each register's newest landing snapshot (file paths and
 sizes), the GeoNames files and the geocoding results with what was last processed. If nothing
-changed, the condition task `has_changes` stops the run there: one small task instead of a full
-pipeline. If some registers changed, the bronze and silver loops run only for those.
+changed, the condition task `has_changes` ends the run after that one small task. If only some
+registers changed, the bronze and silver loops run for those alone.
 
 Every stage also checks its own inputs (`ops.stage_state`, see `ops/freshness.py`) and skips when
 they are unchanged. Maintenance commits such as `OPTIMIZE` or `VACUUM` don't count as changes. If
@@ -38,11 +38,10 @@ detect_changes ─► has_changes? ─ false ─► run ends
 Silver runs one country at a time because every country merges into the same `silver.company`
 table, and concurrent MERGEs into one table conflict.
 
-`for_each_task` runs one task per country. A failure in Norway doesn't hide behind a single
-monolithic notebook, and the country can be repaired and re-run on its own (bronze and silver
-are idempotent per snapshot).
+`for_each_task` runs one task per country, so a failure in Norway shows up as Norway's task and
+can be repaired and re-run on its own (bronze and silver are idempotent per snapshot).
 
-## Guard rails ("stop it before it gets expensive")
+## Guard rails
 
 | Risk | Guard |
 |---|---|
@@ -59,13 +58,24 @@ are idempotent per snapshot).
 
 ## Alerting
 
-* **Failures and slow runs:** job e-mail notifications (`alert_email` bundle variable). A
-  `webhook_notifications` block can send them to Slack or Teams once a notification destination exists.
-* **Non-fatal findings** (additive schema drift, malformed lines, quarantined rows): `ops/alerts.py` posts
-  to the webhook stored as secret `alert-webhook` in the job's secret scope. It is best effort and never fails the run.
-* **Lambda failures:** CloudWatch alarm on `Errors > 0` → SNS e-mail.
-* **Data quality history:** `ops.dq_results` (one row per rule, country, snapshot and run). A Databricks
-  SQL alert on `breached = 'true'` or on rising `failure_rate` can be added if a SQL warehouse is available.
+* Failed and slow runs send job e-mail notifications (`alert_email` bundle variable). A
+  `webhook_notifications` block can route them to Slack or Teams once a notification destination
+  exists in the workspace.
+* Non-fatal findings (additive schema drift, malformed lines, quarantined rows, gold schema
+  changes) go through `ops/alerts.py` to the webhook stored as secret `alert-webhook` in the job's
+  secret scope. Delivery is best effort and never fails the run.
+* Lambda errors trigger a CloudWatch alarm (`Errors > 0`) that e-mails through SNS.
+* `ops.dq_results` keeps the data-quality history, one row per rule, country, snapshot and run.
+  With a SQL warehouse, a Databricks SQL alert on `breached = 'true'` or a rising `failure_rate`
+  can sit on top of it.
+
+### Monitoring the tables themselves
+
+The checks above run inside the job. Databricks data quality monitoring (formerly Lakehouse
+Monitoring) watches the tables from outside: freshness and completeness on a schema, or profile and
+drift metrics on one table. It is not set up yet. The natural first candidates are
+`silver.company`, which would catch a register that stops updating, and `gold.agg_city_industry`,
+which feeds the map. It runs on serverless and is billed separately from the job.
 
 ## Delta Lake features in use
 
@@ -84,8 +94,9 @@ are idempotent per snapshot).
 
 ## Recovering
 
-* **Re-run one country:** `databricks bundle run registry_lakehouse` with only that country's task
-  repaired ("Repair run" in the UI). Bronze/silver are idempotent.
-* **A bad snapshot was merged:** `RESTORE TABLE <catalog>.silver.company TO VERSION AS OF <n>`, fix,
-  re-run. `DESCRIBE HISTORY` shows which run (`_run_id`) wrote which version.
-* **Inspect rejects:** `SELECT failures, record FROM <catalog>.silver.quarantine WHERE country_code = 'FR'`.
+* To re-run one country, use *Repair run* on the failed run and select only that country's task.
+  Bronze and silver are idempotent, so a repeat is safe.
+* If a bad snapshot was merged, `RESTORE TABLE <catalog>.silver.company TO VERSION AS OF <n>`, fix
+  the code and re-run. `DESCRIBE HISTORY` shows which run (`_run_id`) wrote each version.
+* Rejected rows and unparseable lines are in quarantine:
+  `SELECT failures, record FROM <catalog>.silver.quarantine WHERE country_code = 'FR'`.

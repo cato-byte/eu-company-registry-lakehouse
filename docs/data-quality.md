@@ -1,7 +1,7 @@
 # Data quality: what the registers actually contain, and how each issue is handled
 
-Every rule in `silver/parsers.py`, `silver/sources/*.py` and `quality/rules.py` traces back to
-something observed while profiling the real landing files (first and middle byte ranges of each
+The rules in `silver/parsers.py`, `silver/sources/*.py` and `quality/rules.py` come from what
+turned up while profiling the real landing files (first and middle byte ranges of each
 file, sampled locally). Rows with a test name are pinned by that test. The two without one record
 a source gap and a choice of business key; the Navarra end-to-end tests cover the key indirectly.
 
@@ -82,13 +82,15 @@ threshold, which only applies from 1,000 rows up.
 Before reading a file, its header (CSV) or key set (NDJSON) is compared with the contract in
 `contracts/sources.yml`:
 
-* **reordered** columns: harmless (columns are mapped by name), logged
-* **added** columns: allowed under the `additive` policy (kept in `_rescued_data`, alert sent), fatal under `strict`
-* **removed / renamed** columns: always fatal, with rename suggestions (`codePostalEtablissement → codePostalEtablissment?`)
+* Reordered columns are harmless, because columns are mapped by name. They are logged.
+* Added columns are allowed under the `additive` policy (kept in `_rescued_data`, with an alert)
+  and fatal under `strict`.
+* Removed or renamed columns are always fatal. The error suggests likely renames
+  (`codePostalEtablissement → codePostalEtablissment?`).
 
 ## What data is most likely to fail
 
 From profiling, in order of likelihood: (1) format drift between releases of the same register
 (Navarra), (2) encoding problems (mojibake, BOM), (3) new code values in status / legal form lists
 (caught by `status_known`), (4) truncated downloads (volume guard + Lambda size check),
-(5) renamed or added columns (drift check). Each has a test with a real example.
+(5) renamed or added columns (drift check). Each of these has a test built on a real example.
