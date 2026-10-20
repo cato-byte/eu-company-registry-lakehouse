@@ -21,6 +21,7 @@ real files. Databricks compute is only used for production runs.
 | **Data cleaning** | Explicit per-source parsing of dates, numbers, codes and text, ANSI-safe. Every rule traces back to a quirk observed in the real files: [data-quality.md](docs/data-quality.md) |
 | **Geocoding** | Free and tiered: register coordinates → postcode → district → town (offline GeoNames joins), plus a gradual Lambda worker on free government geocoders: [ADR 0002](docs/adr/0002-free-tiered-geocoding.md) |
 | **Delta features** | MERGE (SCD2), Change Data Feed, time travel / RESTORE, CHECK constraints, liquid clustering, deletion vectors, predictive optimization, replaceWhere idempotency |
+| **Orchestration** | One Lakeflow Job running a Python wheel on serverless, not a Lakeflow pipeline: [ADR 0004](docs/adr/0004-jobs-over-lakeflow-pipelines.md) |
 | **Operations** | Asset Bundle job with for-each tasks, schedule, timeouts, duration health rules, e-mail and webhook alerts, schema-drift detection, quarantine, volume anomaly guard: [operations.md](docs/operations.md) |
 | **Cost** | Ad hoc DBU/USD estimator calibrated from `system.billing` tables: [cost.md](docs/cost.md) |
 | **Tests** | 220+ tests: parsers (incl. property-based), per-register mappers, SCD2, DQ engine, geocoding, Lambdas, a PySpark anti-pattern linter, query-plan checks, full end-to-end run: [testing.md](docs/testing.md) |
