@@ -42,8 +42,8 @@ make cost       # predicted cost of a full production run
 
 ## Deploying
 
-Production deploys are continuous. Every push to `main` runs the full test suite, waits for approval
-in the GitHub `production` environment, then deploys the ingestion Lambdas (AWS SAM, via GitHub OIDC)
+Every merge to `main` is a release candidate: CD runs the full test suite, waits for approval in the
+GitHub `production` environment, then deploys the ingestion Lambdas (AWS SAM, via GitHub OIDC)
 and the Databricks job (Asset Bundle, as a service principal). One-time setup and rollback are in
 [docs/deployment.md](docs/deployment.md).
 

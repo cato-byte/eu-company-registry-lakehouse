@@ -49,12 +49,12 @@ in Unity Catalog, set up once with `infra/databricks/setup.sql`:
 5. the job receives `--landing-root /Volumes/registry/files/landing` (bundle default), and the code
    reads files there as if they were local.
 
-**Which bucket?** Keep the existing raw-data bucket that already holds `company_records/lakehouse/landing/`.
-One bucket per purpose (raw data, website, query results) is the usual standard. Separate buckets
-per environment (dev/prod) are common in companies, but not needed for a one-person project.
-Publish the website data into the bucket that already serves your website, under the project page's
-prefix, so the page and its data share one origin (no CORS setup). Put the Databricks workspace in
-the **same AWS region** as the buckets, to avoid cross-region transfer costs.
+**Buckets.** The landing prefix can live in an existing raw-data bucket; the job only needs the
+`.../lakehouse/` prefix. Keep one bucket per purpose (raw data, website). Separate dev and prod
+buckets become worth it once more than one person deploys. Write the website data into the bucket
+that serves the site, under the project page's prefix, so page and data share an origin and no
+CORS rule is needed. Keep the Databricks workspace in the same AWS region as the buckets to avoid
+cross-region transfer charges.
 
 ## One-time setup
 
@@ -92,7 +92,7 @@ claim differs from `GitHubSubjectPrefix`: repositories with immutable OIDC subje
    landing bucket and on the website-data bucket/prefix.
 4. **Catalog, volumes and grants:** run `infra/databricks/setup.sql` after filling in the placeholders.
    If a `CREATE EXTERNAL LOCATION` fails with `LOCATION_OVERLAP`, an existing external location
-   (e.g. one created for earlier notebooks) already covers that S3 path. Skip that statement and keep
+   (for example one created for other workloads) already covers that S3 path. Skip that statement and keep
    the rest: Unity Catalog uses the existing location, whose credential then needs read/write on those prefixes.
    For the website prefix, give that credential's IAM role an inline policy limited to the `data/`
    prefix (GetBucketLocation on the bucket; ListBucket with an `s3:prefix` condition; Get/Put/DeleteObject
@@ -137,12 +137,11 @@ Settings → Branches → protect `main` (require the `ci` check and a PR).
   have no results yet. (An S3 event notification would conflict with Databricks *file events*,
   which already own an S3 → SQS rule over the lakehouse prefix.)
 * **Confirm the SNS e-mail subscription** you receive.
-* **Fresh snapshots:** the old files sit directly under `landing/<COUNTRY>/`, and Norway's is still the
-  raw JSON array. Either wait for the schedules, or start each download once from the Lambda console
-  (test events = the JSON files in `infra/requests/` and `infra/requests/reference/`). Then move the
-  old undated files away (e.g. to `landing_archive/`), so only dated `ingest_date=` snapshots remain.
-* **Old Delta folders** from the notebook era (`lakehouse/bronze`, `staging`, `silver_vault`, `gold`)
-  are no longer used and can be deleted to save storage.
+* **First snapshots:** wait for the monthly schedules, or invoke the downloader once per register
+  from the Lambda console (the test events are the JSON files in `infra/requests/` and
+  `infra/requests/reference/`). The newest `landing/<COUNTRY>/ingest_date=YYYY-MM-DD/` folder wins.
+  Undated files directly under `landing/<COUNTRY>/` are only a fallback when no dated snapshot
+  exists, and can be archived once the downloader has landed one.
 
 ### 5. First production run
 
