@@ -12,7 +12,8 @@
 #   * health rule + on_duration_warning_threshold_exceeded: alert well before the timeout
 #   * max_concurrent_runs: 1, so a slow run never overlaps the next scheduled one
 #   * performance_target STANDARD: serverless cost-optimised mode (slower start, cheaper)
-#   * retries only where they help (transient I/O), never on data-quality failures
+#   * no automatic retries: a failure e-mails alert_email, is fixed and redeployed, then the next
+#     run resumes from the failed stage (detect_changes sees which stages are behind their inputs)
 
 resources:
   jobs:
@@ -84,8 +85,7 @@ resources:
               task_key: bronze_country
               environment_key: default
               timeout_seconds: 3600
-              max_retries: 1
-              min_retry_interval_millis: 120000
+              max_retries: 0  # failures alert and are rerun by hand, see docs/operations.md
               python_wheel_task:
                 package_name: registry_lakehouse
                 entry_point: registry-lakehouse
