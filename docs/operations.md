@@ -71,13 +71,13 @@ are idempotent per snapshot).
 | Feature | Where | Why |
 |---|---|---|
 | `MERGE` with `WHEN NOT MATCHED BY SOURCE` | silver SCD2 | one atomic statement inserts new versions, closes changed ones, and closes companies that left the register |
-| Change Data Feed | all managed tables | downstream consumers can read only what changed. Tested in e2e |
+| Change Data Feed | `silver.company` | row-level changes per snapshot (new, changed, closed companies) for incremental readers. Tested in e2e |
 | Time travel / `RESTORE` | silver | reproduce any past state. Reload history after a bug fix (the loader refuses out-of-order snapshots and says to RESTORE) |
 | CHECK constraints | `silver.company`, `geocode_cache` | the table rejects invalid states (unknown status, open versions not current, malformed NACE) even if code regresses |
 | Liquid clustering | bronze (`_snapshot_date`), silver (`country_code, nace_division`) | file skipping for the per-country MERGE and the map queries, with no partition tuning |
 | `delta.dataSkippingStatsColumns` | bronze, silver | stats only on filtered columns (Delta indexes the first 32 columns by default, and clustering keys must have stats) |
 | Deletion vectors | all | cheap MERGE updates (no full file rewrites) |
-| Auto-optimize / auto-compaction | all | no small-files problem, no scheduled OPTIMIZE job. On Unity Catalog managed tables, predictive optimisation also runs VACUUM/OPTIMIZE |
+| Predictive optimization | all (catalog level, `setup.sql`) | OPTIMIZE, VACUUM and compaction run when Databricks predicts they pay off. No per-table autoOptimize settings, no scheduled maintenance job |
 | `replaceWhere` | bronze, quarantine, stage | idempotent re-runs of a snapshot |
 | Column comments | silver | the canonical model documents itself in Unity Catalog |
 

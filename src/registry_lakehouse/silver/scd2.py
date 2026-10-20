@@ -40,8 +40,12 @@ def ensure_company_table(spark: SparkSession, table: str) -> None:
         "_run_id STRING, _updated_at TIMESTAMP",
         cluster_by=["country_code", "nace_division"],
         comment="Silver: harmonised companies/establishments of six EU registers, SCD Type 2",
-        extra_properties={"delta.dataSkippingStatsColumns":
-                          "country_code,nace_division,nace_section,status,company_key,valid_from,valid_to"},
+        extra_properties={
+            "delta.dataSkippingStatsColumns":
+                "country_code,nace_division,nace_section,status,company_key,valid_from,valid_to",
+            # Row-level changes per snapshot (new, changed, closed companies) for incremental readers.
+            "delta.enableChangeDataFeed": "true",
+        },
         constraints={
             "valid_country": "country_code IN ('FR','GB','IE','EE','ES','NO')",
             "valid_status": "status IN ('ACTIVE','LIQUIDATION','INSOLVENCY','CLOSED','UNKNOWN')",
@@ -111,7 +115,7 @@ def apply_snapshot(
 
 
 def _last_merge_metrics(target: DeltaTable) -> dict[str, int]:
-    # Not history(1): auto-compaction may commit an OPTIMIZE right after the MERGE.
+    # Not history(1): predictive optimization may commit an OPTIMIZE right after the MERGE.
     row = (target.history(10).where("operation = 'MERGE'").orderBy(F.col("version").desc())
            .select("operationMetrics").first())
     m = row.operationMetrics if row else {}

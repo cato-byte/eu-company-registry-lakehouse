@@ -75,14 +75,12 @@ def table_exists(spark: SparkSession, full_name: str) -> bool:
     return bool(spark.catalog.tableExists(full_name))
 
 
-# Table properties applied to every managed table. Change Data Feed lets downstream steps read
-# only what changed. Deletion vectors make MERGE/DELETE cheap. Auto-optimize avoids small files
-# without scheduled OPTIMIZE jobs.
+# Table properties applied to every managed table. Deletion vectors make MERGE/DELETE cheap.
+# File layout and maintenance (OPTIMIZE, VACUUM, compaction) are left to predictive optimization
+# on Unity Catalog managed tables, so no per-table autoOptimize settings are pinned here. Change
+# Data Feed is enabled only where a consumer reads it (silver.company, see silver/scd2.py).
 DEFAULT_TBLPROPERTIES = {
-    "delta.enableChangeDataFeed": "true",
     "delta.enableDeletionVectors": "true",
-    "delta.autoOptimize.optimizeWrite": "true",
-    "delta.autoOptimize.autoCompact": "true",
 }
 
 
