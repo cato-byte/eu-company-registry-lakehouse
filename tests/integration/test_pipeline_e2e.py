@@ -173,6 +173,8 @@ def test_second_snapshot_builds_scd2_history(spark, run):
     later = replace(run, snapshot_date=date(2026, 8, 31), run_id="e2e-2")
     assert detect_changes(spark, later).countries == ("GB",)  # only the register with a new snapshot
     cli.run_bronze(spark, later, ["GB"])
+    # bronze done but silver not (as if the silver task had failed): GB must still be pending
+    assert detect_changes(spark, later).countries == ("GB",)
     cli.run_silver(spark, later, ["GB"])
     gb = spark.table(run.table("silver", "company")).where("country_code = 'GB'")
     snap2 = date(2026, 8, 1)
@@ -218,3 +220,30 @@ def test_insight_tables_respect_country_coverage(spark, run):
     assert dim.where("at_mass_address AND is_operating").count() == 0
     published = json.loads((Path(run.publish_root) / "insights.json").read_text())
     assert published["hotspots"] and published["coverage"]
+
+
+def test_gate_retries_stages_left_unfinished_by_a_failed_run(spark, run, monkeypatch):
+    """Silver succeeded, gold failed: the next run must finish gold and publish even though no new
+    file has landed, and only then report nothing to do."""
+    from registry_lakehouse.gold import build as gold_build
+    from registry_lakehouse.ops.detect import detect_changes
+
+    later = replace(run, snapshot_date=date(2026, 8, 31), run_id="e2e-3")
+    cli.run_geo(spark, later, batch=0)  # silver moved on in the previous test; geo catches up
+
+    def boom(*_args, **_kwargs):
+        raise RuntimeError("simulated gold failure")
+
+    monkeypatch.setattr(gold_build.ins, "fishing_hubs", boom)
+    with pytest.raises(RuntimeError, match="simulated gold failure"):
+        cli.run_gold(spark, later)
+    monkeypatch.undo()
+
+    pending = detect_changes(spark, later)
+    assert pending.run and {"gold", "publish"} <= set(pending.unfinished)
+    assert pending.countries == ()  # nothing new landed
+
+    cli.run_gold(spark, later)
+    cli.run_publish(spark, later, samples=False)
+    done = detect_changes(spark, later)
+    assert not done.run and done.unfinished == ()
