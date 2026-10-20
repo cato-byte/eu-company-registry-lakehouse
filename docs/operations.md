@@ -6,7 +6,7 @@
 |---|---|---|
 | Register downloads | EventBridge Scheduler → `DownloaderFunction` (`infra/template.yaml`) | monthly, before the pipeline run on the 6th: FR 2nd, GB/IE 3rd, EE/NO 4th, ES 5th (yearly data, skipped when unchanged), GeoNames 1st |
 | Lakehouse job | Databricks job `registry-lakehouse-<target>` (`resources/registry_job.yml`) | monthly, the 6th at 04:00 Europe/Paris, after the monthly downloads (paused in `dev`) |
-| Precise geocoding | `GeocodeWorkerFunction`, S3-triggered by the job's request file | after each job run |
+| Precise geocoding | `GeocodeWorkerFunction`, EventBridge Scheduler | daily at 06:00 UTC, processes request files without results |
 
 Alternative to the cron schedule: a **file-arrival trigger** on the landing location (commented in the
 job). The downloader writes `_manifest.json` last and skips unchanged files by checksum, so the job then
@@ -29,9 +29,14 @@ same files produces no new data version in any table and rewrites no published f
 ### Job shape
 
 ```
-bronze  (for_each FR GB IE EE ES NO, 3 at a time) ─► silver (for_each, 3 at a time) ─┐
-reference (GeoNames gazetteer) ──────────────────────────────────────────────────────┴─► geo ─► gold ─► publish ─► cost_report (run_if ALL_DONE)
+detect_changes ─► has_changes? ─ false ─► run ends
+                       │ true
+                       ├─► bronze (for_each changed registers, 3 at a time) ─► silver (for_each, 1 at a time) ─┐
+                       └─► reference (GeoNames gazetteer) ──────────────────────────────────────────────────────┴─► geo ─► gold ─► publish ─► cost_report (run_if ALL_DONE)
 ```
+
+Silver runs one country at a time because every country merges into the same `silver.company`
+table, and concurrent MERGEs into one table conflict.
 
 `for_each_task` runs one task per country. A failure in Norway doesn't hide behind a single
 monolithic notebook, and the country can be repaired and re-run on its own (bronze and silver

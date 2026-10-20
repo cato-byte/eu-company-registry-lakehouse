@@ -34,7 +34,7 @@ verified against PROJ to 1 cm.
 
 Tier 1 is filled **gradually, outside Spark**. Each run exports a bounded batch (e.g. 700) of the
 most valuable coarse locations (fishing companies first, then by company count) to
-`_GEOCODE/requests/`. An S3-triggered Lambda geocodes them with **free government services** where
+`_GEOCODE/requests/`. A Lambda that runs daily picks up request files without results and geocodes them with **free government services** where
 they exist (Kartverket for Norway, Maa-amet In-ADS for Estonia, IGN CartoCiudad for Spain) and
 Nominatim at 1 req/s elsewhere. It validates each result (bounding box, postcode cross-check) and
 writes `_GEOCODE/results/`, which the next run merges into the insert-only `silver.geocode_cache`.

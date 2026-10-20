@@ -20,7 +20,7 @@ fishing per town, pipeline stage counts, data-quality results) to a publish loca
 serves those files next to `site/index.html` (Leaflet map + plain HTML/CSS charts).
 
 So yes: static is the right call. The trade-off is freshness, and the registers publish monthly (or
-daily but slowly changing), so a weekly refresh loses nothing.
+daily but slowly changing), so the monthly refresh loses nothing.
 
 ## Guard rails
 
