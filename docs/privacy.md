@@ -22,7 +22,8 @@ and contact details. This repository is public, so two separate concerns are han
 * **Natural persons** keep no name and no street in silver (`is_natural_person = true`). Their
   location is postcode or town only. Gold has a second guard that blanks names of natural persons.
 * **Personal identifiers** (Spanish DNI/NIE) are replaced by a keyed SHA-256 (pepper in a Databricks
-  secret), which stays stable across snapshots for SCD2 but cannot be reversed by brute force.
+  secret), which stays stable across snapshots for SCD2. The DNI space is small enough to enumerate,
+  so the hash is only as safe as the key: it lives in the secret scope and is never logged or exported.
 * **INSEE non-diffusible establishments** (`statutDiffusion = P`) are treated as personal: no street,
   no coordinates.
 * **Publishing** exports only aggregates (counts per town and industry). The row-level stage tour

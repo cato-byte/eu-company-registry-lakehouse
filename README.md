@@ -23,7 +23,7 @@ real files. Databricks compute is only used for production runs.
 | **Delta features** | MERGE (SCD2), Change Data Feed, time travel / RESTORE, CHECK constraints, liquid clustering, deletion vectors, auto-compaction, replaceWhere idempotency |
 | **Operations** | Asset Bundle job with for-each tasks, schedule, timeouts, duration health rules, e-mail and webhook alerts, schema-drift detection, quarantine, volume anomaly guard: [operations.md](docs/operations.md) |
 | **Cost** | Ad hoc DBU/USD estimator calibrated from `system.billing` tables: [cost.md](docs/cost.md) |
-| **Tests** | ~200 tests: parsers (incl. property-based), per-register mappers, SCD2, DQ engine, geocoding, Lambdas, a PySpark anti-pattern linter, query-plan checks, full end-to-end run: [testing.md](docs/testing.md) |
+| **Tests** | 220+ tests: parsers (incl. property-based), per-register mappers, SCD2, DQ engine, geocoding, Lambdas, a PySpark anti-pattern linter, query-plan checks, full end-to-end run: [testing.md](docs/testing.md) |
 | **Privacy** | No real data in the repo, natural persons never named, personal IDs pseudonymised, secret scanning: [privacy.md](docs/privacy.md) |
 | **Insights** | Operating vs merely registered companies, mass-registration addresses, births/deaths, cohort survival, fishing hubs (location quotient), jobs, distress rates, each with explicit country coverage: [insights.md](docs/insights.md) |
 | **Visualisation** | Static site from gold aggregates, so there is no runtime access to AWS or Databricks: [ADR 0003](docs/adr/0003-static-visualisation.md) |

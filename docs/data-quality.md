@@ -2,7 +2,8 @@
 
 Every rule in `silver/parsers.py`, `silver/sources/*.py` and `quality/rules.py` traces back to
 something observed while profiling the real landing files (first and middle byte ranges of each
-file, sampled locally). Each row below is pinned by a test.
+file, sampled locally). Rows with a test name are pinned by that test. The two without one record
+a source gap and a choice of business key; the Navarra end-to-end tests cover the key indirectly.
 
 ## Strategy
 
