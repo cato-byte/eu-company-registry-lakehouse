@@ -50,6 +50,13 @@ GRANT USE SCHEMA, SELECT ON SCHEMA system.billing TO `<service-principal-applica
 -- 6. Optional: let yourself browse everything the job creates
 GRANT USE CATALOG, USE SCHEMA, SELECT, READ VOLUME ON CATALOG registry TO `<your-email>`;
 
+--    Optional: read-only access for analysts and dashboards, limited to the published layer.
+--    Bronze, silver and ops stay with the job. Gold carries no names or street addresses of
+--    natural persons, and personal identifiers there are pseudonymised. Create the group first
+--    (account console > Groups).
+-- GRANT USE CATALOG ON CATALOG registry TO `registry-readers`;
+-- GRANT USE SCHEMA, SELECT ON SCHEMA registry.gold TO `registry-readers`;
+
 -- 7. Table maintenance. Predictive optimization runs OPTIMIZE, VACUUM and compaction on managed
 --    tables, so the pipeline does not set autoOptimize properties itself. It is on by default for
 --    new accounts; this makes it explicit for the catalog.
