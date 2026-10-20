@@ -53,6 +53,7 @@ are idempotent per snapshot).
 | A truncated download wipes half the companies | Lambda refuses files < 50% of the previous size. Silver aborts if a snapshot has < 80% of the previous row count |
 | Bad data silently propagates | DQ rules with abort thresholds. ERROR rows and unparseable source lines to quarantine |
 | Upstream schema change | drift check before reading (strict/additive policy per source) |
+| A code change silently reshapes a gold table | gold compares each table's schema before overwriting it and sends a `WARN` alert listing added, removed and retyped columns |
 | Retrying a data problem burns money | `max_retries: 0` on silver. Bronze retries once (transient I/O only) |
 | Memory | Serverless does not expose memory settings, and an OOM fails the task (then alerts). The code avoids the usual causes: no `collect()` of data (linter SPK001), no unbounded plans (plan-size tests + `let` bindings), no single-task reads (Norway NDJSON, no `multiLine`) |
 

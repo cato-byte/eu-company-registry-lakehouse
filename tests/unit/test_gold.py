@@ -1,8 +1,15 @@
 """Gold aggregates: fishing view, town/industry counts, privacy guard in the dimension."""
 
 import pytest
+from pyspark.sql.types import IntegerType, LongType, StringType, StructField, StructType
 
-from registry_lakehouse.gold.build import agg_city_industry, dim_company, dim_industry, fishing_by_city
+from registry_lakehouse.gold.build import (
+    agg_city_industry,
+    dim_company,
+    dim_industry,
+    fishing_by_city,
+    schema_changes,
+)
 
 pytestmark = pytest.mark.spark
 
@@ -53,3 +60,12 @@ def test_dim_company_never_exposes_natural_person_names(spark):
                                      "geo_source string")
     row = dim_company(company, location, dim_industry(spark)).first()
     assert row.company_name is None and row.latitude == 59.4
+
+
+def test_schema_changes_lists_added_removed_and_retyped_columns():
+    old = StructType([StructField("city", StringType()), StructField("n", IntegerType()),
+                      StructField("gone", StringType())])
+    new = StructType([StructField("city", StringType(), False), StructField("n", LongType()),
+                      StructField("added", StringType())])
+    assert schema_changes(old, new) == ["+added string", "-gone", "~n int -> bigint"]
+    assert schema_changes(old, old) == []
