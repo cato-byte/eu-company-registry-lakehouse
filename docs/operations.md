@@ -51,7 +51,7 @@ are idempotent per snapshot).
 | Runs pile up | `max_concurrent_runs: 1` |
 | An unexpectedly huge input file (cost runaway) | `max_landing_bytes` check before reading (default 20 GB). The run refuses to start |
 | A truncated download wipes half the companies | Lambda refuses files < 50% of the previous size. Silver aborts if a snapshot has < 80% of the previous row count |
-| Bad data silently propagates | DQ rules with abort thresholds. ERROR rows to quarantine |
+| Bad data silently propagates | DQ rules with abort thresholds. ERROR rows and unparseable source lines to quarantine |
 | Upstream schema change | drift check before reading (strict/additive policy per source) |
 | Retrying a data problem burns money | `max_retries: 0` on silver. Bronze retries once (transient I/O only) |
 | Memory | Serverless does not expose memory settings, and an OOM fails the task (then alerts). The code avoids the usual causes: no `collect()` of data (linter SPK001), no unbounded plans (plan-size tests + `let` bindings), no single-task reads (Norway NDJSON, no `multiLine`) |

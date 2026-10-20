@@ -89,9 +89,14 @@ def evaluate(
     previous_total: int | None = None,
     min_volume_ratio: float = 0.8,
     min_rows_for_rate: int = 1000,
+    malformed_rows: int = 0,
+    max_malformed_rate: float | None = None,
 ) -> DqOutcome:
     """Rate thresholds only apply from ``min_rows_for_rate`` rows on: 1 bad id in 37 rows is
-    noise, while 1% of 40 million rows is a structural problem."""
+    noise, while 1% of 40 million rows is a structural problem.
+
+    ``malformed_rows`` are source lines the bronze reader could not split into columns. They never
+    reach ``annotated``, so their rate is measured against all lines of the snapshot."""
     total, failed = measure(annotated, rules)
     metrics, breaches = [], []
     for r in rules:
@@ -112,6 +117,17 @@ def evaluate(
         metrics.append(dict(run_id=run_id, dataset=dataset, country_code=country, snapshot_date=snapshot_date,
                             rule="row_volume_vs_previous", severity="FATAL", failed_rows=max(previous_total - total, 0),
                             total_rows=total, failure_rate=max(0.0, 1 - ratio), threshold=1 - min_volume_ratio,
+                            breached=str(breached).lower()))
+    if malformed_rows or max_malformed_rate is not None:
+        lines = total + malformed_rows
+        rate = malformed_rows / lines if lines else 0.0
+        breached = max_malformed_rate is not None and lines >= min_rows_for_rate and rate > max_malformed_rate
+        if breached:
+            breaches.append(f"malformed_source_line: {rate:.2%} > {max_malformed_rate:.2%} "
+                            f"({malformed_rows:,}/{lines:,})")
+        metrics.append(dict(run_id=run_id, dataset=dataset, country_code=country, snapshot_date=snapshot_date,
+                            rule="malformed_source_line", severity="ERROR", failed_rows=malformed_rows,
+                            total_rows=lines, failure_rate=rate, threshold=max_malformed_rate,
                             breached=str(breached).lower()))
     if total == 0:
         breaches.append("empty snapshot: 0 rows after mapping")

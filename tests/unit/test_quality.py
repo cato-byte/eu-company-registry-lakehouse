@@ -54,6 +54,15 @@ def test_volume_drop_against_previous_snapshot_is_fatal(df):
     assert any(b.startswith("row_volume") for b in outcome.breaches)
 
 
+def test_malformed_source_lines_breach_their_own_threshold(df):
+    annotated = engine.annotate(df, RULE_SET)
+    outcome = engine.evaluate(annotated, RULE_SET[1:], dataset="t", country="XX", snapshot_date=date(2026, 7, 1),
+                              run_id="r", min_rows_for_rate=1, malformed_rows=1, max_malformed_rate=0.10)
+    assert outcome.breaches == ["malformed_source_line: 20.00% > 10.00% (1/5)"]
+    metric = next(m for m in outcome.metrics if m["rule"] == "malformed_source_line")
+    assert metric["failed_rows"] == 1 and metric["total_rows"] == 5
+
+
 def test_empty_snapshot_is_fatal(spark):
     empty = spark.createDataFrame([], "id string, name string")
     _, outcome = evaluate(empty)

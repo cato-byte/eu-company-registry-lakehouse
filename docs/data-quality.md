@@ -18,7 +18,8 @@ a source gap and a choice of business key; the Navarra end-to-end tests cover th
 4. **Severity decides the row's fate.** WARN rows stay. ERROR rows go to `silver.quarantine` with
    the failed rules and the full record as JSON. A failure-rate threshold breach aborts the run.
    Volume collapse against the previous snapshot (< 80%) aborts too: that is what a truncated
-   download looks like.
+   download looks like. Lines the CSV reader could not split never reach the rules, so they are
+   counted separately (`malformed_source_line`, 1% threshold) and quarantined with their raw text.
 
 ## Observed quirks and their handling
 
@@ -40,7 +41,7 @@ a source gap and a choice of business key; the Navarra end-to-end tests cover th
 | IE | NACE stored as float: `311.0` is **03.11 fishing** | integer → zero-pad to 4 digits → `03.11`. Without the pad, `311.0` reads as 31.1 (furniture) | `test_nace_from_numeric` |
 | IE | old NACE Rev.1 column next to Rev. 2 | kept as local code, never mixed into NACE Rev. 2 | `test_ireland` |
 | IE | town hidden in free-text address lines, previously hard-coded to `DUBLIN` | parsed from the last address line (`DUBLIN 2` → `DUBLIN`, county markers skipped) | `test_ireland` |
-| IE | malformed CSV lines | kept in `_corrupt_record` instead of shifting columns | `test_bronze_captures_malformed…` |
+| IE | malformed CSV lines | kept in `_corrupt_record` instead of shifting columns. Silver quarantines them as `malformed_source_line` and aborts above 1% of lines | `test_bronze_captures_malformed…`, `test_quarantine_holds_…` |
 | EE | `;` delimiter, UTF-8 BOM, CRLF | contract delimiter, BOM/CR stripped | `test_bronze_handles_bom…` |
 | EE | `ettevotja_aadress` always empty: the street is in `asukoht_ettevotja_aadressis` (old code mapped the empty column) | correct column, fallback kept | `test_estonia` |
 | EE | place as `Pirita linnaosa, Tallinn, Harju maakond` | district → city, county kept as region | `test_estonia` |
