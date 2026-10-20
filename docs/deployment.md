@@ -6,16 +6,18 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
                                                      └──► Databricks job (Asset Bundle)
 ```
 
-* **Databricks** is deployed with `databricks bundle deploy -t prod`, as a **service principal**
-  over OAuth M2M. The production job runs as that principal, from a folder only it can write.
-  Each deploy builds a wheel with a unique version (`0.2.<run>+g<sha>`), so serverless never
-  reuses a stale wheel.
-* **AWS** is deployed with `sam deploy`, through **GitHub OIDC**: a short-lived role that only the
+* Databricks is deployed with `databricks bundle deploy -t prod` by a service principal over
+  OAuth M2M. The production job runs as that principal, from a folder only it can write. Each
+  deploy builds a wheel with a unique version (`0.2.<run>+g<sha>`), so serverless never picks up a
+  stale wheel.
+* AWS is deployed with `sam deploy` through GitHub OIDC, using a short-lived role that only the
   `production` environment of this repository can assume. No AWS keys are stored in GitHub.
-* Both deploy jobs are **off** until you switch them on (repository variables `DEPLOY_DATABRICKS` and
-  `DEPLOY_AWS`), so the pipeline stays green while the setup below is incomplete.
-* Nothing identifying is in the repository. Host, bucket, e-mail and ids are GitHub **secrets**,
-  which are masked in the (public) Actions logs.
+* Both deploy jobs stay off until the repository variables `DEPLOY_DATABRICKS` and `DEPLOY_AWS`
+  are set, so CI stays green while the setup below is incomplete.
+* Host, bucket, e-mail and ids are GitHub environment secrets, which are masked in the public
+  Actions logs. None of them is in the repository.
+* A deploy never starts a run. `bundle deploy` only creates or updates the job definition; runs
+  start from the schedule, from *Run now*, or from a manual `cd` run with `run_job` checked.
 
 ## How the pieces connect
 
@@ -32,7 +34,7 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
                                     └──────────────────────────┘
 ```
 
-**How the code reaches Databricks.** Databricks never pulls from GitHub. The CD workflow pushes:
+**How the code reaches Databricks.** Databricks never pulls from GitHub; the CD workflow pushes.
 `databricks bundle deploy` builds the Python package in `src/` into a wheel, uploads it with the job
 definition to the workspace (`/Workspace/Users/<service principal>/.bundle/...`), and creates or
 updates the job through the Jobs API. When the schedule fires, serverless compute starts, installs
@@ -49,12 +51,12 @@ in Unity Catalog, set up once with `infra/databricks/setup.sql`:
 5. the job receives `--landing-root /Volumes/registry/files/landing` (bundle default), and the code
    reads files there as if they were local.
 
-**Which bucket?** Keep the existing raw-data bucket that already holds `company_records/lakehouse/landing/`.
-One bucket per purpose (raw data, website, query results) is the usual standard. Separate buckets
-per environment (dev/prod) are common in companies, but not needed for a one-person project.
-Publish the website data into the bucket that already serves your website, under the project page's
-prefix, so the page and its data share one origin (no CORS setup). Put the Databricks workspace in
-the **same AWS region** as the buckets, to avoid cross-region transfer costs.
+**Buckets.** The landing prefix can live in an existing raw-data bucket; the job only needs the
+`.../lakehouse/` prefix. Keep one bucket per purpose (raw data, website). Separate dev and prod
+buckets become worth it once more than one person deploys. Write the website data into the bucket
+that serves the site, under the project page's prefix, so page and data share an origin and no
+CORS rule is needed. Keep the Databricks workspace in the same AWS region as the buckets to avoid
+cross-region transfer charges.
 
 ## One-time setup
 
@@ -92,7 +94,7 @@ claim differs from `GitHubSubjectPrefix`: repositories with immutable OIDC subje
    landing bucket and on the website-data bucket/prefix.
 4. **Catalog, volumes and grants:** run `infra/databricks/setup.sql` after filling in the placeholders.
    If a `CREATE EXTERNAL LOCATION` fails with `LOCATION_OVERLAP`, an existing external location
-   (e.g. one created for earlier notebooks) already covers that S3 path. Skip that statement and keep
+   (for example one created for other workloads) already covers that S3 path. Skip that statement and keep
    the rest: Unity Catalog uses the existing location, whose credential then needs read/write on those prefixes.
    For the website prefix, give that credential's IAM role an inline policy limited to the `data/`
    prefix (GetBucketLocation on the bucket; ListBucket with an `s3:prefix` condition; Get/Put/DeleteObject
@@ -137,12 +139,11 @@ Settings → Branches → protect `main` (require the `ci` check and a PR).
   have no results yet. (An S3 event notification would conflict with Databricks *file events*,
   which already own an S3 → SQS rule over the lakehouse prefix.)
 * **Confirm the SNS e-mail subscription** you receive.
-* **Fresh snapshots:** the old files sit directly under `landing/<COUNTRY>/`, and Norway's is still the
-  raw JSON array. Either wait for the schedules, or start each download once from the Lambda console
-  (test events = the JSON files in `infra/requests/` and `infra/requests/reference/`). Then move the
-  old undated files away (e.g. to `landing_archive/`), so only dated `ingest_date=` snapshots remain.
-* **Old Delta folders** from the notebook era (`lakehouse/bronze`, `staging`, `silver_vault`, `gold`)
-  are no longer used and can be deleted to save storage.
+* **First snapshots:** wait for the monthly schedules, or invoke the downloader once per register
+  from the Lambda console (the test events are the JSON files in `infra/requests/` and
+  `infra/requests/reference/`). The newest `landing/<COUNTRY>/ingest_date=YYYY-MM-DD/` folder wins.
+  Undated files directly under `landing/<COUNTRY>/` are only a fallback when no dated snapshot
+  exists, and can be archived once the downloader has landed one.
 
 ### 5. First production run
 
@@ -152,7 +153,7 @@ Actions → `cd` → *Run workflow* with **run_job** checked, or Databricks → 
 ## Website
 
 The `publish` task writes `cities.geojson`, `fishing.geojson`, `industry_by_country.json`,
-`pipeline.json` and `meta.json` into the `registry.files.site_data` volume, which is an S3 prefix
+`pipeline.json`, `insights.json` and `meta.json` into the `registry.files.site_data` volume, which is an S3 prefix
 you control. Serve `site/index.html` with a `data/` folder pointing at that prefix (same bucket
 behind CloudFront, or a sync into your website repo). If the JSON is served from another origin,
 allow it with an S3 CORS rule for your site's domain.

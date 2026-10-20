@@ -12,7 +12,7 @@ executors. With roughly 40 million French establishments plus the other register
 * against Nominatim's usage policy (bulk geocoding from parallel workers),
 * fragile (one throttled call fails a Spark task, and retries re-pay for the work).
 
-The map needs **town-level** precision, with optional address-level detail later.
+The map needs town-level precision, with optional address-level detail later.
 
 ## Decision
 
@@ -27,15 +27,16 @@ country's bounding box:
 | 4 | DISTRICT | UK outward code, Irish Eircode routing key | free, offline join |
 | 5 | CITY | GeoNames place / municipality centroid | free, offline join |
 
-Tiers 2 to 5 are **joins against an offline gazetteer** loaded once into
+Tiers 2 to 5 are joins against an offline gazetteer loaded once into
 `silver.ref_postal_code`. They place every company with a usable postcode or town in seconds, with
 no network calls. The Lambert-93 → WGS84 conversion is written as native Spark expressions and
 verified against PROJ to 1 cm.
 
-Tier 1 is filled **gradually, outside Spark**. Each run exports a bounded batch (e.g. 700) of the
+Tier 1 is filled gradually, outside Spark. Each run exports a bounded batch (e.g. 700) of the
 most valuable coarse locations (fishing companies first, then by company count) to
-`_GEOCODE/requests/`. An S3-triggered Lambda geocodes them with **free government services** where
-they exist (Kartverket for Norway, Maa-amet In-ADS for Estonia, IGN CartoCiudad for Spain) and
+`_GEOCODE/requests/`. A Lambda that runs daily picks up request files without results and
+geocodes them with free government services where they exist (Kartverket for Norway, Maa-amet
+In-ADS for Estonia, IGN CartoCiudad for Spain) and
 Nominatim at 1 req/s elsewhere. It validates each result (bounding box, postcode cross-check) and
 writes `_GEOCODE/results/`, which the next run merges into the insert-only `silver.geocode_cache`.
 Precision improves run after run, nothing is geocoded twice, and Spark never waits on HTTP.

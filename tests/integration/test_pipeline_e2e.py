@@ -49,9 +49,15 @@ def test_every_country_reaches_gold(spark, run):
     assert spark.table(run.table("gold", "dim_company")).count() == current.count()
 
 
-def test_quarantine_holds_the_invalid_siret(spark, run):
+def test_quarantine_holds_the_invalid_siret_and_the_malformed_line(spark, run):
     q = spark.table(run.table("silver", "quarantine")).collect()
-    assert [(r.country_code, r.failures) for r in q] == [("FR", ["id_checksum_valid"])]
+    assert sorted((r.country_code, r.failures) for r in q) == [
+        ("FR", ["id_checksum_valid"]), ("IE", ["malformed_source_line"])]
+    malformed = next(r for r in q if r.country_code == "IE")
+    assert malformed.record and malformed.company_key is None
+    metric = (spark.table(run.table("ops", "dq_results"))
+              .where("country_code = 'IE' AND rule = 'malformed_source_line'").first())
+    assert metric.failed_rows == 1 and metric.breached == "false"
 
 
 def test_fishing_companies_found_in_every_country_with_industry_codes(spark, run):

@@ -33,6 +33,8 @@ class Settings:
     max_landing_bytes: int = 20 * 1024**3
     # Data-quality: share of rows a FATAL rule may fail before the run is aborted.
     dq_fatal_threshold: float = 0.05
+    # Data-quality: share of source lines that may be malformed (unsplittable) before the run aborts.
+    max_malformed_rate: float = 0.01
     # Failure-rate thresholds are statistically meaningless on tiny snapshots.
     dq_min_rows_for_rate: int = 1000
     # Insights: an address with at least this many active companies is a mass-registration address.

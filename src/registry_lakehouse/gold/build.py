@@ -11,10 +11,12 @@ import logging
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
+from pyspark.sql.types import StructType
 
 from registry_lakehouse.config import Settings
 from registry_lakehouse.gold import insights as ins
 from registry_lakehouse.ops import freshness
+from registry_lakehouse.ops.alerts import notify
 from registry_lakehouse.silver.classify import nace_divisions
 from registry_lakehouse.spark import ensure_schema, table_exists
 
@@ -86,9 +88,24 @@ def fishing_by_city(dim: DataFrame) -> DataFrame:
     )
 
 
+def schema_changes(old: StructType, new: StructType) -> list[str]:
+    """Column-level differences (added, removed, retyped). Nullability is ignored."""
+    before = {f.name: f.dataType.simpleString() for f in old.fields}
+    after = {f.name: f.dataType.simpleString() for f in new.fields}
+    return ([f"+{c} {t}" for c, t in after.items() if c not in before]
+            + [f"-{c}" for c in before if c not in after]
+            + [f"~{c} {before[c]} -> {t}" for c, t in after.items() if c in before and before[c] != t])
+
+
 def _save(spark: SparkSession, settings: Settings, name: str, df: DataFrame) -> None:
-    df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        settings.table("gold", name))
+    """Full overwrite. Gold schemas follow the code, but a change is announced, never silent:
+    the website export and any SQL consumer read these columns."""
+    table = settings.table("gold", name)
+    if table_exists(spark, table):
+        changes = schema_changes(spark.table(table).schema, df.schema)
+        if changes:
+            notify("WARN", f"schema change in {table}", ", ".join(changes))
+    df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(table)
 
 
 def gold_fingerprint(spark: SparkSession, settings: Settings) -> str:

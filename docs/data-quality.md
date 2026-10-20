@@ -1,8 +1,9 @@
 # Data quality: what the registers actually contain, and how each issue is handled
 
-Every rule in `silver/parsers.py`, `silver/sources/*.py` and `quality/rules.py` traces back to
-something observed while profiling the real landing files (first and middle byte ranges of each
-file, sampled locally). Each row below is pinned by a test.
+The rules in `silver/parsers.py`, `silver/sources/*.py` and `quality/rules.py` come from what
+turned up while profiling the real landing files (first and middle byte ranges of each
+file, sampled locally). Rows with a test name are pinned by that test. The two without one record
+a source gap and a choice of business key; the Navarra end-to-end tests cover the key indirectly.
 
 ## Strategy
 
@@ -17,7 +18,8 @@ file, sampled locally). Each row below is pinned by a test.
 4. **Severity decides the row's fate.** WARN rows stay. ERROR rows go to `silver.quarantine` with
    the failed rules and the full record as JSON. A failure-rate threshold breach aborts the run.
    Volume collapse against the previous snapshot (< 80%) aborts too: that is what a truncated
-   download looks like.
+   download looks like. Lines the CSV reader could not split never reach the rules, so they are
+   counted separately (`malformed_source_line`, 1% threshold) and quarantined with their raw text.
 
 ## Observed quirks and their handling
 
@@ -39,7 +41,7 @@ file, sampled locally). Each row below is pinned by a test.
 | IE | NACE stored as float: `311.0` is **03.11 fishing** | integer → zero-pad to 4 digits → `03.11`. Without the pad, `311.0` reads as 31.1 (furniture) | `test_nace_from_numeric` |
 | IE | old NACE Rev.1 column next to Rev. 2 | kept as local code, never mixed into NACE Rev. 2 | `test_ireland` |
 | IE | town hidden in free-text address lines, previously hard-coded to `DUBLIN` | parsed from the last address line (`DUBLIN 2` → `DUBLIN`, county markers skipped) | `test_ireland` |
-| IE | malformed CSV lines | kept in `_corrupt_record` instead of shifting columns | `test_bronze_captures_malformed…` |
+| IE | malformed CSV lines | kept in `_corrupt_record` instead of shifting columns. Silver quarantines them as `malformed_source_line` and aborts above 1% of lines | `test_bronze_captures_malformed…`, `test_quarantine_holds_…` |
 | EE | `;` delimiter, UTF-8 BOM, CRLF | contract delimiter, BOM/CR stripped | `test_bronze_handles_bom…` |
 | EE | `ettevotja_aadress` always empty: the street is in `asukoht_ettevotja_aadressis` (old code mapped the empty column) | correct column, fallback kept | `test_estonia` |
 | EE | place as `Pirita linnaosa, Tallinn, Harju maakond` | district → city, county kept as region | `test_estonia` |
@@ -80,13 +82,15 @@ threshold, which only applies from 1,000 rows up.
 Before reading a file, its header (CSV) or key set (NDJSON) is compared with the contract in
 `contracts/sources.yml`:
 
-* **reordered** columns: harmless (columns are mapped by name), logged
-* **added** columns: allowed under the `additive` policy (kept in `_rescued_data`, alert sent), fatal under `strict`
-* **removed / renamed** columns: always fatal, with rename suggestions (`codePostalEtablissement → codePostalEtablissment?`)
+* Reordered columns are harmless, because columns are mapped by name. They are logged.
+* Added columns are allowed under the `additive` policy (kept in `_rescued_data`, with an alert)
+  and fatal under `strict`.
+* Removed or renamed columns are always fatal. The error suggests likely renames
+  (`codePostalEtablissement → codePostalEtablissment?`).
 
 ## What data is most likely to fail
 
 From profiling, in order of likelihood: (1) format drift between releases of the same register
 (Navarra), (2) encoding problems (mojibake, BOM), (3) new code values in status / legal form lists
 (caught by `status_known`), (4) truncated downloads (volume guard + Lambda size check),
-(5) renamed or added columns (drift check). Each has a test with a real example.
+(5) renamed or added columns (drift check). Each of these has a test built on a real example.

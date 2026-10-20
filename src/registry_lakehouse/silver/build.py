@@ -81,7 +81,8 @@ def ensure_quarantine_table(spark: SparkSession, table: str) -> None:
         "country_code STRING, snapshot_date DATE, company_key STRING, business_id STRING, "
         "failures ARRAY<STRING>, record STRING, _run_id STRING, _quarantined_at TIMESTAMP",
         cluster_by=["country_code", "snapshot_date"],
-        comment="Rows that failed an ERROR-level data-quality rule, kept for inspection and replay",
+        comment="Rows that failed an ERROR-level data-quality rule, and source lines that could not be "
+                "parsed, kept for inspection and replay",
     )
 
 
@@ -117,10 +118,18 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
     ensure_quarantine_table(spark, quarantine_table)
     rebuild_if_key_changed(spark, settings, country)
 
-    bronze_all = spark.table(bronze_table_name(settings, country)).where(F.col("_corrupt_record").isNull())
+    bronze_raw = spark.table(bronze_table_name(settings, country))
+    bronze_all = bronze_raw.where(F.col("_corrupt_record").isNull())
     results = []
-    for snap in _pending_snapshots(spark, settings, country, bronze_all):
+    pending = _pending_snapshots(spark, settings, country, bronze_all)
+    for snap in pending:
         canonical = canonical_snapshot(_bronze_for(bronze_all, country, snap), country, snap)
+        # Lines the CSV reader could not split. A file with embedded yearly snapshots (Navarra)
+        # reports them once, with its newest snapshot, so they are not counted eight times.
+        malformed = (_bronze_for(bronze_raw, country, snap).where(F.col("_corrupt_record").isNotNull())
+                     if snap == pending[-1] or not MAPPERS[country].embedded_snapshots
+                     else bronze_raw.limit(0))
+        malformed_rows = malformed.count()
         rules = rules_for(country)
         # Materialise once: serverless has no .cache(), and DQ metrics, quarantine, counts and
         # the MERGE all read this result. Without staging, each would re-parse bronze.
@@ -137,20 +146,26 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
             annotated, rules, dataset="silver.company", country=country, snapshot_date=snap,
             run_id=settings.run_id, previous_total=previous, min_volume_ratio=settings.min_volume_ratio,
             min_rows_for_rate=settings.dq_min_rows_for_rate,
+            malformed_rows=malformed_rows, max_malformed_rate=settings.max_malformed_rate,
         )
         engine.write_metrics(spark, dq_table, outcome)  # persisted even when the run aborts
         if not outcome.ok:
             raise engine.DataQualityError(f"[{country} {snap}] data-quality thresholds breached: "
                                           + "; ".join(outcome.breaches))
 
-        bad = annotated.where(F.col(engine.QUARANTINE_COL))
+        bad = annotated.where(F.col(engine.QUARANTINE_COL)).select(
+            "country_code", "snapshot_date", "company_key", "business_id",
+            F.col(engine.FAILURES_COL).alias("failures"),
+            F.to_json(F.struct(*CANONICAL_ORDER)).alias("record"),
+        )
+        unparsed = malformed.select(
+            F.lit(country).alias("country_code"), F.lit(snap).alias("snapshot_date"),
+            F.lit(None).cast("string").alias("company_key"), F.lit(None).cast("string").alias("business_id"),
+            F.array(F.lit("malformed_source_line")).alias("failures"), F.col("_corrupt_record").alias("record"),
+        )
         (
-            bad.select(
-                "country_code", "snapshot_date", "company_key", "business_id",
-                F.col(engine.FAILURES_COL).alias("failures"),
-                F.to_json(F.struct(*CANONICAL_ORDER)).alias("record"),
-                F.lit(settings.run_id).alias("_run_id"), F.current_timestamp().alias("_quarantined_at"),
-            )
+            bad.unionByName(unparsed)
+            .select("*", F.lit(settings.run_id).alias("_run_id"), F.current_timestamp().alias("_quarantined_at"))
             .write.format("delta").mode("overwrite")
             .option("replaceWhere", f"country_code = '{country}' AND snapshot_date = DATE'{snap.isoformat()}'")
             .saveAsTable(quarantine_table)

@@ -14,7 +14,7 @@ link, satellites for profile, metrics and geocodes). The goals of the project ar
 
 ## What Data Vault is good at, and why it doesn't pay off here
 
-Data Vault earns its complexity when **many source systems describe the same business keys**
+Data Vault earns its complexity when many source systems describe the same business keys
 (CRM, ERP and billing all knowing customer 42), when sources change their structure often, and when
 an auditable, insert-only raw history is a regulatory requirement.
 
@@ -37,7 +37,7 @@ None of that applies here:
 
 * **Bronze:** one table per register, raw columns as STRING, append-only per snapshot, lineage
   columns, `_rescued_data` and `_corrupt_record`.
-* **Silver:** one harmonised `silver.company` table, **SCD Type 2** (`valid_from`, `valid_to`,
+* **Silver:** one harmonised `silver.company` table, SCD Type 2 (`valid_from`, `valid_to`,
   `is_current`) driven by a `hash_diff` of normalised tracked attributes. One `MERGE` per snapshot.
   Plus `silver.location` (geocoded distinct addresses), `silver.quarantine`, reference tables.
 * **Gold:** a Kimball star: `dim_company` (current state + location + NACE labels), `dim_industry`,
