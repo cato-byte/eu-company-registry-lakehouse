@@ -16,10 +16,13 @@ registry-cost calibrate history.csv > coefficients.json              # fit DBU/G
 registry-cost estimate --sizes ... --coefficients coefficients.json  # calibrated prediction
 ```
 
-Model: `DBU(stage, country) = fixed overhead + k_stage × input GB × format factor` (JSON parses
-about 1.6× slower than CSV), with a range of ×0.4-2.0 before calibration and ×0.7-1.4 after.
+Model: `DBU(stage, country) = fixed overhead + k_stage × input GB × format factor`.
 
-**Be honest about what it is:** the shipped coefficients are conservative priors, not measurements.
+The shipped numbers are assumptions, not measurements. `k_stage` is set deliberately high, NDJSON
+gets a format factor of 1.6 against 1.0 for CSV (JSON parsing is slower; the exact ratio is a
+guess), and the reported band is ×0.4-2.0 of the point estimate. After calibration the band
+narrows to ×0.7-1.4, which is also a chosen width rather than a fitted interval.
+
 After 3-5 production runs, export the result of `report-sql` together with input sizes
 (`stage,input_gb,dbus` CSV) and run `calibrate`. From then on the estimate is grounded in the
 workspace's own history. The `cost_report` task writes the same query result to `ops.cost_by_run`
