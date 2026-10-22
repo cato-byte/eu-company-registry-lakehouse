@@ -1,0 +1,60 @@
+# Publish a release when a version tag is pushed.
+#
+#   git tag -a v1.0.0 -m "v1.0.0" && git push origin v1.0.0
+#     ──► ci (all tests) ──► checks ──► GitHub release: wheel + SHA256SUMS + CHANGELOG notes
+#
+# Checks: the tag is on main, matches __version__, and CHANGELOG.md has notes for it.
+# A release deploys nothing. To run a release in production (e.g. to roll back), dispatch `cd`
+# on the tag; see docs/deployment.md.
+
+name: release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Publish GitHub release
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # create the release and upload its assets
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # to check the tag is on main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tag is on main and matches the source version
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::$GITHUB_REF_NAME is not on main"; exit 1; }
+          version="$(python tools/set_version.py)"
+          [ "v$version" = "$GITHUB_REF_NAME" ] \
+            || { echo "::error::tag $GITHUB_REF_NAME does not match __version__ $version"; exit 1; }
+
+      - name: Release notes from CHANGELOG.md
+        run: python tools/release_notes.py "$GITHUB_REF_NAME" > notes.md
+
+      - name: Build the wheel and its checksum
+        run: |
+          python -m pip wheel --no-deps --wheel-dir dist .
+          cd dist && sha256sum *.whl > SHA256SUMS && cat SHA256SUMS
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.whl dist/SHA256SUMS \
+            --verify-tag --title "$GITHUB_REF_NAME" --notes-file notes.md

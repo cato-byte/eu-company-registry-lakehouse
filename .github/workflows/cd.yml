@@ -9,6 +9,8 @@
 # Everything identifying (host, bucket, e-mail, ids) is a *secret* of the `production`
 # environment, because the logs of a public repository are public and only secrets are masked.
 # See docs/deployment.md for the one-time setup.
+#
+# Rollback: dispatch this workflow on a release tag (Run workflow → Use workflow from: v1.0.0).
 
 name: cd
 
@@ -88,7 +90,7 @@ jobs:
         with:
           version: "1.20.0"
       - name: Stamp a unique wheel version
-        run: python tools/set_version.py "0.2.${{ github.run_number }}+g${GITHUB_SHA::7}"
+        run: python tools/set_version.py "+${{ github.run_number }}.g${GITHUB_SHA::7}"  # e.g. 1.0.0+57.g1a2b3c4
       - name: Validate against the workspace
         run: databricks bundle validate -t prod --strict
       - name: Deploy
