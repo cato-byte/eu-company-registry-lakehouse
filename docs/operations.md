@@ -26,6 +26,12 @@ the same files, geo and gold when their outputs are newer than their inputs. The
 `test_rerun_with_unchanged_inputs_detects_nothing_and_writes_nothing` asserts that a re-run on the
 same files produces no new data version in any table and rewrites no published file.
 
+`detect_changes` also catches work left unfinished by a failed run, even when no new file has
+landed: a country whose silver is behind its bronze, and a geo, gold or publish stage whose
+recorded inputs are behind the current ones. It compares stored fingerprints with Delta versions
+and reads no data. `test_gate_retries_stages_left_unfinished_by_a_failed_run` covers the case where
+silver succeeds and gold fails.
+
 ### Job shape
 
 ```
@@ -53,7 +59,7 @@ can be repaired and re-run on its own (bronze and silver are idempotent per snap
 | Bad data silently propagates | DQ rules with abort thresholds. ERROR rows and unparseable source lines to quarantine |
 | Upstream schema change | drift check before reading (strict/additive policy per source) |
 | A code change silently reshapes a gold table | gold compares each table's schema before overwriting it and sends a `WARN` alert listing added, removed and retyped columns |
-| Retrying a data problem burns money | `max_retries: 0` on silver. Bronze retries once (transient I/O only) |
+| Retrying a data problem burns money | `max_retries: 0` on every task. A failure alerts and is rerun by hand (see [Recovering](#recovering)) |
 | Memory | Serverless does not expose memory settings, and an OOM fails the task (then alerts). The code avoids the usual causes: no `collect()` of data (linter SPK001), no unbounded plans (plan-size tests + `let` bindings), no single-task reads (Norway NDJSON, no `multiLine`) |
 
 ## Alerting
@@ -93,6 +99,16 @@ which feeds the map. It runs on serverless and is billed separately from the job
 | Column comments | silver | the canonical model documents itself in Unity Catalog |
 
 ## Recovering
+
+Tasks are not retried automatically. On a monthly run, an automatic retry mostly repeats a code or
+data problem at full cost, so every failure goes to a person instead:
+
+1. The job e-mails `alert_email` with the failed run.
+2. Find the cause in the task output, fix it, and merge. CI deploys the new wheel.
+3. Start the job with *Run now*. `detect_changes` sees which stages the failed run left
+   unfinished, so stages that succeeded are skipped and the run picks up at the failed one.
+
+Other cases:
 
 * To re-run one country, use *Repair run* on the failed run and select only that country's task.
   Bronze and silver are idempotent, so a repeat is safe.

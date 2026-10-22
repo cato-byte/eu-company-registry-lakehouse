@@ -193,15 +193,23 @@ PUBLISHED_GOLD_TABLES = ("agg_city_industry", "fishing_by_city", "agg_country_in
                          "distress_by_industry", "insight_coverage")
 
 
+def publish_fingerprint(spark: SparkSession, settings: Settings) -> str:
+    """What the published files depend on: the gold data and the destination. Presentation options
+    are left out on purpose, so the change gate can recompute it without knowing them."""
+    from registry_lakehouse.ops import freshness
+
+    return freshness.fingerprint({
+        "tables": freshness.data_versions(spark, [settings.table("gold", t) for t in PUBLISHED_GOLD_TABLES]),
+        "destination": settings.publish_root,
+    })
+
+
 def publish(spark: SparkSession, settings: Settings, *, include_samples: bool = False,
             max_cities: int = 5000) -> list[str] | None:
     """Write the website JSON, unless the gold tables are unchanged since the last publish (None)."""
     from registry_lakehouse.ops import freshness
 
-    fp = freshness.fingerprint({
-        "tables": freshness.data_versions(spark, [settings.table("gold", t) for t in PUBLISHED_GOLD_TABLES]),
-        "options": [include_samples, max_cities, settings.publish_root],
-    })
+    fp = publish_fingerprint(spark, settings)
     if freshness.unchanged(spark, settings, "publish", fp):
         return None
     gold = settings.publish_root

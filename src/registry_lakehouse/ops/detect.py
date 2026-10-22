@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pyspark.sql import SparkSession
 
 from registry_lakehouse.bronze.landing import list_landing_files, pick_snapshot
+from registry_lakehouse.bronze.load import bronze_table_name
 from registry_lakehouse.config import Settings
 from registry_lakehouse.contracts import COUNTRY_CODES, get_contract
 from registry_lakehouse.geo import geocode, reference
@@ -36,10 +37,12 @@ class Changes:
     reference: bool
     geocoding: bool
     first_run: bool
+    # Stages left behind by an earlier run that failed part-way (e.g. silver done, gold failed).
+    unfinished: tuple[str, ...] = ()
 
     @property
     def run(self) -> bool:
-        return bool(self.countries or self.reference or self.geocoding or self.first_run)
+        return bool(self.countries or self.reference or self.geocoding or self.first_run or self.unfinished)
 
     @property
     def countries_to_process(self) -> list[str]:
@@ -60,7 +63,10 @@ def detect_changes(spark: SparkSession, settings: Settings) -> Changes:
         landed = freshness.files_fingerprint(list(snapshot.files))
         key_bumped = (freshness.last_fingerprint(spark, settings, f"silver_key:{cc}") or "1") != \
             str(MAPPERS[cc].key_version)
-        if key_bumped or freshness.last_fingerprint(spark, settings, f"bronze:{cc}") != landed:
+        # silver behind bronze: a previous run loaded bronze but failed before silver finished
+        bronze_version = str(freshness.data_version(spark, bronze_table_name(settings, cc)))
+        silver_behind = freshness.last_fingerprint(spark, settings, f"silver:{cc}") != bronze_version
+        if key_bumped or silver_behind or freshness.last_fingerprint(spark, settings, f"bronze:{cc}") != landed:
             changed.append(cc)
     try:
         ref_fp = freshness.fingerprint(reference.reference_inputs(spark, settings))
@@ -71,9 +77,30 @@ def detect_changes(spark: SparkSession, settings: Settings) -> Changes:
     geo_changed = bool(results) and \
         freshness.last_fingerprint(spark, settings, "worker_results") != freshness.files_fingerprint(results)
     first_run = freshness.last_fingerprint(spark, settings, "publish") is None
-    changes = Changes(tuple(changed), ref_changed, geo_changed, first_run)
+    changes = Changes(tuple(changed), ref_changed, geo_changed, first_run, unfinished_stages(spark, settings))
     log.info("changes: %s -> run=%s countries=%s", changes, changes.run, changes.countries_to_process)
     return changes
+
+
+def unfinished_stages(spark: SparkSession, settings: Settings) -> tuple[str, ...]:
+    """Downstream stages whose inputs moved on since their last successful run.
+
+    Only fingerprints and Delta versions are compared: no data is read, so the check costs
+    seconds. Without it, a run where silver succeeded and gold failed would never be retried
+    until new data arrived, because the landing files themselves are unchanged.
+    """
+    from registry_lakehouse.gold.build import gold_fingerprint
+    from registry_lakehouse.publish.static_export import publish_fingerprint
+
+    expected = {
+        "geo": geocode.geo_fingerprint(spark, settings),
+        "gold": gold_fingerprint(spark, settings),
+        "publish": publish_fingerprint(spark, settings),
+    }
+    behind = tuple(stage for stage, fp in expected.items() if freshness.last_fingerprint(spark, settings, stage) != fp)
+    if behind:
+        log.warning("unfinished work from an earlier run: %s", behind)
+    return behind
 
 
 def remember_worker_results(spark: SparkSession, settings: Settings) -> None:

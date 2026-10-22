@@ -186,4 +186,10 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
             merge["inserted"], merge["closed"], bool(merge["skipped"]), tuple(outcome.breaches),
         ))
         log.info("silver %s", results[-1])
+    # Remember which bronze version is fully processed: if this task fails before here, the gate
+    # sees bronze ahead of silver and the next run retries the country.
+    from registry_lakehouse.ops import freshness
+
+    freshness.record(spark, settings, f"silver:{country}",
+                     str(freshness.data_version(spark, bronze_table_name(settings, country))))
     return results
