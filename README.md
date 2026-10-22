@@ -49,6 +49,10 @@ GitHub `production` environment, then deploys the ingestion Lambdas (AWS SAM, vi
 and the Databricks job (Asset Bundle, as a service principal). One-time setup and rollback are in
 [docs/deployment.md](docs/deployment.md).
 
+Pushing a `v<version>` tag publishes a [release](https://github.com/cato-byte/eu-company-registry-lakehouse/releases)
+with the wheel, its checksum and the notes from [CHANGELOG.md](CHANGELOG.md). Rolling back means
+redeploying a release tag.
+
 Bucket names, workspace host and e-mail addresses are never committed: they are GitHub environment
 secrets, masked in the public Actions logs.
 

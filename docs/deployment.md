@@ -8,8 +8,8 @@ push to main ──► cd: ci again ──► production approval ──► AWS 
 
 * Databricks is deployed with `databricks bundle deploy -t prod` by a service principal over
   OAuth M2M. The production job runs as that principal, from a folder only it can write. Each
-  deploy builds a wheel with a unique version (`0.2.<run>+g<sha>`), so serverless never picks up a
-  stale wheel.
+  deploy builds a wheel with a unique version (`<release>+<run>.g<sha>`, e.g. `1.0.0+57.g1a2b3c4`),
+  so serverless never picks up a stale wheel, and the version still names the release it came from.
 * AWS is deployed with `sam deploy` through GitHub OIDC, using a short-lived role that only the
   `production` environment of this repository can assume. No AWS keys are stored in GitHub.
 * Both deploy jobs stay off until the repository variables `DEPLOY_DATABRICKS` and `DEPLOY_AWS`
@@ -113,7 +113,8 @@ claim differs from `GitHubSubjectPrefix`: repositories with immutable OIDC subje
 
 Repository → Settings → Environments → **New environment `production`**:
 
-* *Deployment branches*: `main` only. *Required reviewers*: yourself (each deploy waits for your click).
+* *Deployment branches and tags*: branch `main` and tags `v*` (a rollback deploys a release tag).
+  *Required reviewers*: yourself (each deploy waits for your click).
 * **Environment secrets:**
 
 | Secret | Value |
@@ -158,7 +159,30 @@ you control. Serve `site/index.html` with a `data/` folder pointing at that pref
 behind CloudFront, or a sync into your website repo). If the JSON is served from another origin,
 allow it with an S3 CORS rule for your site's domain.
 
+## Releases
+
+`main` is always deployable; a release marks a version worth returning to. The version lives in
+`src/registry_lakehouse/__init__.py` and the notes in `CHANGELOG.md`.
+
+1. On a branch, set the version (`python tools/set_version.py 1.1.0`) and move the
+   *Unreleased* notes in `CHANGELOG.md` under a `## [1.1.0] - <date>` heading. Merge it.
+2. Tag the merge commit on `main` and push the tag:
+   ```bash
+   git switch main && git pull
+   git tag -a v1.1.0 -m "v1.1.0" && git push origin v1.1.0
+   ```
+3. The `release` workflow runs the full CI, checks that the tag is on `main`, matches
+   `__version__` and has changelog notes, then publishes a GitHub release with the wheel,
+   `SHA256SUMS` and those notes.
+
+A release deploys nothing by itself: the same commit was already deployed when it merged.
+
 ## Rollback
 
-* **Code:** revert the commit on `main`, and CD redeploys the previous version.
+* **Code, to a release:** Actions → `cd` → *Run workflow* → *Use workflow from* the tag, e.g.
+  `v1.0.0` (or `gh workflow run cd.yml --ref v1.0.0`). CD runs the tests and redeploys the job and
+  the Lambdas exactly as tagged. The wheel is rebuilt from the tag, stamped `1.0.0+<run>.g<sha>`;
+  compare its source with the release's wheel if you need to be sure. The next merge to `main`
+  deploys `main` again, so fix forward from there.
+* **Code, one change:** revert the commit on `main`, and CD redeploys without it.
 * **Data:** `RESTORE TABLE registry.silver.company TO VERSION AS OF <n>` (see `docs/operations.md`).
