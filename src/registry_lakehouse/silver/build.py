@@ -14,7 +14,13 @@ from registry_lakehouse.config import Settings
 from registry_lakehouse.quality import engine
 from registry_lakehouse.quality.rules import rules_for
 from registry_lakehouse.silver.canonical import CANONICAL_ORDER, finalise
-from registry_lakehouse.silver.scd2 import apply_snapshot, ensure_company_table, last_loaded_snapshot
+from registry_lakehouse.silver.scd2 import (
+    apply_snapshot,
+    ensure_company_table,
+    ensure_watermark_table,
+    forget_loaded_snapshots,
+    last_loaded_snapshot,
+)
 from registry_lakehouse.silver.sources import MAPPERS
 from registry_lakehouse.silver.sources.spain import snapshot_years
 from registry_lakehouse.spark import create_table_if_missing, ensure_schema
@@ -52,9 +58,12 @@ def deduplicate(df: DataFrame) -> DataFrame:
     return df.withColumn("_rn", F.row_number().over(w)).where("_rn = 1").drop("_rn")
 
 
+def watermark_table(settings: Settings) -> str:
+    return settings.table("ops", "silver_snapshots")
+
+
 def _pending_snapshots(spark: SparkSession, settings: Settings, country: str, bronze: DataFrame) -> list[date]:
-    company_table = settings.table("silver", "company")
-    last = last_loaded_snapshot(spark, company_table, country)
+    last = last_loaded_snapshot(spark, settings.table("silver", "company"), watermark_table(settings), country)
     if MAPPERS[country].embedded_snapshots:
         candidates = [date(y, 12, 31) for y in snapshot_years(bronze)]
     else:
@@ -104,6 +113,7 @@ def rebuild_if_key_changed(spark: SparkSession, settings: Settings, country: str
     log.warning("[%s] business key changed (v%s -> v%s): rebuilding silver history", country, recorded, wanted)
     for table in (settings.table("silver", "company"), settings.table("silver", "quarantine")):
         spark.sql(f"DELETE FROM {table} WHERE country_code = '{country}'")
+    forget_loaded_snapshots(spark, watermark_table(settings), country)
     freshness.record(spark, settings, stage, wanted)
     return True
 
@@ -116,6 +126,7 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
     dq_table = settings.table("ops", "dq_results")
     ensure_company_table(spark, company_table)
     ensure_quarantine_table(spark, quarantine_table)
+    ensure_watermark_table(spark, watermark_table(settings))
     rebuild_if_key_changed(spark, settings, country)
 
     bronze_raw = spark.table(bronze_table_name(settings, country))
@@ -180,7 +191,8 @@ def build_silver(spark: SparkSession, settings: Settings, country: str) -> list[
             ).first()
         )
         rows_ok = counts.rows - (counts.bad or 0)
-        merge = apply_snapshot(spark, company_table, deduped, country, snap, settings.run_id)
+        merge = apply_snapshot(spark, company_table, watermark_table(settings), deduped, country, snap,
+                               settings.run_id)
         results.append(SilverResult(
             country, snap, counts.rows, counts.bad or 0, rows_ok - counts.distinct_ok,
             merge["inserted"], merge["closed"], bool(merge["skipped"]), tuple(outcome.breaches),

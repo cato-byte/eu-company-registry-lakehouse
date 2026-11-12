@@ -10,6 +10,7 @@ from registry_lakehouse.silver.scd2 import SnapshotOrderError, apply_snapshot, e
 
 pytestmark = pytest.mark.spark
 TABLE = "scd_test.company"
+WATERMARK = "scd_test.silver_snapshots"
 
 
 def snapshot(spark, rows, snap, country="GB"):
@@ -34,6 +35,7 @@ def snapshot(spark, rows, snap, country="GB"):
 def table(spark):
     spark.sql("CREATE SCHEMA IF NOT EXISTS scd_test")
     spark.sql(f"DROP TABLE IF EXISTS {TABLE}")
+    spark.sql(f"DROP TABLE IF EXISTS {WATERMARK}")
     ensure_company_table(spark, TABLE)
     return TABLE
 
@@ -45,10 +47,10 @@ def history(spark, business_id):
 
 def test_full_lifecycle(spark, table):
     d1, d2, d3 = date(2026, 6, 1), date(2026, 7, 1), date(2026, 8, 1)
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A", "city": "LEEDS"},
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A", "city": "LEEDS"},
                                                   {"business_id": "B"}, {"business_id": "C"}], d1), "GB", d1, "r1")
     # A moves, B unchanged, C disappears, D is new
-    m = apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A", "city": "YORK"}, {"business_id": "B"},
+    m = apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A", "city": "YORK"}, {"business_id": "B"},
                                                       {"business_id": "D"}], d2), "GB", d2, "r2")
     assert m == {"inserted": 2, "closed": 2, "skipped": 0}
     assert history(spark, "A") == [("ACTIVE", "LEEDS", d1, d2, False), ("ACTIVE", "YORK", d2, None, True)]
@@ -57,7 +59,7 @@ def test_full_lifecycle(spark, table):
     assert history(spark, "D") == [("ACTIVE", None, d2, None, True)]
 
     # A goes into liquidation
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A", "city": "YORK", "status": "LIQUIDATION"},
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A", "city": "YORK", "status": "LIQUIDATION"},
                                                   {"business_id": "B"}, {"business_id": "D"}], d3), "GB", d3, "r3")
     assert [h[0] for h in history(spark, "A")] == ["ACTIVE", "ACTIVE", "LIQUIDATION"]
     current = spark.table(table).where("is_current")
@@ -67,36 +69,66 @@ def test_full_lifecycle(spark, table):
 def test_rerun_of_same_snapshot_is_a_no_op(spark, table):
     d1 = date(2026, 6, 1)
     snap = snapshot(spark, [{"business_id": "A"}], d1)
-    apply_snapshot(spark, table, snap, "GB", d1, "r1")
+    apply_snapshot(spark, table, WATERMARK, snap, "GB", d1, "r1")
     version = spark.sql(f"DESCRIBE HISTORY {table}").agg(F.max("version")).first()[0]
-    assert apply_snapshot(spark, table, snap, "GB", d1, "r1-again")["skipped"] == 1
+    assert apply_snapshot(spark, table, WATERMARK, snap, "GB", d1, "r1-again")["skipped"] == 1
     assert spark.sql(f"DESCRIBE HISTORY {table}").agg(F.max("version")).first()[0] == version
 
 
 def test_out_of_order_snapshot_is_rejected(spark, table):
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A"}], date(2026, 7, 1)), "GB", date(2026, 7, 1), "r")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], date(2026, 7, 1)), "GB", date(2026, 7, 1), "r")
     with pytest.raises(SnapshotOrderError, match="RESTORE"):
-        apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A"}], date(2026, 6, 1)), "GB",
+        apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], date(2026, 6, 1)), "GB",
                        date(2026, 6, 1), "r")
 
 
 def test_other_countries_are_never_touched(spark, table):
     d1, d2 = date(2026, 6, 1), date(2026, 7, 1)
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A"}], d1, "IE"), "IE", d1, "r")
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "Z"}], d2, "GB"), "GB", d2, "r")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d1, "IE"), "IE", d1, "r")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "Z"}], d2, "GB"), "GB", d2, "r")
     assert spark.table(table).where("country_code = 'IE' AND is_current").count() == 1
 
 
 def test_constraints_reject_invalid_rows(spark, table):
     bad = snapshot(spark, [{"business_id": "A", "status": "WEIRD"}], date(2026, 6, 1))
     with pytest.raises(Exception, match=r"(?i)constraint|CHECK"):
-        apply_snapshot(spark, table, bad, "GB", date(2026, 6, 1), "r")
+        apply_snapshot(spark, table, WATERMARK, bad, "GB", date(2026, 6, 1), "r")
 
 
 def test_time_travel_gives_reproducible_history(spark, table):
     d1, d2 = date(2026, 6, 1), date(2026, 7, 1)
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A", "city": "LEEDS"}], d1), "GB", d1, "r")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A", "city": "LEEDS"}], d1), "GB", d1, "r")
     v1 = spark.sql(f"DESCRIBE HISTORY {table}").agg(F.max("version")).first()[0]
-    apply_snapshot(spark, table, snapshot(spark, [{"business_id": "A", "city": "YORK"}], d2), "GB", d2, "r")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A", "city": "YORK"}], d2), "GB", d2, "r")
     old = spark.read.option("versionAsOf", v1).table(table).where("is_current").first()
     assert old.city == "LEEDS"
+
+
+# Regression tests for issue #8: a snapshot that changes nothing, or only removes companies, must
+# still count as loaded. MAX(valid_from) does not move for such snapshots.
+
+def test_unchanged_snapshot_counts_as_loaded(spark, table):
+    d1, d2 = date(2026, 6, 1), date(2026, 7, 1)
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d1), "GB", d1, "r1")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d2), "GB", d2, "r2")
+    version = spark.sql(f"DESCRIBE HISTORY {table}").agg(F.max("version")).first()[0]
+    rerun = apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d2), "GB", d2, "r2-again")
+    assert rerun["skipped"] == 1
+    assert spark.sql(f"DESCRIBE HISTORY {table}").agg(F.max("version")).first()[0] == version
+
+
+def test_removal_only_snapshot_counts_as_loaded(spark, table):
+    d1, d2 = date(2026, 6, 1), date(2026, 7, 1)
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}, {"business_id": "B"}], d1), "GB", d1, "r1")
+    m = apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d2), "GB", d2, "r2")
+    assert m == {"inserted": 0, "closed": 1, "skipped": 0}
+    assert history(spark, "B") == [("ACTIVE", None, d1, d2, False)]
+    assert apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d2), "GB", d2, "r2-again")["skipped"] == 1
+
+
+def test_snapshot_older_than_an_unchanged_one_is_rejected(spark, table):
+    d1, d2, between = date(2026, 6, 1), date(2026, 8, 1), date(2026, 7, 1)
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d1), "GB", d1, "r1")
+    apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], d2), "GB", d2, "r2")
+    with pytest.raises(SnapshotOrderError, match="RESTORE"):
+        apply_snapshot(spark, table, WATERMARK, snapshot(spark, [{"business_id": "A"}], between), "GB", between, "r3")

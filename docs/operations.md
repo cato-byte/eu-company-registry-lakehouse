@@ -26,6 +26,12 @@ the same files, geo and gold when their outputs are newer than their inputs. The
 `test_rerun_with_unchanged_inputs_detects_nothing_and_writes_nothing` asserts that a re-run on the
 same files produces no new data version in any table and rewrites no published file.
 
+Silver keeps its own watermark: `ops.silver_snapshots` records every snapshot merged into
+`silver.company`, per country, whether or not it changed any company. A snapshot that only removes
+companies, or changes nothing, therefore counts as loaded and is not parsed again on the next run.
+The same table backs the out-of-order guard, which refuses a snapshot older than the last one
+loaded.
+
 `detect_changes` also catches work left unfinished by a failed run, even when no new file has
 landed: a country whose silver is behind its bronze, and a geo, gold or publish stage whose
 recorded inputs are behind the current ones. It compares stored fingerprints with Delta versions
@@ -112,7 +118,9 @@ Other cases:
 
 * To re-run one country, use *Repair run* on the failed run and select only that country's task.
   Bronze and silver are idempotent, so a repeat is safe.
-* If a bad snapshot was merged, `RESTORE TABLE <catalog>.silver.company TO VERSION AS OF <n>`, fix
-  the code and re-run. `DESCRIBE HISTORY` shows which run (`_run_id`) wrote each version.
+* If a bad snapshot was merged, `RESTORE TABLE <catalog>.silver.company TO VERSION AS OF <n>`, then
+  remove the watermark rows of the snapshots you undid, otherwise silver treats them as loaded:
+  `DELETE FROM <catalog>.ops.silver_snapshots WHERE country_code = 'FR' AND snapshot_date > '<date>'`.
+  Fix the code and re-run. `DESCRIBE HISTORY` shows which run (`_run_id`) wrote each version.
 * Rejected rows and unparseable lines are in quarantine:
   `SELECT failures, record FROM <catalog>.silver.quarantine WHERE country_code = 'FR'`.
