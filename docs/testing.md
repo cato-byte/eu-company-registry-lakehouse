@@ -14,6 +14,7 @@ The local stack (PySpark 4.0, delta-spark 4.0, ANSI mode on) matches serverless 
 | Code quality | `test_code_quality.py` | the PySpark linter is clean on `src/` and catches each anti-pattern. No source plan contains a Python UDF or a cartesian product, and each stays under a size budget |
 | End to end | `integration/test_pipeline_e2e.py` | landing → publish for all six registers, a second snapshot (SCD2 history), an idempotent re-run, Change Data Feed on `silver.company`, small published files without personal names |
 | Privacy | `test_privacy.py` | no secrets or infrastructure identifiers in the repo, and no identifier or name shared between fixtures and the real samples |
+| Built wheel | `tools/wheel_smoke.py` (CI) | the wheel installed in a clean virtualenv outside the checkout: data files (`contracts/sources.yml`, the NACE CSV) are packaged and both console scripts start |
 
 ## Fixtures are raw files
 
@@ -62,4 +63,16 @@ Two bugs it caught during the refactor:
 make test        # unit tests, about 5-10 min on local Spark
 make e2e         # end-to-end pipeline
 pytest -k norway # any subset
+```
+
+Tests run against an editable install, so they would not notice a file missing from the wheel. CI
+therefore also builds the wheel, installs it into a clean virtualenv with only its own
+dependencies (serverless provides pyspark), and runs `tools/wheel_smoke.py` from outside the
+checkout. The wheel and its `SHA256SUMS` are uploaded as the `registry-lakehouse-wheel` artifact
+of each run. To do the same locally:
+
+```bash
+python -m build --wheel --outdir dist
+python -m venv /tmp/wheel-venv && /tmp/wheel-venv/bin/pip install dist/*.whl
+(cd /tmp && /tmp/wheel-venv/bin/python "$OLDPWD/tools/wheel_smoke.py")
 ```

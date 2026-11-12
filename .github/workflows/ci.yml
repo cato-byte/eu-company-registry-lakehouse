@@ -44,6 +44,25 @@ jobs:
           python tools/spark_lint.py src
           git ls-files | xargs python tools/check_sensitive.py
 
+      # Tests use an editable install, which reads data files from src/. Test the artifact itself:
+      # a clean virtualenv outside the checkout, with only the wheel's own dependencies (serverless
+      # provides pyspark).
+      - name: Build the wheel and smoke-test it outside the checkout
+        run: |
+          python -m pip install build
+          python -m build --wheel --outdir dist
+          python -m venv "$RUNNER_TEMP/wheel-venv"
+          "$RUNNER_TEMP/wheel-venv/bin/pip" install dist/*.whl
+          cd "$RUNNER_TEMP" && "$RUNNER_TEMP/wheel-venv/bin/python" "$GITHUB_WORKSPACE/tools/wheel_smoke.py"
+          cd "$GITHUB_WORKSPACE/dist" && sha256sum ./*.whl > SHA256SUMS && cat SHA256SUMS
+
+      - name: Upload the wheel and its checksum
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-lakehouse-wheel
+          path: dist/
+          if-no-files-found: error
+
       - uses: databricks/setup-cli@main
         with:
           version: ${{ env.DATABRICKS_CLI_VERSION }}
