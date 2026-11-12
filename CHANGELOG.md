@@ -7,6 +7,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Continuous integration
+
+- CI builds the wheel, installs it into a clean virtualenv outside the checkout and smoke-tests
+  the packaged data files and both console scripts; the wheel and its SHA-256 are uploaded as a
+  workflow artifact ([#12]).
+
 ## [1.0.0] - 2026-10-22
 
 First tagged release: the pipeline as it runs in production.
@@ -61,3 +67,4 @@ First tagged release: the pipeline as it runs in production.
 [#5]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/5
 [#6]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/6
 [#7]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/7
+[#12]: https://github.com/cato-byte/eu-company-registry-lakehouse/issues/12
