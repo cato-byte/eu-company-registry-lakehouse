@@ -13,6 +13,12 @@ All notable changes to this project are documented here. The format follows
   the packaged data files and both console scripts; the wheel and its SHA-256 are uploaded as a
   workflow artifact ([#12]).
 
+### Fixed
+
+- Silver no longer re-parses a register snapshot that changed no company, or only removed some:
+  every merged snapshot is recorded in `ops.silver_snapshots`, which also backs the out-of-order
+  guard ([#8]).
+
 ## [1.0.0] - 2026-10-22
 
 First tagged release: the pipeline as it runs in production.
@@ -67,4 +73,5 @@ First tagged release: the pipeline as it runs in production.
 [#5]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/5
 [#6]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/6
 [#7]: https://github.com/cato-byte/eu-company-registry-lakehouse/pull/7
+[#8]: https://github.com/cato-byte/eu-company-registry-lakehouse/issues/8
 [#12]: https://github.com/cato-byte/eu-company-registry-lakehouse/issues/12

@@ -9,6 +9,13 @@ For a country C and snapshot S:
 Every snapshot is a complete register, so "missing" really means gone. The ON clause is scoped to
 ``country_code = C``, so other countries' rows are pruned (the table is liquid-clustered on
 country_code) and never touched.
+
+Which snapshots were processed is kept apart from what changed: after each successful MERGE the
+snapshot date is appended to a watermark table (``ops.silver_snapshots``). ``MAX(valid_from)`` cannot
+serve as that watermark, because it only moves when some company changes: a snapshot with no
+changes, or only removals, would otherwise be parsed again on every run. The watermark is written
+right after the MERGE; if a run dies in between, the next run merges the same snapshot again,
+which writes nothing new, so the watermark can lag but never run ahead of the data.
 """
 
 from __future__ import annotations
@@ -57,20 +64,58 @@ def ensure_company_table(spark: SparkSession, table: str) -> None:
     )
 
 
-def last_loaded_snapshot(spark: SparkSession, table: str, country: str) -> date | None:
+def ensure_watermark_table(spark: SparkSession, table: str) -> None:
+    create_table_if_missing(
+        spark, table,
+        "country_code STRING NOT NULL, snapshot_date DATE NOT NULL, _run_id STRING, _loaded_at TIMESTAMP",
+        cluster_by=["country_code"],
+        comment="Silver: every register snapshot merged into silver.company, per country (append-only "
+                "watermark of what was processed, independent of whether anything changed)",
+    )
+
+
+def record_loaded_snapshot(spark: SparkSession, table: str, country: str, snapshot_date: date, run_id: str) -> None:
+    # Blind append: parallel country tasks never conflict with each other.
+    (
+        spark.createDataFrame([(country, snapshot_date, run_id)],
+                              "country_code string, snapshot_date date, _run_id string")
+        .withColumn("_loaded_at", F.current_timestamp())
+        .write.format("delta").mode("append").saveAsTable(table)
+    )
+
+
+def forget_loaded_snapshots(spark: SparkSession, table: str, country: str) -> None:
+    """Drop the country's watermark, so every snapshot is reloaded (business key rebuild)."""
+    ensure_watermark_table(spark, table)
+    spark.sql(f"DELETE FROM {table} WHERE country_code = '{country}'")
+
+
+def last_loaded_snapshot(spark: SparkSession, table: str, watermark_table: str, country: str) -> date | None:
+    """Newest snapshot merged for ``country``.
+
+    Tables written before the watermark existed have no rows for the country: ``MAX(valid_from)`` is
+    then used, a lower bound of the truth (the old behaviour), until the next merge records one.
+    """
+    ensure_watermark_table(spark, watermark_table)
+    row = (spark.table(watermark_table).where(F.col("country_code") == country)
+           .agg(F.max("snapshot_date").alias("m")).first())
+    if row and row.m is not None:
+        return row.m
     row = spark.table(table).where(F.col("country_code") == country).agg(F.max("valid_from").alias("m")).first()
     return row.m if row else None
 
 
 def apply_snapshot(
-    spark: SparkSession, table: str, snapshot: DataFrame, country: str, snapshot_date: date, run_id: str
+    spark: SparkSession, table: str, watermark_table: str, snapshot: DataFrame, country: str,
+    snapshot_date: date, run_id: str,
 ) -> dict[str, int]:
     """Merge one deduplicated snapshot (one row per company_key) into the SCD2 table."""
-    last = last_loaded_snapshot(spark, table, country)
+    last = last_loaded_snapshot(spark, table, watermark_table, country)
     if last is not None and snapshot_date < last:
         raise SnapshotOrderError(
             f"[{country}] snapshot {snapshot_date} is older than the last loaded one ({last}). "
-            "Restore the table to an earlier version (Delta RESTORE) to reload history."
+            f"Restore the table to an earlier version (Delta RESTORE) and delete the newer rows of "
+            f"{watermark_table} for {country} to reload history."
         )
     if last is not None and snapshot_date == last:
         log.info("[%s] snapshot %s already loaded: skipping (idempotent re-run)", country, snapshot_date)
@@ -110,6 +155,7 @@ def apply_snapshot(
         .execute()
     )
     metrics = _last_merge_metrics(target)
+    record_loaded_snapshot(spark, watermark_table, country, snapshot_date, run_id)
     log.info("[%s] SCD2 merge %s: %s", country, snapshot_date, metrics)
     return metrics
 

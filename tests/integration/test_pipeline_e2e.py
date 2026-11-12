@@ -133,6 +133,19 @@ def test_rerun_with_unchanged_inputs_detects_nothing_and_writes_nothing(spark, r
     assert {p.name: p.stat().st_mtime_ns for p in Path(run.publish_root).iterdir()} == published
 
 
+def test_rerun_finds_no_pending_silver_snapshot_in_any_country(spark, run):
+    """Every merged snapshot is recorded, even one that changed nothing (issue #8), so a rerun
+    does not parse any register again."""
+    from registry_lakehouse.bronze.load import bronze_table_name
+    from registry_lakehouse.silver.build import _pending_snapshots, watermark_table
+
+    loaded = {r.country_code for r in spark.table(watermark_table(run)).select("country_code").distinct().collect()}
+    assert loaded == set(COUNTRY_CODES)
+    for country in COUNTRY_CODES:
+        bronze = spark.table(bronze_table_name(run, country)).where(F.col("_corrupt_record").isNull())
+        assert _pending_snapshots(spark, run, country, bronze) == [], country
+
+
 def test_lost_state_is_rebuilt_without_recomputing(spark, run):
     """If ops.stage_state is lost, existing results are adopted, not recomputed."""
     from registry_lakehouse.ops.detect import detect_changes
