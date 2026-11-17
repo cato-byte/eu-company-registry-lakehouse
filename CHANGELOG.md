@@ -11,6 +11,8 @@ All notable changes to this project are documented here. The format follows
 
 - The production job and its deployment folder are visible read-only to all workspace users, and
   every task carries a description shown in the job's task graph.
+- CD copies the repository (code, notebooks, job definition) to the owner's Databricks workspace
+  folder after each deploy, when the `DATABRICKS_OWNER_EMAIL` secret is set.
 - `notebooks/`: a read-only tour of every layer, and a notebook that runs the bronze → silver →
   gold transformations step by step from the repository source, without writing anything.
 - `docs/deployment.md`: how to browse the project in the Databricks UI (Git folder, job graph,

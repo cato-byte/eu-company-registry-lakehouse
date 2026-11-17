@@ -95,6 +95,18 @@ jobs:
         run: databricks bundle validate -t prod --strict
       - name: Deploy
         run: databricks bundle deploy -t prod
+      # A browsable copy of the repository (code, notebooks, job definition) in a human's workspace
+      # folder. The service principal can write there only because the owner shared that folder with
+      # it (docs/deployment.md). Production keeps running the wheel deployed above.
+      - name: Copy the project to the owner's workspace folder
+        env:
+          OWNER_EMAIL: ${{ secrets.DATABRICKS_OWNER_EMAIL }}
+        run: |
+          if [ -z "$OWNER_EMAIL" ]; then
+            echo "DATABRICKS_OWNER_EMAIL is not set: skipped"
+            exit 0
+          fi
+          databricks sync . "/Workspace/Users/${OWNER_EMAIL}/eu-company-registry-lakehouse" --full --exclude ".github/**"
       - name: Start a run (optional)
         if: github.event_name == 'workflow_dispatch' && inputs.run_job
         run: databricks bundle run -t prod registry_lakehouse --no-wait
