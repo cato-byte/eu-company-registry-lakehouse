@@ -125,6 +125,7 @@ Repository → Settings → Environments → **New environment `production`**:
 | `ALERT_EMAIL` | where failure / slow-run / Lambda alarms go |
 | `AWS_DEPLOY_ROLE_ARN` | output of step 1 |
 | `LANDING_BUCKET` | landing bucket name |
+| `DATABRICKS_OWNER_EMAIL` | optional: your Databricks login; CD copies the project to your workspace folder (see *Seeing the project in the Databricks UI*) |
 
 * **Environment variable:** `AWS_REGION` (e.g. `eu-west-1`). Optional: `DATABRICKS_CATALOG` (default `registry`).
 
@@ -158,10 +159,21 @@ The job and its deployment folder are shared read-only with all workspace users 
 `permissions` block of the `prod` target. The tables need step 6 of `infra/databricks/setup.sql`,
 run once by the catalog owner.
 
-**The code, in the workspace.** Production keeps running the wheel. To browse and run the source
-in Databricks, add the repository as a Git folder once: Workspace → *Create* → *Git folder* → this
-repository's GitHub URL. A public repository needs no Git credentials. *Pull* in the Git folder
-brings it up to date. It holds:
+**The code, in your workspace folder.** Production keeps running the wheel. In addition, every
+deploy copies the repository to `/Workspace/Users/<your-email>/eu-company-registry-lakehouse`
+(CD step *Copy the project to the owner's workspace folder*), where you can open and run the
+notebooks. One-time setup:
+
+1. In Databricks, under your own folder, create a folder named `eu-company-registry-lakehouse`.
+2. Its ⋮ menu → *Share* → add the service principal (`registry-lakehouse-deployer`) with
+   *Can manage*. Without this, the service principal cannot write into your home folder.
+3. Add the GitHub environment secret `DATABRICKS_OWNER_EMAIL` (your Databricks login e-mail).
+   Until it is set, the step is skipped.
+
+Every deploy overwrites the copied files with `main`, so treat the folder as read-only and keep
+experiments in a notebook of your own elsewhere. Files deleted from the repository are not
+removed from the folder. A Git folder (Workspace → *Create* → *Git folder*) is an alternative
+that you update with *Pull* instead. The folder holds:
 
 * `src/registry_lakehouse/`: the PySpark package that the job runs as a wheel,
 * `resources/registry_job.yml` and `databricks.yml`: the job definition, as code,
@@ -178,7 +190,7 @@ on the job, which workspace admins have.
 | What to show | Where |
 |---|---|
 | The pipeline as a graph | Jobs & Pipelines → `registry-lakehouse-prod` → *Tasks*: `detect_changes → has_changes → bronze / reference → silver → geo → gold → publish → cost_report`. Click a task for its description and the command it runs |
-| The job definition as code | the job → ⋮ → *View as code* (YAML), or `resources/registry_job.yml` in the Git folder |
+| The job definition as code | the job → ⋮ → *View as code* (YAML), or `resources/registry_job.yml` in your project folder |
 | A real run, with timings and skipped stages | the same job → *Runs* → open a run; *for each* tasks expand per country |
 | Logs of one stage | in a run, click a task → *Output* |
 | The medallion layers | Catalog → `registry` → `bronze` (one table per register), `silver` (`company`, `location`, `quarantine`, ...), `gold` (`dim_company`, `agg_country_industry`, ...), `ops` |
