@@ -8,7 +8,7 @@ setup:            ## create the virtualenv with Spark + Delta + test tooling
 	python3 -m venv .venv && $(VENV_BIN)/pip install -e ".[local,ingestion,dev]" && $(VENV_BIN)/pre-commit install
 
 lint:             ## ruff + PySpark anti-patterns + sensitive-data scan
-	$(VENV_BIN)/ruff check src tests tools
+	$(VENV_BIN)/ruff check src tests tools notebooks
 	$(PY) tools/spark_lint.py src
 	git ls-files | xargs $(PY) tools/check_sensitive.py
 

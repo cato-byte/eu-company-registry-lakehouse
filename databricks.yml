@@ -58,6 +58,13 @@ targets:
       root_path: /Workspace/Users/${var.service_principal_id}/.bundle/${bundle.name}/${bundle.target}
     run_as:
       service_principal_name: ${var.service_principal_id}
+    # The job is owned by the service principal, so without this no human sees it under
+    # Jobs & Pipelines. Read-only: the task graph, run history, logs and the deployed files.
+    permissions:
+      - level: CAN_MANAGE
+        service_principal_name: ${var.service_principal_id}
+      - level: CAN_VIEW
+        group_name: users
     variables:
       catalog: registry
       pause_status: UNPAUSED

@@ -151,6 +151,47 @@ Settings → Branches → protect `main` (require the `ci` check and a PR).
 Actions → `cd` → *Run workflow* with **run_job** checked, or Databricks → Jobs →
 `registry-lakehouse-prod` → *Run now*. After 3-5 runs, calibrate the cost model (`docs/cost.md`).
 
+## Seeing the project in the Databricks UI
+
+Production objects are owned by the service principal, so a human sees them only through grants.
+The job and its deployment folder are shared read-only with all workspace users by the
+`permissions` block of the `prod` target. The tables need step 6 of `infra/databricks/setup.sql`,
+run once by the catalog owner.
+
+**The code, in the workspace.** Production keeps running the wheel. To browse and run the source
+in Databricks, add the repository as a Git folder once: Workspace → *Create* → *Git folder* → this
+repository's GitHub URL. A public repository needs no Git credentials. *Pull* in the Git folder
+brings it up to date. It holds:
+
+* `src/registry_lakehouse/`: the PySpark package that the job runs as a wheel,
+* `resources/registry_job.yml` and `databricks.yml`: the job definition, as code,
+* `notebooks/01_pipeline_tour`: a read-only tour of every layer (tables, row counts, SCD2
+  history, quarantine, data-quality results, gold, cost),
+* `notebooks/02_inside_a_stage`: imports the source and runs the bronze → silver → gold
+  transformations step by step on a sample of real rows, showing the code beside each result.
+  It writes nothing.
+
+**Running by hand.** Production data is written only by the job: *Run now* runs the whole
+pipeline, and *Repair run* on a failed or finished run reruns one task. Both need *Can manage run*
+on the job, which workspace admins have.
+
+| What to show | Where |
+|---|---|
+| The pipeline as a graph | Jobs & Pipelines → `registry-lakehouse-prod` → *Tasks*: `detect_changes → has_changes → bronze / reference → silver → geo → gold → publish → cost_report`. Click a task for its description and the command it runs |
+| The job definition as code | the job → ⋮ → *View as code* (YAML), or `resources/registry_job.yml` in the Git folder |
+| A real run, with timings and skipped stages | the same job → *Runs* → open a run; *for each* tasks expand per country |
+| Logs of one stage | in a run, click a task → *Output* |
+| The medallion layers | Catalog → `registry` → `bronze` (one table per register), `silver` (`company`, `location`, `quarantine`, ...), `gold` (`dim_company`, `agg_country_industry`, ...), `ops` |
+| Schema, comments, sample rows | a table → *Overview* / *Sample data* |
+| Lineage bronze → silver → gold | a table → *Lineage* → *See lineage graph* |
+| History of a table (MERGE / SCD2 commits) | `registry.silver.company` → *History* |
+| Data-quality and cost results | `registry.ops.dq_results`, `registry.ops.cost_by_run` |
+| Raw files and published site JSON | Catalog → `registry` → `files` → volumes `landing`, `site_data` |
+| The deployed copy (wheel, source, notebooks) | Workspace → Users → `<service principal>` → `.bundle/eu-company-registry-lakehouse/prod` (read-only) |
+
+The pipeline is a *job*, not a Lakeflow Declarative Pipeline (see ADR 0004), so it appears as a
+task graph under Jobs rather than a dataset graph under Pipelines.
+
 ## Website
 
 The `publish` task writes `cities.geojson`, `fishing.geojson`, `industry_by_country.json`,

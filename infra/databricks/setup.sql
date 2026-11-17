@@ -47,8 +47,10 @@ GRANT USE SCHEMA, READ VOLUME, WRITE VOLUME ON SCHEMA registry.files TO `<servic
 GRANT USE CATALOG ON CATALOG system TO `<service-principal-application-id>`;
 GRANT USE SCHEMA, SELECT ON SCHEMA system.billing TO `<service-principal-application-id>`;
 
--- 6. Optional: let yourself browse everything the job creates
-GRANT USE CATALOG, USE SCHEMA, SELECT, READ VOLUME ON CATALOG registry TO `<your-email>`;
+-- 6. Let yourself browse everything the job creates. The job creates the bronze/silver/gold/ops
+--    schemas as the service principal, which owns them: without this grant they stay invisible to
+--    you in Catalog Explorer. A catalog-level grant also covers schemas and tables created later.
+GRANT USE CATALOG, USE SCHEMA, SELECT, READ VOLUME, BROWSE ON CATALOG registry TO `<your-email>`;
 
 --    Optional: read-only access for analysts and dashboards, limited to the published layer.
 --    Bronze, silver and ops stay with the job. Gold carries no names or street addresses of

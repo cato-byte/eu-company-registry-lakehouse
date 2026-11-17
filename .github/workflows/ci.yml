@@ -40,7 +40,7 @@ jobs:
 
       - name: Lint (ruff + PySpark anti-patterns + sensitive data)
         run: |
-          ruff check src tests tools
+          ruff check src tests tools notebooks
           python tools/spark_lint.py src
           git ls-files | xargs python tools/check_sensitive.py
 

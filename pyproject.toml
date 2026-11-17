@@ -71,6 +71,9 @@ known-first-party = ["registry_lakehouse", "tests", "tools"]
 # These modules only open https:// URLs (checked in code, or taken from reviewed request files).
 "src/registry_lakehouse/ingestion/*.py" = ["S310"]
 "src/registry_lakehouse/ops/alerts.py" = ["S310"]
+# Databricks notebooks: spark, dbutils and display are injected by the runtime, imports follow the
+# sys.path setup, and SQL is built from the notebook's own widgets.
+"notebooks/**" = ["F821", "E402", "S608", "E501"]
 
 [tool.mypy]
 python_version = "3.11"

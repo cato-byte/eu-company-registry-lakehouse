@@ -71,6 +71,7 @@ src/registry_lakehouse/
   ops/              alerts, cost estimator
   cli.py            one entrypoint for every job task
 resources/          Databricks job definition (Asset Bundle)
+notebooks/          Databricks notebooks: read-only data tour, and one stage step by step from the source
 infra/              AWS SAM template + per-register download requests
 site/               static website (map, fishing layer, pipeline tour)
 tests/              unit, integration (e2e) and privacy tests + synthetic fixtures
